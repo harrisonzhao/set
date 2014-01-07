@@ -12,10 +12,9 @@ package SetServer;
  */
 public class Client {
   public String username;
-  public int currentTable;
-  public Client(String username,
-                int currentTable) {
+  public int currentGameRoom;
+  public Client(String username, int currentGameRoom) {
     this.username = username;
-    this.currentTable = currentTable;
+    this.currentGameRoom = currentGameRoom;
   }
 }

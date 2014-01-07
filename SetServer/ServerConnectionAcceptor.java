@@ -17,9 +17,9 @@ import java.util.concurrent.ConcurrentMap;
  * @author Harrison
  */
 public class ServerConnectionAcceptor extends Thread {
-  protected Boolean isrunning;
-  protected ConcurrentMap<Object, Socket> sockets;
-  protected BlockingQueue<Message> incomingMessages;
+  Boolean isrunning;
+  final ConcurrentMap<Object, Socket> sockets;
+  final BlockingQueue<Message> incomingMessages;
   
   public ServerConnectionAcceptor(Boolean isrunning,
                                   ConcurrentMap<Object, Socket> sockets,

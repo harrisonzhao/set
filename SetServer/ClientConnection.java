@@ -17,11 +17,11 @@ import java.util.concurrent.BlockingQueue;
  * @author Harrison
  */
 public class ClientConnection extends Thread {
-  int clientID;
+  final int clientID;
   Boolean isrunning;
-  Socket socket;
-  BlockingQueue<Message> incomingMessages;
-  BufferedReader incomingStream;
+  final Socket socket;
+  final BlockingQueue<Message> incomingMessages;
+  private BufferedReader incomingStream;
   
   public ClientConnection(int clientID,
                           Boolean isrunning,
@@ -50,7 +50,7 @@ public class ClientConnection extends Thread {
         System.out.println("Client with id: " + clientID + " disconnected");
         try {
           //WHAT MESSAGE?????
-          incomingMessages.put(new Message("message!?!?!?!", clientID));       
+          incomingMessages.put(new Message(clientID, "message!?!?!?!"));       
         } catch (InterruptedException ex) {
           System.err.println("Error sending disconnection message!");
         }

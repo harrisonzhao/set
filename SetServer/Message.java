@@ -11,10 +11,10 @@ package SetServer;
  * @author Harrison
  */
 public class Message {
-  public String message;
   public int clientID;
-  public Message(String message, int clientID) {
-    this.message = message;
+  public String message;
+  public Message(int clientID, String message) {
     this.clientID = clientID;
+    this.message = message;
   }
 }
