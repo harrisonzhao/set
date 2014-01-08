@@ -19,4 +19,5 @@ public class StringConverter {
         // AGAIN DIDNT ACTUALLY WRITE THIS FUNCTION YET...
         return new Set(new Card(0), new Card(1), new Card(2));
     }
+    
 }

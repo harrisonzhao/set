@@ -13,18 +13,22 @@ package gamebackend;
 public class GameWrapper {
     StringConverter sc = new StringConverter();
     Board board;
+    Scoring score;
     
-    public String InitializeGame(){
+    public String InitializeGame(int pid1, int pid2){
         board = new Board(); //Initialize Board with 12 cards
-        board.DealUntilSet(); 
+        board.DealUntilSetOrTwelve();
+        score = new Scoring(pid1, pid2);
         return sc.EncodeBoardToString(board, "S");
     }
     
-    public String CheckSetAndUpdate(String message){
+    public String CheckSetAndUpdate(String message, int pid){
         Set set = sc.DecodeSetFromString(message);
         if(board.TestAndRemoveSet(set) == 1){
-            if(board.DealUntilSet())
+            if(board.DealUntilSetOrTwelve()){
+                score.AddToScore(pid, 3);
                 return sc.EncodeBoardToString(board, "Y");
+            }
             else
                 return sc.EncodeBoardToString(board, "F"); // Game over
         }
@@ -36,5 +40,4 @@ public class GameWrapper {
             throw new IllegalArgumentException("Requested set not in board");
         }
     }
-    
 }

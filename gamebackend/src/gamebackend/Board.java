@@ -26,10 +26,13 @@ public class Board{
     
     // Deals cards 3 at a time until there is a set
     // Returns false if no sets are possible after emptying deck (game over)
-    public boolean DealUntilSet(){
+    public boolean DealUntilSetOrTwelve(){
         while(!CheckForSets()){
             if(!Deal(3))
                 return false;
+        }
+        if(active.size() < 12){
+            Deal(12-active.size());
         }
         return true;
     }
