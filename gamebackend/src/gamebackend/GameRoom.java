@@ -10,7 +10,7 @@ package gamebackend;
  *
  * @author David
  */
-public class GameWrapper {
+public class GameRoom {
     StringConverter sc = new StringConverter();
     Board board;
     Scoring score;
