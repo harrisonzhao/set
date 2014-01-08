@@ -41,7 +41,7 @@ public class ServerConnectionAcceptor extends Thread {
     }
     while (isrunning){
       try {
-        Socket cSocket = null;
+        Socket cSocket = null;  
         cSocket = sSocket.accept();
         sockets.put(totalClientCount, cSocket);
         ClientConnection connection;

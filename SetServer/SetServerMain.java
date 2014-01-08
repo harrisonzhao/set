@@ -6,15 +6,13 @@
 
 package SetServer;
 
-import java.sql.SQLException;
-
 /**
  *
  * @author Harrison
  */
-public class SetMain {
+public class SetServerMain {
   
-  public static void main() throws SQLException {
+  public static void main(){
     SetServer set = new SetServer();
   }
 }
