@@ -4,16 +4,18 @@
  * and open the template in the editor.
  */
 
-package SetServer;
+package SetClient;
+
+import java.io.IOException;
 
 /**
  *
  * @author Harrison
  */
-public class SetServerMain {
+public class SetClientMain {
   
-  public static void main(){
-    SetServer setserver = new SetServer();
-    setserver.runServer();
+  public static void main() throws IOException {
+    SetClient client = new SetClient();
+    client.runClient();
   }
 }

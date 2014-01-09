@@ -4,16 +4,12 @@
  * and open the template in the editor.
  */
 
-package SetServer;
+package SetClient;
 
 /**
  *
  * @author Harrison
  */
-public class SetServerMain {
+public class LobbyWindow {
   
-  public static void main(){
-    SetServer setserver = new SetServer();
-    setserver.runServer();
-  }
 }

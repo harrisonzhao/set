@@ -27,8 +27,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class SetServer {
   
@@ -66,6 +64,7 @@ public class SetServer {
         String [] messagePieces;
         messagePieces = incomingMessage.message.split("~");
         switch(messagePieces[0].charAt(0)) {
+          //switch cases
         }
       } catch (InterruptedException except) {
         System.out.println("Interrupted");
@@ -79,6 +78,7 @@ public class SetServer {
   //login message is L~username~password
   void pLogin (int clientID, String [] messagePieces) 
           throws SQLException, InterruptedException {
+    
     if (messagePieces.length != 3) {
       System.err.println("Message error!");
       return;
@@ -92,7 +92,9 @@ public class SetServer {
       outgoingMessages.put(new Message(clientID, "LOGIN_ERROR_MESSAGE"));
       return;
     }
-    Statement stmt = dbConnection.createStatement();
+    
+    Statement stmt;
+    stmt = dbConnection.createStatement();
     ResultSet rs = stmt.executeQuery("INSERT_QUERY_HERE");
     if (rs.next()) {
       outgoingMessages.put(new Message(clientID, "LOGIN_ERROR_MESSAGE"));
@@ -102,7 +104,7 @@ public class SetServer {
       //check if user is already online; if user is send error message to client
       for (Entry<Object, Client> entry : clients.entrySet()) {
         Client current = entry.getValue();
-        if (messagePieces[1].equals(current)) {
+        if (messagePieces[1].equals(current.username)) {
           outgoingMessages.put(new Message(clientID, "ALREADY ONLINE ERROR"));
           return;
         }
@@ -130,10 +132,12 @@ public class SetServer {
                                                "passWord");     
     } catch (SQLException except) {
       System.err.println("SQL database connection failed");
-      outgoingMessages.put(new Message(clientID, "RESGISTER_ERROR_MESSAGE"));
+      outgoingMessages.put(new Message(clientID, "REGISTER_ERROR_MESSAGE"));
       return;
     }
-    Statement stmt = dbConnection.createStatement();
+    
+    Statement stmt;
+    stmt = dbConnection.createStatement();
     ResultSet rs = stmt.executeQuery("INSERT_QUERY_HERE");
     
     if (rs.next()) {
