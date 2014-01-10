@@ -12,12 +12,22 @@ package gamebackend;
  */
 public class StringConverter {
     public String EncodeBoardToString(Board b, String flags){
-        return "Lets discuss spectifics before i write this";
+        String request = "G";
+        request += "~";
+        request += flags;
+        request += "~";
+        if(flags.equals("S")){
+            request += b.BoardToString();
+        }
+          
+        return request;
     }
     
     public Set DecodeSetFromString(String s){
-        // AGAIN DIDNT ACTUALLY WRITE THIS FUNCTION YET...
-        return new Set(new Card(0), new Card(1), new Card(2));
+        String [] cards = s.split("\\s+");
+        return new Set(new Card(Integer.parseInt(cards[0])),
+                new Card(Integer.parseInt(cards[1])),
+                new Card(Integer.parseInt(cards[2])));
     }
     
 }

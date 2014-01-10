@@ -14,11 +14,17 @@ public class GameRoom {
     StringConverter sc = new StringConverter();
     Board board;
     Scoring score;
+    int state; // 0 inactive, 1 active, 2 complete
+    
+    public GameRoom(){
+        state = 0;
+    }
     
     public String InitializeGame(int pid1, int pid2){
         board = new Board(); //Initialize Board with 12 cards
         board.DealUntilSetOrTwelve();
         score = new Scoring(pid1, pid2);
+        state = 1;
         return sc.EncodeBoardToString(board, "S");
     }
     
@@ -29,8 +35,10 @@ public class GameRoom {
                 score.AddToScore(pid, 3);
                 return sc.EncodeBoardToString(board, "Y");
             }
-            else
+            else{
+                state = 2;
                 return sc.EncodeBoardToString(board, "F"); // Game over
+            }
         }
         else if(board.TestAndRemoveSet(set) == 0){
             return sc.EncodeBoardToString(board, "N");

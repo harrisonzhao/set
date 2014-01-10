@@ -37,4 +37,8 @@ public class Card {
                 && (props[2]==other.props[2])
                 && (props[3]==other.props[3]);
     }
+    
+    public int GetSingleDigit(){
+        return props[0]*27+props[1]*9+props[2]*3+props[3];
+    }
 }

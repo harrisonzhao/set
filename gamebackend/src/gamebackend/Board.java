@@ -55,6 +55,18 @@ public class Board{
         return 0;
     }
     
+    //
+    public String BoardToString(){
+        String outp = "";
+        for(int i=0; i<active.size(); i++){
+            Card c = active.get(i);
+            outp += c.GetSingleDigit();
+            outp += " ";
+        }
+        outp.trim();
+        return outp;
+    }
+    
     private int FindCardAddr(Card c){
         for(int i=0; i<active.size(); i++){
             if((active.get(i)).equals(c))
