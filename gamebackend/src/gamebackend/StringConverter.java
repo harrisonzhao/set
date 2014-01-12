@@ -11,18 +11,20 @@ package gamebackend;
  * @author David
  */
 public class StringConverter {
-    public String EncodeBoardToString(Board b, String flags){
+    public String EncodeBoardToString(Board b, Scoring s, String flags){
         String request = "G";
         request += "~";
         request += flags;
         request += "~";
-        if(flags.equals("S")){
-            request += b.BoardToString();
-        }
-          
+        request += b.BoardToString();
+        request += "~";
+        request += s.ScoresToString();
         return request;
     }
     
+    // Parses 3 integers in a string into 3 cards.
+    // Assumes that string is already parsed in that this is understood
+    // To be a game request and only the relevent portion is passed
     public Set DecodeSetFromString(String s){
         String [] cards = s.split("\\s+");
         return new Set(new Card(Integer.parseInt(cards[0])),

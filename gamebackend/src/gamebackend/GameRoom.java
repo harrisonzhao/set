@@ -25,26 +25,26 @@ public class GameRoom {
         board.DealUntilSetOrTwelve();
         score = new Scoring(pid1, pid2);
         state = 1;
-        return sc.EncodeBoardToString(board, "S");
+        return sc.EncodeBoardToString(board, score, "S");
     }
     
     public String CheckSetAndUpdate(String message, int pid){
         Set set = sc.DecodeSetFromString(message);
         if(board.TestAndRemoveSet(set) == 1){
+            score.AddToScore(pid, 3);
             if(board.DealUntilSetOrTwelve()){
-                score.AddToScore(pid, 3);
-                return sc.EncodeBoardToString(board, "Y");
+                return sc.EncodeBoardToString(board, score, "Y");
             }
             else{
                 state = 2;
-                return sc.EncodeBoardToString(board, "F"); // Game over
+                return sc.EncodeBoardToString(board, score, "F"); // Game over
             }
         }
         else if(board.TestAndRemoveSet(set) == 0){
-            return sc.EncodeBoardToString(board, "N");
+            return sc.EncodeBoardToString(board, score, "N");
         }
         else{
-            // Fatal error
+            // There is a bug somewhere. This shouldn't be possible.
             throw new IllegalArgumentException("Requested set not in board");
         }
     }
