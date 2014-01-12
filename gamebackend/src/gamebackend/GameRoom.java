@@ -14,7 +14,7 @@ public class GameRoom {
     StringConverter sc = new StringConverter();
     Board board;
     Scoring score;
-    int state; // 0 inactive, 1 active, 2 complete
+    public int state; // 0 inactive, 1 active, 2 complete
     
     public GameRoom(){
         state = 0;
