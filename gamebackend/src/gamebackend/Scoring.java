@@ -40,5 +40,6 @@ public class Scoring {
             s += " ";
         }
         s.trim();
+        return s;
     }
 }
