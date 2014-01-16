@@ -14,8 +14,12 @@ import java.io.IOException;
  */
 public class SetClientMain {
   
-  public static void main() throws IOException {
-    SetClient client = new SetClient();
-    client.runClient();
+  public static void main() {
+    try {
+      SetClient client = new SetClient();
+      client.runClient(); 
+    } catch (IOException except) {
+      
+    }
   }
 }

@@ -18,11 +18,11 @@ import java.util.concurrent.ConcurrentMap;
  */
 public class ServerConnectionAcceptor extends Thread {
   Boolean isrunning;
-  final ConcurrentMap<Object, Socket> sockets;
+  final ConcurrentMap<Integer, Socket> sockets;
   final BlockingQueue<Message> incomingMessages;
   
   public ServerConnectionAcceptor(Boolean isrunning,
-                                  ConcurrentMap<Object, Socket> sockets,
+                                  ConcurrentMap<Integer, Socket> sockets,
                                   BlockingQueue<Message> incomingMessages) {
     super("ServerConnectionAcceptor");
     this.isrunning= isrunning;

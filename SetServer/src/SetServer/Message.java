@@ -7,9 +7,14 @@
 package SetServer;
 
 /**
- *
+ * let -1 be a message to everyone logged in
  * @author Harrison
  */
-public class GameRoom {
-  
+public class Message {
+  public int clientID;
+  public String message;
+  public Message(int clientID, String message) {
+    this.clientID = clientID;
+    this.message = message;
+  }
 }

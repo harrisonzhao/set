@@ -10,11 +10,13 @@ package SetServer;
  *
  * @author Harrison
  */
-public class Client {
+public class User {
   public String username;
   public int currentGameRoom;
-  public Client(String username, int currentGameRoom) {
+  public int rating;
+  public User(String username, int currentGameRoom, int rating) {
     this.username = username;
     this.currentGameRoom = currentGameRoom;
+    this.rating = rating;
   }
 }

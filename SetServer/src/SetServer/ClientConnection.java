@@ -13,7 +13,7 @@ import java.net.Socket;
 import java.util.concurrent.BlockingQueue;
 
 /*
- * Will be spawned each time a new client connects
+ * Will spawn and run each time a new client connects
  * @author Harrison
  */
 public class ClientConnection extends Thread {
@@ -36,7 +36,16 @@ public class ClientConnection extends Thread {
       incomingStream = new BufferedReader(new InputStreamReader(
               this.socket.getInputStream()));
     } catch (IOException except) {
-      System.err.println("Problem getting input from client id: " + clientID);
+      System.err.println("Problem getting istream from client id: " + clientID);
+    }
+  }
+  
+  void handleDisconnection() {
+    System.out.println("Client with id: " + clientID + " disconnected");
+    try {
+      incomingMessages.put(new Message(clientID, "D"));       
+    } catch (InterruptedException ex) {
+      System.err.println("Error sending disconnection message!");
     }
   }
   
@@ -46,16 +55,17 @@ public class ClientConnection extends Thread {
     String incomingMessage;
     while (isrunning) {
       try {
-        incomingStream.readLine();
-      } catch (IOException except) {
-        System.out.println("Client with id: " + clientID + " disconnected");
-        try {
-          //WHAT MESSAGE?????
-          incomingMessages.put(new Message(clientID, "message!?!?!?!"));       
-        } catch (InterruptedException ex) {
-          System.err.println("Error sending disconnection message!");
+        incomingMessage = incomingStream.readLine();
+        if (incomingMessage != null) {
+          try {
+            incomingMessages.put(new Message(clientID, incomingMessage));
+          } catch (InterruptedException except) {
+          }
+        } else {
+          handleDisconnection();
         }
-        return;
+      } catch (IOException except) {
+        handleDisconnection();
       }
     }
   }

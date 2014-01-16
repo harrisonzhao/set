@@ -34,6 +34,26 @@ public class SetClient {
     ostream = new DataOutputStream(socket.getOutputStream());
   }
   
+  /*
+   * X :Login/Register error
+   * G~S start?
+     G~R~username: remove username from gameroom
+     G~Y yes set made
+     G~F game over
+     G~N no set wasn't made
+     G~U update
+        :Update GameRoom in game
+   ^ E :Exited GameRoom
+   * S :Made Set
+   * R :Reset GameRoom
+   * C :Lobby Chat
+   * T~Username~message
+     T~message   //system message
+        :Game Chat
+   * P~A~name :update players in lobby table/ 
+     P~R~name: removes name from lobby table
+   *
+   */
   public void runClient() throws IOException {
     while (listening) {
       String incomingMessage = istream.readLine();
