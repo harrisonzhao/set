@@ -44,6 +44,7 @@ public class SetServer {
   final BlockingQueue<Message> outgoingMessages;
   ServerConnectionAcceptor scAcceptor;
   ServerMessenger sMessenger;
+  int numRooms;
  
   public SetServer() {
     isrunning = true;
@@ -58,6 +59,7 @@ public class SetServer {
     sMessenger = new ServerMessenger(isrunning,
                                      sockets,
                                      outgoingMessages);
+    numRooms = 0;
   }
   
   public void runServer() {
@@ -82,18 +84,18 @@ public class SetServer {
    * D                   :Disconnection
    * N                   :Create Game
    * J                   :Join Game
-   * G                   :Start Game/ProcessSetRequest
+   * G                   :Start Game
    * E                   :Exit Game
    * C~Message           :Lobby Chat
    * T~Message           :Game Chat
-   *
+   * S~card1~card2~card3 :Set request
    *
    */
   //p stands for process
   
   //First three are functions that require SQL connection
   //have to connect and close after each query because of connection timeout
-  //login message is L~username~password
+  //accepts message: L~username~password
   //sends either an error to client (X~[message])
   //or a request to update everyone's lobby tables (P~A~[logged in user])
   void pLogin (int clientID, String [] messagePieces) 
@@ -139,7 +141,7 @@ public class SetServer {
     dbConnection.close();
   }
   
-  //takes R~Username~Password
+  //accepts message: R~Username~Password
   //sends either an error to client (X~[message])
   //or a request to update everyone's lobby tables (P~A~[logged in user])
   void pRegistration(int clientID, String [] messagePieces) 
@@ -177,14 +179,16 @@ public class SetServer {
   void pDisconnection(int clientID, String [] messagePieces) 
           throws InterruptedException, SQLException {
     
-    if (messagePieces.length != 1)
+    if (messagePieces.length != 1) {
       System.err.println("Disconnection message length error!");
-    
+      return;
+    }
     sockets.remove(clientID);
     User disconnected = users.get(clientID);
     
     //check if disconnected client was in a GameRoom or not
     //if the client was, message GameRoom and remove the corresponding player
+    //(update username string)
     if (disconnected != null) {
       outgoingMessages.put(new Message(-1, "P~R~" + disconnected.username));
       
@@ -197,7 +201,7 @@ public class SetServer {
           if (currentRm.getNumPlayers() > 0) {
             messageGameRoom(currentRm, "T~" + disconnected.username 
                     + "disconnected");
-            messageGameRoom(currentRm, "G~R~" + disconnected.username);
+            messageGameRoom(currentRm, currentRm.encodeNamesToString());
             
             //if game is in progress; force it to complete
             //lower disconnected player's score
@@ -235,14 +239,77 @@ public class SetServer {
     }
   }
   
-  void pCreateGame(int clientID, String [] messagePieces) {
-    
-  }
-    
-  void pJoinGame(int clientID, String [] messagePieces) {
-    
+  //accepts message: N~[room name]~maxNumPlayers
+  //sends message: A if already in a game room
+  //or U~A~[room number]~[room name]~[current numPlayers]~[max players]~[status]
+  void pCreateGame(int clientID, String [] messagePieces) 
+          throws InterruptedException {
+    if (messagePieces.length != 3) {
+      System.err.println("Create game message length error!");
+      return;
+    }
+    User rmCreator = users.get(clientID);
+    if (rmCreator.currentGameRoom >= 0) {
+      outgoingMessages.put(new Message(clientID, "A"));
+      return;
+    }
+    rmCreator.currentGameRoom = numRooms;
+    GameRoom newRm = new GameRoom(
+            messagePieces[1], Integer.parseInt(messagePieces[2]));
+    newRm.addPlayer(clientID, rmCreator.username);
+    //update gameroom window
+    outgoingMessages.put(new Message(clientID, newRm.encodeNamesToString()));
+    //send an update of list of tables to all clients of new table
+    outgoingMessages.put(new Message(-1, 
+            "U~A~"+numRooms+"~"
+            +messagePieces[1]+"~"+newRm.getNumPlayers()
+            +"~"+newRm.getMaxNumPlayers()+"~Inactive"));
+    outgoingMessages.put(new Message(-1, 
+            "C~"+rmCreator.username+"created a game: "+ newRm.getName()));
+    gameRooms.put(numRooms, newRm);
+    ++numRooms;
   }
   
+  //accepts a message: J~[room number]
+  //sends out "I" if game in progress
+  void pJoinGame(int clientID, String [] messagePieces) 
+          throws InterruptedException {
+    if (messagePieces.length != 2) {
+      System.err.println("Join game message length error!");
+      return;
+    }
+    User joining = users.get(clientID);
+    if (joining.currentGameRoom >= 0) {
+      outgoingMessages.put(new Message(clientID, "A"));
+      return;
+    }
+    joining.currentGameRoom = Integer.parseInt(messagePieces[1]);
+    GameRoom room = gameRooms.get(joining.currentGameRoom);
+    if (room == null) {
+      System.err.println("Room does not exist, possible bug!");
+      joining.currentGameRoom = -1;
+    } else {
+      if (room.getNumPlayers() < room.getMaxNumPlayers()) {
+        if (room.isPlaying()) {
+          joining.currentGameRoom = -1;
+          outgoingMessages.put(new Message(clientID, "J~I"));
+        } else {
+          room.addPlayer(clientID, joining.username);
+          messageGameRoom(room, room.encodeNamesToString());
+          outgoingMessages.put(new Message(-1, 
+                  "L~"+joining.username
+                  +"joined game room: "+ messagePieces[1] 
+                  +" " + room.getName()));
+          messageGameRoom(room, "U~A~" + joining.username);
+        }
+      } else {
+        joining.currentGameRoom = -1;
+        outgoingMessages.put(new Message(clientID, "J~F"));
+      }
+    }
+  }
+  
+  //accepts message: G
   //Requires both players to be in room and ready
   //the clients will already be in the room
   //if not everyone is ready, game will not start but rather increment numready
@@ -265,11 +332,13 @@ public class SetServer {
     }
   }
   
-  //recieves a string of form S~card1~card2~card3
+  //accepts message: S~card1~card2~card3
   //sends a message of form G~flag~board~scores
   void pSetRequest(int clientID, String [] messagePieces){
-    if (messagePieces.length != 4)
+    if (messagePieces.length != 4) {
       System.err.println("Set message length error!");
+      return;
+    }
     User sender = users.get(clientID);
     GameRoom room = gameRooms.get(sender.currentGameRoom);
     String updateMessage = room.CheckSetAndUpdate(clientID,
@@ -283,11 +352,13 @@ public class SetServer {
   
   //Accepts "E"
   //sends out "T~[username]~left the game" to the room
-  //removes uses from the room and handles game over if necessary
+  //removes users from the room and handles game over if necessary
   void pExitGame(int clientID, String [] messagePieces) 
           throws InterruptedException, SQLException {
-    if (messagePieces.length != 1)
+    if (messagePieces.length != 1) {
       System.err.println("Leave game message length error!");
+      return;
+    }
     User user = users.get(clientID);
     if (user.currentGameRoom < 0) {
       System.err.println("leave room bug!!!");
@@ -299,11 +370,12 @@ public class SetServer {
       System.err.println("leave room bug!!!");
     } else {
       room.removePlayer(clientID);
-      if (room.isRoomEmpty())
-        gameRooms.remove(room);
-      else {
+      if (room.isRoomEmpty()) {
+        gameRooms.remove(user.currentGameRoom);
+        outgoingMessages.put(new Message(-1, "U~R~"+user.currentGameRoom));
+      } else {
         messageGameRoom(room, "T~" + user.username + "left the game");
-        messageGameRoom(room, "G~R~" + user.username);
+        messageGameRoom(room, room.encodeNamesToString());
         if (room.isPlaying()) {
           //lower the score of the player who forfeited
           dbConnection = DriverManager.getConnection(
@@ -322,18 +394,26 @@ public class SetServer {
     user.currentGameRoom = -1;
   }
   
+  //accepts mesage C~message
+  //sends out message C~[sender username]~message
   void pLobbyChat(int clientID, String [] messagePieces) 
           throws InterruptedException {
-    if (messagePieces.length != 2)
+    if (messagePieces.length != 2) {
       System.err.println("Lobby chat message length error!");
+      return;
+    }
     User sender = users.get(clientID);
     outgoingMessages.put(new Message(-1, "C~" + sender.username + '~' +
             messagePieces[1]));
   }  
   
+  //accepts message T~message
+  //sends out message T~[sender username]~message
   void pGameChat(int clientID, String [] messagePieces) {
-    if (messagePieces.length != 2)
+    if (messagePieces.length != 2) {
       System.err.println("Game chat message length error!");
+      return;
+    }
     User sender = users.get(clientID);
     GameRoom current = gameRooms.get(sender.currentGameRoom);
     messageGameRoom(current, "T~" + sender.username + '~' + messagePieces[1]);
@@ -358,4 +438,5 @@ public class SetServer {
   void handleGameOver(GameRoom room) {
     
   }
+  
 }

@@ -20,10 +20,13 @@ public class GameRoom {
   Board board;
   Scoring score;
   int state; // 0 inactive, 1 active, 2 complete
+  final int maxNumPlayers;
+  String name;
     
-  public GameRoom(){
-    state = 0;
+  public GameRoom(String name, int maxNumPlayers){
     players = new ArrayList<>();
+    state = 0;
+    this.maxNumPlayers = maxNumPlayers;
   }
   
   public String InitializeGame() {
@@ -32,6 +35,13 @@ public class GameRoom {
     score = new Scoring(players);
     state = 1;
     return encodeBoardToString(board, score, "S");
+  }
+  
+  public String encodeNamesToString() {
+    String ret = "G~U";
+    for (Player p : players)
+      ret += ("~" + p.username);
+    return ret;
   }
   
   public String encodeBoardToString(Board b, Scoring s, String flags) {
@@ -54,7 +64,7 @@ public class GameRoom {
   public String CheckSetAndUpdate(int pid, String c1, String c2, String c3) {
     Set set = decodeSetFromString(c1, c2, c3);
     if(board.TestAndRemoveSet(set) == 1){
-      score.AddToScore(pid, 3);
+      score.addToScore(pid, 3);
       if(board.DealUntilSetOrTwelve()){
         return encodeBoardToString(board, score, "Y");
       }
@@ -64,12 +74,17 @@ public class GameRoom {
       }
     }
     else if(board.TestAndRemoveSet(set) == 0){
+      //minus 1 point for wrong set
+      score.subtractFromScore(pid, 1);
       return encodeBoardToString(board, score, "N");
     }
     else{
       // There is a bug somewhere. This shouldn't be possible.
       throw new IllegalArgumentException("Requested set not in board");
     }
+  }
+  public String getName() {
+    return name;
   }
   
   public String getGameUpdate() {
@@ -92,6 +107,10 @@ public class GameRoom {
     --numReady;
   }
   
+  public int getMaxNumPlayers() {
+    return maxNumPlayers;
+  }
+  
   public List<Integer> getPlayerIds() {
     List<Integer> pids = new ArrayList<>();
     for (Player p : players)
@@ -107,9 +126,9 @@ public class GameRoom {
     return players.isEmpty();
   }
   
-  //default score is 1000?
-  public void addPlayer(int id) {
-    players.add(new Player(id, 1000));
+  //default score is 0
+  public void addPlayer(int id, String username) {
+    players.add(new Player(id, username, 0));
   }
   
   public void removePlayer(int id) {

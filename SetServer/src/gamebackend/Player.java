@@ -11,15 +11,21 @@ package gamebackend;
  * @author David
  */
 public class Player {
-    public int id;
-    public int score;
+  public int id;
+  String username;
+  public int score;
     
-    public Player(int Id, int Score){
-        id = Id;
-        score = Score;
-    }
+  public Player(int id, String username, int score){
+    this.id = id;
+    this.username = username;
+    this.score = score;
+  }
     
-    public void AddToScore(int points){
-        score = score + points;
-    }
+  public void AddToScore(int points){
+    score = score + points;
+  }
+    
+  public void SubtractFromScore(int points) {
+    score -= points;
+  }
 }

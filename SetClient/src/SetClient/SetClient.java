@@ -37,14 +37,14 @@ public class SetClient {
   /*
    * X :Login/Register error
    * G~S start?
-     G~R~username: remove username from gameroom
      G~Y yes set made
      G~F game over
      G~N no set wasn't made
-     G~U update
+     G~U~[game room userlist string] update names (whenever added or removed)
         :Update GameRoom in game
-   ^ E :Exited GameRoom
-   * S :Made Set
+   * E :Exited GameRoom
+   * J~I :Could not join, game in progress
+     J~F :Game Room is full
    * R :Reset GameRoom
    * C :Lobby Chat
    * T~Username~message
@@ -52,7 +52,8 @@ public class SetClient {
         :Game Chat
    * P~A~name :update players in lobby table/ 
      P~R~name: removes name from lobby table
-   *
+   * U~A~[room number]~[room name]~[current numPlayers]~[max players]~[status]
+   * U~R~[room number]
    */
   public void runClient() throws IOException {
     while (listening) {
