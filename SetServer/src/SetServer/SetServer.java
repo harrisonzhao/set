@@ -31,6 +31,7 @@ import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import gamebackend.*;
+import java.util.ArrayList;
 import java.util.List;
 
 public class SetServer {
@@ -197,16 +198,15 @@ public class SetServer {
         
         if (currentRm != null) {
           currentRm.removePlayer(clientID);
-          //TODO: HAVE TO SEND AN UPDATE TO CLIENTS AT THE GAME
           if (currentRm.getNumPlayers() > 0) {
             messageGameRoom(currentRm, "T~" + disconnected.username 
                     + "disconnected");
+            //update users in game room + their scores
             messageGameRoom(currentRm, currentRm.encodeNamesToString());
             
             //if game is in progress; force it to complete
             //lower disconnected player's score
             if (currentRm.isPlaying()) {
-              currentRm.setCompleted();
               dbConnection = DriverManager.getConnection(
                       "jdbc:mysql://IP:Port", "userName", "passWord");     
               Statement stmt = dbConnection.createStatement();
@@ -215,9 +215,10 @@ public class SetServer {
               dbConnection.close();
               
               //if there's only one player left it's game over
-              if (currentRm.getNumPlayers() == 1)
+              if (currentRm.getNumPlayers() == 1) {
+                currentRm.setCompleted();
                 handleGameOver(currentRm);
-              
+              }
             } else {
               //the game has not started yet
               messageGameRoom(currentRm, "T~" + disconnected.username
@@ -271,7 +272,8 @@ public class SetServer {
   }
   
   //accepts a message: J~[room number]
-  //sends out "I" if game in progress
+  //sends out "J~I" if game in progress or "J~F" if it's full
+  //updates the board's names + scores otherwise
   void pJoinGame(int clientID, String [] messagePieces) 
           throws InterruptedException {
     if (messagePieces.length != 2) {
@@ -334,7 +336,7 @@ public class SetServer {
   
   //accepts message: S~card1~card2~card3
   //sends a message of form G~flag~board~scores
-  void pSetRequest(int clientID, String [] messagePieces){
+  void pSetRequest(int clientID, String [] messagePieces) throws SQLException{
     if (messagePieces.length != 4) {
       System.err.println("Set message length error!");
       return;
@@ -435,8 +437,19 @@ public class SetServer {
   // Game is over (players received F in their messages so they know)
   // Send results to database
   // Decide what to do with game room
-  void handleGameOver(GameRoom room) {
-    
+  void handleGameOver(GameRoom room) throws SQLException {
+    messageGameRoom(room, "message"); //updated scores?
+    List<Integer> winners = new ArrayList<>();
+    List<Integer> losers = new ArrayList<>();
+    room.getWinners(winners, losers);
+    int addedScore = ((room.getNumPlayers()-winners.size())*10)/winners.size();
+    dbConnection = DriverManager.getConnection(
+            "jdbc:mysql://IP:Port", "userName", "passWord");     
+    Statement stmt = dbConnection.createStatement();
+    for (int i = 0; i != winners.size(); ++i) {
+      User current = users.get(winners.get(i));
+      //TO DO STUFF
+    }
   }
   
 }

@@ -40,7 +40,7 @@ public class GameRoom {
   public String encodeNamesToString() {
     String ret = "G~U";
     for (Player p : players)
-      ret += ("~" + p.username);
+      ret += ("~" + p.username + "~" + p.score);
     return ret;
   }
   
@@ -156,5 +156,17 @@ public class GameRoom {
   
   public void setCompleted() {
     state = 2;
+  }
+  
+  public void getWinners(List<Integer> winners, List<Integer> losers) {
+    int maxscore = -1000000;
+    for (int i = 0; i != players.size(); ++i)
+      if (players.get(i).score > maxscore)
+        maxscore = players.get(i).score;
+    for (int i = 0; i != players.size(); ++i) {
+      if (players.get(i).score == maxscore)
+        winners.add(players.get(i).id);
+      else losers.add(players.get(i).id);
+    }
   }
 }

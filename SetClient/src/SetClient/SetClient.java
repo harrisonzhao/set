@@ -40,7 +40,8 @@ public class SetClient {
      G~Y yes set made
      G~F game over
      G~N no set wasn't made
-     G~U~[game room userlist string] update names (whenever added or removed)
+     G~U~[game room userlist string] update names+scores
+          (whenever a name is added or removed)
         :Update GameRoom in game
    * E :Exited GameRoom
    * J~I :Could not join, game in progress
