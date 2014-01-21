@@ -80,16 +80,16 @@ public class SetServer {
     }
   }
   /*
-   * L~username~password :Login
-   * R~username~password :Registration
-   * D                   :Disconnection
-   * N                   :Create Game
-   * J                   :Join Game
-   * G                   :Start Game
-   * E                   :Exit Game
-   * C~Message           :Lobby Chat
-   * T~Message           :Game Chat
-   * S~card1~card2~card3 :Set request
+   * L~username~password          :Login
+   * R~username~password          :Registration
+   * D                            :Disconnection
+   * N~[room name]~maxNumPlayers  :Create Game
+   * J~[room number]              :Join Game
+   * G                            :Start Game
+   * S~card1~card2~card3          :Set request
+   * E                            :Exit Game
+   * C~Message                    :Lobby Chat
+   * T~Message                    :Game Chat
    *
    */
   //p stands for process
@@ -225,6 +225,7 @@ public class SetServer {
                       + "disconnected! "
                       + "Ready players have been reset, press ready again!");
               currentRm.resetNumReady();
+              messageGameRoom(currentRm, "G~R");
             }
             
           } else {
@@ -312,6 +313,7 @@ public class SetServer {
   }
   
   //accepts message: G
+  //which is sent when a player presses the ready button
   //Requires both players to be in room and ready
   //the clients will already be in the room
   //if not everyone is ready, game will not start but rather increment numready
@@ -326,7 +328,7 @@ public class SetServer {
       System.err.println("Bug!");
     } else {
       room.incNumReady();
-      messageGameRoom(room, "T~" + users.get(clientID).username + "is ready!");
+      messageGameRoom(room, "T~" + users.get(clientID).username + " is ready!");
       if (room.getNumPlayers() == room.getNumReady()) {
         messageGameRoom(room, "T~All users are ready. Game start!");
         messageGameRoom(room, room.InitializeGame());
@@ -388,8 +390,10 @@ public class SetServer {
           dbConnection.close();
           
           //handle game over if there's only 1 player left
-          if (room.getNumPlayers() == 1)
+          if (room.getNumPlayers() == 1) {
+            room.setCompleted();
             handleGameOver(room);
+          }
         }
       }
     }
@@ -437,19 +441,40 @@ public class SetServer {
   // Game is over (players received F in their messages so they know)
   // Send results to database
   // Decide what to do with game room
+  //handle what to do upon game over
   void handleGameOver(GameRoom room) throws SQLException {
-    messageGameRoom(room, "message"); //updated scores?
+    if (room.isCompleted() == false)
+      System.err.println("Bug!");
+    messageGameRoom(room, "The game is over. Ratings updating...");
     List<Integer> winners = new ArrayList<>();
     List<Integer> losers = new ArrayList<>();
     room.getWinners(winners, losers);
-    int addedScore = ((room.getNumPlayers()-winners.size())*10)/winners.size();
+    int addedScore=((room.getNumPlayers()-winners.size())*10)/winners.size();
+    int subtractedScore=((room.getNumPlayers()-losers.size())*10)/losers.size();
     dbConnection = DriverManager.getConnection(
             "jdbc:mysql://IP:Port", "userName", "passWord");     
     Statement stmt = dbConnection.createStatement();
+    int updatedScore;
     for (int i = 0; i != winners.size(); ++i) {
       User current = users.get(winners.get(i));
-      //TO DO STUFF
+      updatedScore = current.rating + addedScore;
+      messageGameRoom(room, "T~" + current.username + "'s rating: " +
+              current.rating + " -> " + updatedScore);
+      current.rating = updatedScore;
+      stmt.executeUpdate("UPDATE QUERY");
     }
+    for (int i = 0; i != losers.size(); ++i) {
+      User current = users.get(losers.get(i));
+      updatedScore = current.rating - subtractedScore;
+      messageGameRoom(room, "T~" + current.username + "'s rating: " +
+              current.rating + " -> " + updatedScore);
+      current.rating = updatedScore;
+      stmt.executeUpdate("UPDATE QUERY");
+    }
+    stmt.close();
+    dbConnection.close();
+    room.resetRoom();
+    messageGameRoom(room, "G~R");
   }
   
 }

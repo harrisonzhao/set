@@ -40,6 +40,7 @@ public class SetClient {
      G~Y yes set made
      G~F game over
      G~N no set wasn't made
+     G~R reset ready button (shouldn't be able to press if already pressed)
      G~U~[game room userlist string] update names+scores
           (whenever a name is added or removed)
         :Update GameRoom in game

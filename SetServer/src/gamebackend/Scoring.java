@@ -38,6 +38,11 @@ public class Scoring {
       }
     }
     
+    public void resetScores() {
+      for (Player p: players)
+        p.resetScore();
+    }
+    
     // Returns the scores of the players in the order of the list
     public String ScoresToString(){
         String s = "";

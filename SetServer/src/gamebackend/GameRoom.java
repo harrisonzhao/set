@@ -37,6 +37,12 @@ public class GameRoom {
     return encodeBoardToString(board, score, "S");
   }
   
+  public void resetRoom() {
+    state = 0;
+    numReady = 0;
+    score.resetScores();
+  }
+  
   public String encodeNamesToString() {
     String ret = "G~U";
     for (Player p : players)

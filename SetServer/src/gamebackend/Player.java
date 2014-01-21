@@ -28,4 +28,8 @@ public class Player {
   public void SubtractFromScore(int points) {
     score -= points;
   }
+  
+  public void resetScore() {
+    score = 0;
+  }
 }
