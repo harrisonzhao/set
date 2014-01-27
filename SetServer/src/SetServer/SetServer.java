@@ -71,8 +71,41 @@ public class SetServer {
         Message incomingMessage = incomingMessages.take();
         String [] messagePieces;
         messagePieces = incomingMessage.message.split("~");
-        switch(messagePieces[0].charAt(0)) {
-          //switch cases
+        try {
+          switch(messagePieces[0].charAt(0)) {
+            case 'L': 
+              pLogin(incomingMessage.clientID, messagePieces); 
+              break;
+            case 'R':
+              pRegistration(incomingMessage.clientID, messagePieces);
+              break;
+            case 'D':
+              pDisconnection(incomingMessage.clientID, messagePieces);
+              break;
+            case 'N':
+              pCreateGame(incomingMessage.clientID, messagePieces);
+              break;
+            case 'J':
+              pJoinGame(incomingMessage.clientID, messagePieces);
+              break;
+            case 'G':
+              pStartGame(incomingMessage.clientID, messagePieces);
+              break;
+            case 'S':
+              pSetRequest(incomingMessage.clientID, messagePieces);
+              break;
+            case 'E':
+              pExitGame(incomingMessage.clientID, messagePieces);
+              break;
+            case 'C':
+              pLobbyChat(incomingMessage.clientID, messagePieces);
+              break;
+            case 'T':
+              pGameChat(incomingMessage.clientID, messagePieces);
+              break;
+          }
+        } catch (SQLException e) {
+          System.out.println("Database access error");
         }
       } catch (InterruptedException except) {
         System.out.println("Interrupted");
