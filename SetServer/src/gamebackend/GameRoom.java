@@ -4,7 +4,7 @@
  * and open the template in the editor.
  */
 
-package gamebackend;
+package SetServer.src.gamebackend;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,6 +26,7 @@ public class GameRoom {
   public GameRoom(String name, int maxNumPlayers){
     players = new ArrayList<>();
     state = 0;
+    numReady = 0;
     this.maxNumPlayers = maxNumPlayers;
   }
   
@@ -85,8 +86,9 @@ public class GameRoom {
       return encodeBoardToString(board, score, "N");
     }
     else{
-      // There is a bug somewhere. This shouldn't be possible.
-      throw new IllegalArgumentException("Requested set not in board");
+      //The board state changed after this request was sent
+      //Shouldn't penailize user not sure how to handle this
+      return encodeBoardToString(board, score, "Y");
     }
   }
   public String getName() {
@@ -174,5 +176,56 @@ public class GameRoom {
         winners.add(players.get(i).id);
       else losers.add(players.get(i).id);
     }
+  }
+  
+  // This is essentially a giant unit test of the game portion's functionality.
+  // This DOES NOT currently test any of the communications.
+  // I will talk to the client people make sure their following the same scheme
+  // Then we shall test the commuincations.
+  public static void main(String [] args){
+    GameRoom gr = new GameRoom("TestRoom", 2);
+    gr.addPlayer(1, "WingXhaoMoonslayerSucksAtSet");
+    gr.addPlayer(2, "DonkeyKongTheMaster");
+    gr.incNumReady();
+    gr.incNumReady();
+    gr.InitializeGame();
+    
+    //gr.board.PrintActiveCards();
+    
+    int size = gr.board.active.size();
+    if(gr.board.TestAndRemoveSet(
+            new Set(new Card(0),new Card(1), new Card(2))) != -1){
+      System.out.println("Test and remove set for -1 possibly broken");
+    }
+    if(gr.board.TestAndRemoveSet(
+            new Set(gr.board.active.get(0),
+                    gr.board.active.get(1),
+                    gr.board.active.get(2))) != 0){
+      System.out.println("Test and remove set for 0 possibly broken");
+    }
+    if(gr.board.TestAndRemoveSet(gr.board.ValidSet) != 1){
+      System.out.println("Valid Set or TestAndRemove correct broken");
+    }
+    if(size != gr.board.active.size() + 3){
+      System.out.println("Something broken with removing elements");
+    }
+    
+    gr.score.addToScore(1, 3);
+    gr.board.DealUntilSetOrTwelve();
+    
+    while(gr.board.DealUntilSetOrTwelve()){
+      gr.board.TestAndRemoveSet(gr.board.ValidSet);
+      gr.score.addToScore(2, 3);
+    }
+    
+    gr.board.PrintActiveCards();
+    
+    //gr.board.TestAndRemoveSet(gr.board.ValidSet);
+    //System.out.println(gr.board.ValidSet);
+    //gr.board.PrintActiveCards();
+    //gr.score.addToScore(1, 3);
+    
+    
+
   }
 }

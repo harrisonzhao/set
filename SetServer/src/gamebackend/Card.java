@@ -4,7 +4,9 @@
  * and open the template in the editor.
  */
 
-package gamebackend;
+package SetServer.src.gamebackend;
+
+import java.util.Arrays;
 
 /**
  *
@@ -31,14 +33,28 @@ public class Card {
         return props[pnum];
     }
     
-    public boolean equals(Card other){
+    @Override
+    public boolean equals(Object oth){
+        Card other = (Card) oth;
         return (props[0]==other.props[0])
                 && (props[1]==other.props[1])
                 && (props[2]==other.props[2])
                 && (props[3]==other.props[3]);
     }
+
+  @Override
+  public int hashCode() {
+    int hash = 7;
+    hash = 47 * hash + Arrays.hashCode(this.props);
+    return hash;
+  }
     
     public int GetSingleDigit(){
         return props[0]*27+props[1]*9+props[2]*3+props[3];
+    }
+    
+    @Override
+    public String toString(){
+      return props[0] + " " + props[1] + " " + props[2] + " " + props[3];      
     }
 }

@@ -4,7 +4,7 @@
  * and open the template in the editor.
  */
 
-package gamebackend;
+package SetServer.src.gamebackend;
 
 /**
  *
@@ -43,5 +43,10 @@ public class Set {
         return ((v[0] != v[1]) || (v[1] == v[2]))
                 && ((v[1] != v[2]) || (v[2] == v[0]))
                 && ((v[2] != v[0]) || (v[0] == v[1]));
+    }
+    
+    @Override
+    public String toString(){
+      return cards[0] + "," + cards[1] + "," + cards[2];
     }
 }

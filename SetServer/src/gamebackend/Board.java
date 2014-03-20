@@ -4,7 +4,7 @@
  * and open the template in the editor.
  */
 
-package gamebackend;
+package SetServer.src.gamebackend;
 import java.util.*;
 
 /**
@@ -15,6 +15,8 @@ public class Board{
     List<Card> deck;    // All unused cards
     List<Card> active;  // All cards currently on the table
     List<Card> found;   // All cards who have already been found in a set
+    
+    Set ValidSet; // A valid set.  Will be null until checkforsets runs
     
     public Board(){
         active = new ArrayList<>();
@@ -63,8 +65,13 @@ public class Board{
             outp += c.GetSingleDigit();
             outp += " ";
         }
-        outp.trim();
-        return outp;
+        return outp.trim();
+    }
+    
+    public void PrintActiveCards(){
+      for(Card c : active){
+        System.out.println(c.toString());
+      }
     }
     
     private int FindCardAddr(Card c){
@@ -81,8 +88,10 @@ public class Board{
             for(int j=(i+1); j<active.size(); j++){
                 for(int k=(j+1); k<active.size(); k++){
                     Set s = new Set(active.get(i), active.get(j), active.get(k));
-                    if(s.CheckIfSetValid())
-                        return true;
+                    if(s.CheckIfSetValid()){
+                      ValidSet = s;
+                      return true;
+                    }
                 }
             }
         }
@@ -108,5 +117,4 @@ public class Board{
         }
         Collections.shuffle(deck);
     }
-    
 }
