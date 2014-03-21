@@ -118,7 +118,7 @@ public class SetServer {
    * D                            :Disconnection
    * N~[room name]~maxNumPlayers  :Create Game
    * J~[room number]              :Join Game
-   * G                            :Start Game
+   * G                            :Start Game (ready button pressed)
    * S~card1~card2~card3          :Set request
    * E                            :Exit Game
    * C~Message                    :Lobby Chat

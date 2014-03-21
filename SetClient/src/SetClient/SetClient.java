@@ -35,25 +35,26 @@ public class SetClient {
   }
   
   /*
-   * X :Login/Register error
+   * NOTE: stuff in parenthesis is an actual message to be displayed
+   * X~(errorMSG) :Login/Register error
    * G~S start?
      G~Y yes set made
      G~F game over
      G~N no set wasn't made
      G~R reset ready button (shouldn't be able to press if already pressed)
      G~U~[game room userlist string] update names+scores
-          (whenever a name is added or removed)
+          whenever a name is added or removed
         :Update GameRoom in game
    * E :Exited GameRoom
    * J~I :Could not join, game in progress
      J~F :Game Room is full
    * R :Reset GameRoom
-   * C :Lobby Chat
-   * T~Username~message
-     T~message   //system message
+   * C~[sender's username]~(message) :Lobby Chat
+   * T~Username~(message)
+     T~(message)   //system message
         :Game Chat
-   * P~A~name :update players in lobby table/ 
-     P~R~name: removes name from lobby table
+   * P~A~name :update players in lobby table of users
+     P~R~name: removes name from lobby table of users
    * U~A~[room number]~[room name]~[current numPlayers]~[max players]~[status]
    * U~R~[room number]
    */
