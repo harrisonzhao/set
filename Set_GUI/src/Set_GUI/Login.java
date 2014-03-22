@@ -6,9 +6,9 @@ import java.io.*;
 import java.awt.event.*;
 import javax.swing.*;
 import javax.imageio.*;
-
-
 import java.util.*;
+import SetServer.*;
+import gamebackend.*;
 
 /* Written by Alejandro Acosta
  * 
@@ -34,6 +34,8 @@ public class Login extends JFrame implements ActionListener {
   private CardLayout cl; 
   private Lobby lobby_Panel;
   //private Set_Game game_Panel;
+  
+  private SetClient callingObj;
   
   // master panel for the login window.
   private JPanel panel = new JPanel(new BorderLayout());
@@ -62,7 +64,9 @@ public class Login extends JFrame implements ActionListener {
    * and Set_Game.java respectively. 
    * <p>
    */
-  public Login() {
+  public Login(SetClient callingObj) {
+    this.callingObj = callingObj;
+    //System.out.println("Hello from login");
     master = new JPanel(new CardLayout());
     lobby_Panel = new Lobby(this);
     cl = (CardLayout)(master.getLayout());
@@ -102,7 +106,13 @@ public class Login extends JFrame implements ActionListener {
     
     setSize(400,400);
 
-    setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+    addWindowListener(new WindowAdapter() {
+        public void windowClosing(WindowEvent e) {
+          windowClose();
+        }
+      });
+        
     setLocationRelativeTo(null);
   }
   
@@ -220,12 +230,16 @@ public class Login extends JFrame implements ActionListener {
   public void actionPerformed(ActionEvent e) {
     
     /*
-     * Action Listener for Login Button. Queries the database and determines if username/password combination is correct
+     * Action Listener for Login/Register Button. 
+     * Queries the database and determines if username/password combination is correct
      */
     if("Login".equals(e.getActionCommand())) {
       boolean isCorrect = true;
       String yourUsername = inputUsername.getText();
       char[] yourPassword = inputPassword.getPassword();
+      
+      // send message to server
+      callingObj.sendMessage("L~" + yourUsername + "~" + new String(yourPassword));
       
       // temporary fix while we implement the database querying
       String correctUsername = "cooper";
@@ -247,7 +261,7 @@ public class Login extends JFrame implements ActionListener {
         
         // setting up frame for the lobby window and switching to it.
         setSize(800,450);
-        lobby_Panel.enterLobby(yourUsername);
+        lobby_Panel.enterLobby(yourUsername, callingObj);
         right.setVisible(false);
         setTitle(LOBBY);
         cl.show(master, LOBBY);
@@ -261,8 +275,12 @@ public class Login extends JFrame implements ActionListener {
      */
     else if("Register".equals(e.getActionCommand())) {
       String yourUsername = inputUsername.getText();
-      //char[] yourPassword = inputPassword.getPassword();
+      char[] yourPassword = inputPassword.getPassword();
       
+      // server connection
+      callingObj.sendMessage("R~" + yourUsername + "~" + new String(yourPassword));
+      
+      // placeholder for non-server testing follows
       boolean invalid;
       invalid = !yourUsername.equals("cooper");
       
@@ -296,7 +314,7 @@ public class Login extends JFrame implements ActionListener {
      * Error code. This shouldn't ever run.
      */
     else {
-      System.out.println("We shouldn't see this");
+      System.err.println("We shouldn't see this");
     }
     
   }
@@ -334,14 +352,8 @@ public class Login extends JFrame implements ActionListener {
     cl.show(master, LOBBY);
   }
   
-  public static void main(String[] args) {
-    
-    SwingUtilities.invokeLater(new Runnable() {
-      
-      public void run() {
-        Login log = new Login();
-        log.setVisible(true);
-      }
-    });
+  private void windowClose() {
+    callingObj.sendMessage("D");
+    dispose();
   }
 }

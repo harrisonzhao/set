@@ -7,7 +7,8 @@ import java.awt.event.*;
 import javax.imageio.*;
 import javax.swing.*;
 import javax.swing.event.*;
-
+import SetServer.*;
+import gamebackend.*;
 
 // NEED TO MAKE SURE LOGGING OUT AND THEN BACK IN AGAIN DOESN'T CAUSE DUPLICATION OF THE PAGE!
 
@@ -34,6 +35,9 @@ public class Lobby extends JPanel {
   
   // welcome message to the user
   private JLabel welcome;
+  
+  // calling Client object
+  private SetClient callingObj;
   
   // chat box
   private String CHAT_HEADER = "Lobby Group Chat";
@@ -95,8 +99,9 @@ public class Lobby extends JPanel {
    * <p>
    * @param username Identifies the name of the user using this instance of the game lobby.
    */
-  public void enterLobby (String username) {
+  public void enterLobby (String username, SetClient callingObj) {
     this.username = username;
+    this.callingObj = callingObj;
     
     // probably won't need this in the end.
     currentUsers.addElement(username);
@@ -210,7 +215,7 @@ public class Lobby extends JPanel {
     JButton game_Request = new JButton("Accept Game");
     JButton play_Alone = new JButton("Play Alone");
     
-    center.add(game_Request);
+    center.add(game_Request); // need message "N~[room name]~maxNumPlayers" around here
     center.add(play_Alone);
   }
 
@@ -246,9 +251,11 @@ public class Lobby extends JPanel {
     // need a send to server.
     
     public void actionPerformed(ActionEvent event) {
-      System.out.println("test button press\n");
-      chatLog.append(username + ": " + messageInput.getText() + "\n");
+      //System.out.println("test button press\n");
+      String message = messageInput.getText();
+      chatLog.append(username + ": " + message + "\n");
       messageInput.setText("");
+      callingObj.sendMessage("C~"+message);
     }
   }
 }
