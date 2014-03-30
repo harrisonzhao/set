@@ -7,8 +7,6 @@ import java.awt.event.*;
 import javax.swing.*;
 import javax.imageio.*;
 import java.util.*;
-import SetServer.*;
-import gamebackend.*;
 
 /* Written by Alejandro Acosta
  * 
@@ -35,7 +33,7 @@ public class Login extends JFrame implements ActionListener {
   private Lobby lobby_Panel;
   //private Set_Game game_Panel;
   
-  private SetClient callingObj;
+  private SetClientProtocol callingObj;
   
   // master panel for the login window.
   private JPanel panel = new JPanel(new BorderLayout());
@@ -64,7 +62,7 @@ public class Login extends JFrame implements ActionListener {
    * and Set_Game.java respectively. 
    * <p>
    */
-  public Login(SetClient callingObj) {
+  public Login(SetClientProtocol callingObj) {
     this.callingObj = callingObj;
     //System.out.println("Hello from login");
     master = new JPanel(new CardLayout());

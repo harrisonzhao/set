@@ -37,7 +37,7 @@ public class Lobby extends JPanel {
   private JLabel welcome;
   
   // calling Client object
-  private SetClient callingObj;
+  private SetClientProtocol callingObj;
   
   // chat box
   private String CHAT_HEADER = "Lobby Group Chat";
@@ -99,7 +99,7 @@ public class Lobby extends JPanel {
    * <p>
    * @param username Identifies the name of the user using this instance of the game lobby.
    */
-  public void enterLobby (String username, SetClient callingObj) {
+  public void enterLobby (String username, SetClientProtocol callingObj) {
     this.username = username;
     this.callingObj = callingObj;
     

@@ -2,55 +2,114 @@ package Set_GUI;
 
 // how should leaving the lobby be handled?
 /**
-*
+* Protocol for SetClient that uses the ConnectionManager class
 * @author Harrison
-* edited by Alejandro Acosta
+* @author Alejandro Acosta
 */
+import connectionManager.Connection;
+import connectionManager.Message;
+import connectionManager.Protocol;
 import java.io.BufferedReader;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.Socket;
-import java.net.UnknownHostException;
 
 import javax.swing.SwingUtilities;
 
-public class SetClient {
-  boolean listening;
-  final Socket socket;
-  final BufferedReader istream;
-  final DataOutputStream ostream;
+public class SetClientProtocol extends Protocol {
+
+  final int serverId;
+  String serverIp;
+  int serverPort;
   
-  public SetClient() throws IOException {
-    listening = true;
-    //System.out.println("hi");
-    socket = new Socket("127.0.0.1", 10000);
-    istream = new BufferedReader(
-            new InputStreamReader(socket.getInputStream()));
-    ostream = new DataOutputStream(socket.getOutputStream());
+  /**
+   * Constructor, modify arguments passed to it in SetClientMain
+   * @param serverIp
+   * @param serverPort 
+   */
+  public SetClientProtocol(String serverIp, int serverPort) {
+    super();
+    serverId = 0;
+    this.serverIp = serverIp;
+    this.serverPort = serverPort;
   }
   
-  public void runClient() throws IOException {
+  /**
+   * attempts to connect to set server, will be called automatically
+   * after constructors finish
+   * also calls the showInterface function (not sure if supposed to be here)
+   * @author Harrison
+   */
+  @Override
+  public void connect() {
+    System.out.println("Attempting to connect to set server");
+    Socket masterSocket;
+    try {
+      masterSocket = new Socket(serverIp, serverPort);
+      BufferedReader masterStream = new BufferedReader(
+              new InputStreamReader(masterSocket.getInputStream()));
+      sockets.put(serverId, masterSocket);
+      Connection connection= new Connection(serverId,
+                                            isrunning,
+                                            incomingMessages,
+                                            masterStream,
+                                            this);
+      connection.start();
+    } catch (IOException ex) {
+      System.err.println("Couldn't connect to master!");
+      System.exit(1);
+    }
+    
+    showInterface();
+  }
+  
+  /**
+   * if server disconnects, shutdown everything
+   * @param connectedID 
+   */
+  @Override
+  public void handleDisconnection(int connectedID) {
+    System.err.println("The server went offline! exiting...");
+    isrunning = false;
+  }
+  
+  /**
+   * Sends message to set server
+   * automatically appends a newline to end of message
+   * @param message 
+   */
+  public void sendMessageToServer(String message) {
+    sendMessage(serverId, message);
+  }
+  
+  /**
+   * @author Alejandro Acosta
+   */
+  public void showInterface() {
     /*
      * Opening the Login Screen
      */
     
-    final SetClient runObj = this;
+    final SetClientProtocol runObj = this;
     
     SwingUtilities.invokeLater(new Runnable() {
       
+      @Override
       public void run() {
         Login log = new Login(runObj);
         log.setVisible(true);
       }
     });
-    
-    while(listening) {
-      //System.out.println("Hello from Client");
-      String incomingMessage = istream.readLine();
-      String [] messagePieces = incomingMessage.split("~");
-      switch(messagePieces[0].charAt(0)) {
+  }
+  
+  /**
+   * the processing function for message that the client receives from server
+   * @param message 
+   */
+  @Override
+  public void processManagerMessages(Message message) {
+    String [] messagePieces = message.message.split("~");
+    switch(messagePieces[0].charAt(0)) {
       case 'X':
         // parse (errorMSG): Login/Register error
         break;
@@ -93,7 +152,6 @@ public class SetClient {
          * U~R~[room number]
          */
         break;
-      }
     }
   }
 
@@ -101,6 +159,7 @@ public class SetClient {
    * @author Alejandro Acosta
    * 
    * sends the message to the server
+   * SEE USE SEND MESSAGETOSERVER FUNCTION INSTEAD OF CREATING AN OUTPUTSTREAM
    */
   public void sendMessage(String message) {
     /*
@@ -116,14 +175,10 @@ public class SetClient {
      * T~Message                    :Game Chatindex
      *
      */
-    try {
-      System.out.println("testing");
-      ostream.writeChars(message + "\n");
-      System.out.println("success, sent:" + message);
-    } catch (IOException except) {
-      System.err.println("Unable to print message:" + message);
-      System.out.println("whoops");
-    }
+    
+    System.out.println("testing");
+    sendMessageToServer(message);
+    System.out.println("success, sent:" + message);
     /*String [] MessagePieces = message.split("~");
     switch(MessagePieces[0].charAt(0)) {
     case 'L':
