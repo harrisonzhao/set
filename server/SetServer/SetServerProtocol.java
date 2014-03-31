@@ -14,6 +14,12 @@
  * sockets - maps clientIDs to their sockets
  *
  */
+
+//SQL STUFF:
+//users 
+//username, password, rating
+//db username: root password:cooperee
+           
 package SetServer;
 
 import connectionManager.*;
@@ -122,6 +128,7 @@ public class SetServerProtocol extends Protocol {
         System.out.println("Either Database access error or Interrupted");
     }
   }
+
   /**
    * 
    * @param clientID
@@ -145,6 +152,7 @@ public class SetServerProtocol extends Protocol {
             "jdbc:mysql://IP:Port", "userName", "passWord");     
     try (Statement stmt = dbConnection.createStatement()) {
       ResultSet rs = stmt.executeQuery("INSERT QUERY HERE");
+      //"SELECT * FROM `users` WHERE `username` =  '"messagePieces[1]+"';"
       
       if (rs.next()) {
         sendMessage(clientID, "X~Username does not exist");
