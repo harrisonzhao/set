@@ -1,0 +1,35 @@
+How server sends the board:
+
+G~FLAG~BOARD~SCORES
+
+eg...
+
+G~Y~1 20 32 22 23 2 6 7 9 3 70 72~9 6
+
+FLAG:
+	Y: Someone got a set scores need updating
+	N: Someone failed a set scores need updating
+	F: Game is over, do game over behavior
+	B: Board state, no changes to scores
+
+BOARD:
+	Board separated by " "
+	Order doesn't matter, you can display it however you want
+
+Score:
+	In order of playerId, separated by space
+	(thus each client instance needs to know whether its playerId 0,1 etc...)
+
+____________________________________________________________________________
+
+How client sends set request to server:
+
+S~CARDS
+
+S~2 45 3
+
+Cards:
+	3 card numbers separated by " "
+
+Request type 2: Start game.
+G (ASK WING XHAO THE SPECIFICS OF THIS SHIT)
