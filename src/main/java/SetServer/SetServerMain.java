@@ -13,7 +13,7 @@ import connectionManager.ConnectionManager;
  */
 public class SetServerMain {
   
-  public static void main() {
+  public static void main(String [] args) {
     int serverPort = 20000;
     SetServerProtocol protocol = new SetServerProtocol();
     ConnectionManager setserver;
