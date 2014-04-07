@@ -122,6 +122,25 @@ public class SetClientProtocol extends Protocol {
             G~U~[game room userlist string] update names+scores
                  whenever a name is added or removed
                :Update GameRoom in game*/
+/*
+               G~FLAG~BOARD~SCORES
+
+eg...
+
+G~Y~1 20 32 22 23 2 6 7 9 3 70 72~9 6
+
+FLAG:
+  Y: Someone got a set scores need updating
+  N: Someone failed a set scores need updating
+  F: Game is over, do game over behavior
+  B: Board state, no changes to scores
+  S: start game
+
+Special flags
+  U: will be G~U~[user1]~[user1score]~... where ... means possibly multiple lists users+scores
+  R: resets room and ready button
+  */
+
         break;
       case 'E':
         // exited GameRoom
@@ -130,16 +149,16 @@ public class SetClientProtocol extends Protocol {
         /* J~I :Could not join, game in progress
         J~F :Game Room is full*/
         break;
-      case 'R':
-        // reset gameroom
-        break;
       case 'C':
         //[sender's username] (message)
         // send to lobby chat
+    //  C~[message] : lobby chat
+    //C~[username]~[message] : chat username messaged lobby
         break;
       case 'T':
-        /* Username~(message): game chat
-         * ~(message): system message
+      /*
+T~[message] : send message to game room
+T~[username]~[message] : sends out message to gameroom from [username]
          */
         break;
       case 'P':
@@ -148,8 +167,12 @@ public class SetClientProtocol extends Protocol {
         break;
       case 'U':
         /*
-         * U~A~[room number]~[room name]~[current numPlayers]~[max players]~[status]
-         * U~R~[room number]
+U~A~[room number]~[rm name]~[curr numPlayers]~[max player]~[status]: adds to list of gamerooms
+U~R~[room number removed] : to update list of gamerooms, removes room with that number id
+U~I~[room number] : Set inactive
+U~P~[room number] : currently playing
+U~X~[room number] : increase current number players display for gameroom
+U~Y~[room number] : decrease current number players display for gameroom
          */
         break;
     }
