@@ -116,16 +116,27 @@ public class Lobby extends JPanel {
   public void makeTop() {
     
     //image for header
-    BufferedImage header = null;
+    //BufferedImage header = null;
+	BufferedImage header;
+	Boolean image_succeed = true;
+	JLabel headerLabel;
     try {
-      header = ImageIO.read(new File("src/set_card.png"));
+      String dirtest = System.getProperty("user.dir");
+      System.out.println("Current working directory = " + dirtest);
+      header = ImageIO.read(new File("src/main/resources/set_card.png"));
     }
     catch (IOException ex) {
-      // handle exception      
+      // handle exception
+      image_succeed = false;
+      header = null;
     }
-    JLabel headerLabel = new JLabel(new ImageIcon(header));
-    headerLabel.setAlignmentX(CENTER_ALIGNMENT);
-    
+    if(!image_succeed) {
+      headerLabel = new JLabel("Image Not Found");
+    }
+    else {
+      headerLabel = new JLabel(new ImageIcon(header));
+      headerLabel.setAlignmentX(CENTER_ALIGNMENT);
+    }
     welcome = new JLabel();
     welcome.setAlignmentX(LEFT_ALIGNMENT);
 
@@ -212,11 +223,11 @@ public class Lobby extends JPanel {
    * }
    */
   public void makeCenter() {
-    JButton game_Request = new JButton("Accept Game");
-    JButton play_Alone = new JButton("Play Alone");
+    JButton game_Request = new JButton("Join Game");
+    JButton create_game = new JButton("Create Game");
     
     center.add(game_Request); // need message "N~[room name]~maxNumPlayers" around here
-    center.add(play_Alone);
+    center.add(create_game);
   }
 
   // The lobby chat 
@@ -247,15 +258,20 @@ public class Lobby extends JPanel {
     right.add(sendMessage);
   }
   
-  private class ChatButtonListener implements ActionListener {
-    // need a send to server.
-    
+  private class ChatButtonListener implements ActionListener {    
     public void actionPerformed(ActionEvent event) {
-      //System.out.println("test button press\n");
-      String message = messageInput.getText();
-      chatLog.append(username + ": " + message + "\n");
-      messageInput.setText("");
-      callingObj.sendMessage("C~"+message);
+      if(messageInput.isFocusOwner()) {
+        //System.out.println("test button press\n");
+        String message = messageInput.getText();
+        if(!message.equals("")) { 
+          // this line is temporary
+          chatLog.append(username + ": " + message + "\n");
+          
+          messageInput.setText("");
+          callingObj.sendMessageToServer("C~"+message);
+        }
+      }
+      else { }; // do nothing
     }
   }
 }
