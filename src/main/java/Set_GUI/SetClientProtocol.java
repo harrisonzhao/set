@@ -187,6 +187,30 @@ U~P~[room number] : currently playing
 U~X~[room number] : increase current number players display for gameroom
 U~Y~[room number] : decrease current number players display for gameroom
          */
+        // U~A
+        switch(messagePieces[1].charAt(0)) {
+        case 'A':
+          int roomNum = Integer.parseInt(messagePieces[2]);
+          String roomName = messagePieces[3];
+          int curNumPlayers = Integer.parseInt(messagePieces[4]);
+          int maxNumPlayers = Integer.parseInt(messagePieces[5]);
+          String statusString = messagePieces[6];
+          boolean status = statusString.equals("Playing");
+          
+          lobRef.addGameRoom(roomNum, roomName, curNumPlayers, 
+              maxNumPlayers, status);
+          break;
+        case 'R':
+          break;
+        case 'I':
+          break;
+        case 'P':
+          break;
+        case 'X':
+          break;
+        case 'Y':
+          break;
+        }
         break;
     }
   }

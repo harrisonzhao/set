@@ -1,6 +1,7 @@
 package Set_GUI;
 
 import java.io.*;
+import java.util.HashMap;
 import java.awt.*;
 import java.awt.image.*;
 import java.awt.event.*;
@@ -55,8 +56,15 @@ public class Lobby extends JPanel {
   private JPopupMenu challengeMenu;
   private JMenuItem menuChallenge;
   
+  // join other games
+  private JPopupMenu joinMenu;
+  private JMenuItem menuJoin;
+  
   // flag for empty game list
   private String emptyGameList = "There are no open games";
+  
+  // hash table for game rooms
+  private HashMap<Integer,GameRoomData> gameRoomList;
   
   public Lobby(Login login_Frame) {
     this.login_Frame = login_Frame;
@@ -86,6 +94,11 @@ public class Lobby extends JPanel {
     challengeMenu.add(menuChallenge);
     menuChallenge.addActionListener(new IssueChallengeListener());
     
+    // join popup menu
+    joinMenu = new JPopupMenu();
+    menuJoin = new JMenuItem("Join Game");
+    joinMenu.add(menuJoin);
+    menuJoin.addActionListener(new JoinGameListener());
     add(panel);
   }
 
@@ -206,10 +219,75 @@ public class Lobby extends JPanel {
     String challenged = userList.getSelectedValue();
     String challenger = username;
     if(challenged != " " && challenged != username) {
-      int userIndex = userList.getSelectedIndex();
+      //int userIndex = userList.getSelectedIndex();
       challengeMenu.show((Component) userList,0,0);
     }
    }
+  }
+  
+  private class JoinGameListener implements ActionListener {
+    public void actionPerformed(ActionEvent evt) {
+      // is this the right way to get the room number?
+      String roomNumber = gameList.getSelectedValue();
+      callingObj.sendMessageToServer("J~"+roomNumber);
+    }
+  }
+  
+  /**
+   * Creates a new game room from the parameters specified in the game protocol
+   */
+  public void addGameRoom(int roomNumber, String roomName, 
+      int curNumPlayer, int maxNumPlayer, boolean status) {
+    GameRoomData newRoom = new GameRoomData(roomName, curNumPlayer, 
+        maxNumPlayer, status);
+    gameRoomList.put(roomNumber, newRoom);
+  }
+  
+  // contains the game room data.
+  private class GameRoomData {
+    public String roomName;
+    int currentNumPlayers;
+    int maxNumPlayers;
+    boolean playingStatus; // true if playing
+    boolean full; // true if game room is full
+    
+    public GameRoomData(String roomName, int currentNumPlayers, 
+        int maxNumPlayers, boolean status) {
+      this.roomName = roomName;
+      this.maxNumPlayers = maxNumPlayers;
+      this.currentNumPlayers = currentNumPlayers;
+      this.playingStatus = status;
+      
+      this.full = false;
+    }
+    
+    public boolean testFull() {
+      if (currentNumPlayers == maxNumPlayers) {
+        full = true;
+      }
+      else {
+        full = false;
+      }
+      return full;
+    }
+    
+    public void gameStart() {
+      playingStatus = true;
+    }
+    
+    public void addPlayer() {
+      if(!full) {
+        ++currentNumPlayers;
+      }
+      else {};
+    }
+    public void removePlayer() {
+      if(currentNumPlayers > 0) {
+        --currentNumPlayers;
+      }
+      else {};
+    }
+    
   }
   
   // Need a listener to notice when the server sends a message to update the list of users.
@@ -260,6 +338,7 @@ public class Lobby extends JPanel {
       String joined = gameList.getSelectedValue();
       if(!joined.equals(emptyGameList)) {
         // set up the code for what to do
+        joinMenu.show((Component) gameList,0,0);
       }
     }
   }
