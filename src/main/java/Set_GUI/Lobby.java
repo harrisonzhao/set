@@ -121,7 +121,7 @@ public class Lobby extends JPanel {
     this.callingObj = callingObj;
     
     // probably won't need this in the end.
-    currentUsers.addElement(username);
+    //currentUsers.addElement(username);
     
     // or send the new username to the server to update the list (probably that)
     
@@ -204,7 +204,7 @@ public class Lobby extends JPanel {
     //userList.addListSelectionListener(new ChallengeListener2());
     userList.addMouseListener(new ChallengeListener());
     userList.setPreferredSize(new Dimension(150, 300));
-    currentUsers.addElement(" ");
+    //currentUsers.addElement(" ");
     // dummy user for testing purposes
     currentUsers.addElement("ArtificalBob");
 
@@ -228,10 +228,12 @@ public class Lobby extends JPanel {
   private class JoinGameListener implements ActionListener {
     public void actionPerformed(ActionEvent evt) {
       // is this the right way to get the room number?
-      String roomNumber = gameList.getSelectedValue();
+      String roomInfo = gameList.getSelectedValue();
+      // parse roomInfo to grab room number
+      /*String [] roombits = roomInfo.split()
       if(!roomNumber.equals(" ")) {
         callingObj.sendMessageToServer("J~"+roomNumber);
-      }
+      }*/
     }
   }
   
@@ -268,6 +270,7 @@ public class Lobby extends JPanel {
     GameRoomData gameRoom = gameRoomList.get(roomNum);
     gameRoom.removePlayer();
   }
+  
   // contains the game room data.
   private class GameRoomData {
     public String roomName;
@@ -352,17 +355,14 @@ public class Lobby extends JPanel {
     gamePane.setAlignmentX(CENTER_ALIGNMENT);
     
     gameList.addMouseListener(new JoinListener());
-    gameList.setPreferredSize(new Dimension(150, 300));
-    // need this following line of code in a conditional that runs whenever gameList
-    // gets updated. make it part of the function that listens from server
-    //currentGames.addElement(emptyGameList);
-    currentGames.addElement(" ");
+    gameList.setPreferredSize(new Dimension(100, 300));
     
     center.setLayout(new BoxLayout(center, BoxLayout.Y_AXIS));
     //center.add(game_Request); // need message "N~[room name]~maxNumPlayers" around here
     center.add(create_game);
     center.add(Box.createRigidArea(new Dimension(0,5)));
     center.add(gamePane);
+    center.add(Box.createRigidArea(new Dimension(50,0)));
   }
   
   private class JoinListener extends MouseAdapter {

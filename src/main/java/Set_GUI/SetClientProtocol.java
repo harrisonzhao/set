@@ -174,6 +174,7 @@ T~[username]~[message] : sends out message to gameroom from [username]
       case 'P':
         /* P~A~name :update players in lobby table of users
      P~R~name: removes name from lobby table of users*/
+        System.err.println("Attempting to update list of lobby table of users");
         String mode = messagePieces[1];
         String senderUsername = messagePieces[2];
         lobRef.updateUserList(mode, senderUsername);
