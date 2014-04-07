@@ -245,6 +245,29 @@ public class Lobby extends JPanel {
     gameRoomList.put(roomNumber, newRoom);
   }
   
+  public void removeGameRoom(int roomNumber) {
+    gameRoomList.remove(roomNumber);
+  }
+  
+  public void setInactive(int roomNum) {
+    GameRoomData gameRoom = gameRoomList.get(roomNum);
+    gameRoom.setInactive();
+  }
+
+  public void setPlaying(int roomNum) {
+    GameRoomData gameRoom = gameRoomList.get(roomNum);
+    gameRoom.setPlaying();
+  }
+  
+  public void increasePlayers(int roomNum) {
+    GameRoomData gameRoom = gameRoomList.get(roomNum);
+    gameRoom.addPlayer();
+  }
+  
+  public void decreasePlayers(int roomNum) {
+    GameRoomData gameRoom = gameRoomList.get(roomNum);
+    gameRoom.removePlayer();
+  }
   // contains the game room data.
   private class GameRoomData {
     public String roomName;
@@ -277,17 +300,24 @@ public class Lobby extends JPanel {
       playingStatus = true;
     }
     
+    public void setInactive() {
+      playingStatus = false;
+    }
+    
+    public void setPlaying() {
+      playingStatus = true;
+    }
+    
     public void addPlayer() {
       if(!full) {
         ++currentNumPlayers;
       }
-      else {};
     }
+    
     public void removePlayer() {
       if(currentNumPlayers > 0) {
         --currentNumPlayers;
       }
-      else {};
     }
     
   }

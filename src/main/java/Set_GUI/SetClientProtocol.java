@@ -182,33 +182,66 @@ T~[username]~[message] : sends out message to gameroom from [username]
         /*
 U~A~[room number]~[rm name]~[curr numPlayers]~[max player]~[status]: adds to list of gamerooms
 U~R~[room number removed] : to update list of gamerooms, removes room with that number id
-U~I~[room number] : Set inactive
+U~I~[room number] : Set to not playing
 U~P~[room number] : currently playing
 U~X~[room number] : increase current number players display for gameroom
 U~Y~[room number] : decrease current number players display for gameroom
          */
         // U~A
+        int roomNum, curNumPlayers, maxNumPlayers;
+        String roomName, statusString;
+        boolean status;
+        
+        roomNum = Integer.parseInt(messagePieces[2]);
+        
         switch(messagePieces[1].charAt(0)) {
-        case 'A':
-          int roomNum = Integer.parseInt(messagePieces[2]);
-          String roomName = messagePieces[3];
-          int curNumPlayers = Integer.parseInt(messagePieces[4]);
-          int maxNumPlayers = Integer.parseInt(messagePieces[5]);
-          String statusString = messagePieces[6];
-          boolean status = statusString.equals("Playing");
+        /* U~A~[room number]~[rm name]~[curr numPlayers]~[max player]~[status]: 
+         * adds to list of gamerooms
+         */
+        case 'A': 
+          roomName = messagePieces[3];
+          curNumPlayers = Integer.parseInt(messagePieces[4]);
+          maxNumPlayers = Integer.parseInt(messagePieces[5]);
+          statusString = messagePieces[6];
+          status = statusString.equals("Playing");
           
           lobRef.addGameRoom(roomNum, roomName, curNumPlayers, 
               maxNumPlayers, status);
           break;
-        case 'R':
+          
+        /* U~R~[room number removed] : 
+         * to update list of gamerooms, removes room with that number id
+         */
+        case 'R':          
+          lobRef.removeGameRoom(roomNum);
           break;
+          
+        /* U~I~[room number] : 
+         * Set to not playing
+         */
         case 'I':
+          lobRef.setInactive(roomNum);
           break;
+          
+        /* U~P~[room number] : 
+         * currently playing
+         */
         case 'P':
+          lobRef.setPlaying(roomNum);
           break;
+          
+        /* U~X~[room number] : 
+         * increase current number players display for gameroom
+         */
         case 'X':
+          lobRef.increasePlayers(roomNum);
           break;
+          
+        /* U~Y~[room number] : 
+         * decrease current number players display for gameroom
+         */
         case 'Y':
+          lobRef.decreasePlayers(roomNum);
           break;
         }
         break;
