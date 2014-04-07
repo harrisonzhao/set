@@ -4,6 +4,7 @@ import java.io.*;
 import java.awt.*;
 import java.awt.image.*;
 import java.awt.event.*;
+
 import javax.imageio.*;
 import javax.swing.*;
 import javax.swing.event.*;
@@ -46,13 +47,16 @@ public class Lobby extends JPanel {
   private JTextField messageInput;
   private JButton sendMessage;
   
-  // active user list
-  public DefaultListModel<String> currentUsers;
-  private JList<String> userList;
+  // active user list and open game list
+  public DefaultListModel<String> currentUsers, currentGames;
+  private JList<String> userList, gameList;
   
   // challenge other players
   private JPopupMenu challengeMenu;
   private JMenuItem menuChallenge;
+  
+  // flag for empty game list
+  private String emptyGameList = "There are no open games";
   
   public Lobby(Login login_Frame) {
     this.login_Frame = login_Frame;
@@ -121,6 +125,9 @@ public class Lobby extends JPanel {
 	Boolean image_succeed = true;
 	JLabel headerLabel;
     try {
+      // Here's code for getting the current working directory, but i'm not sure
+      // if we need that. the hard coded one works fine for now. It may be an issue
+      // later though depending on how we're running the client code.
       String dirtest = System.getProperty("user.dir");
       System.out.println("Current working directory = " + dirtest);
       header = ImageIO.read(new File("src/main/resources/set_card.png"));
@@ -181,35 +188,28 @@ public class Lobby extends JPanel {
     JScrollPane userPane = new JScrollPane(userList);
     userPane.setAlignmentX(LEFT_ALIGNMENT);
     
-    userList.addListSelectionListener(new ChallengeListener());
+    //userList.addListSelectionListener(new ChallengeListener2());
+    userList.addMouseListener(new ChallengeListener());
     userList.setPreferredSize(new Dimension(150, 300));
     currentUsers.addElement(" ");
+    // dummy user for testing purposes
+    currentUsers.addElement("ArtificalBob");
 
     left.add(userPane);
   }
 
-  /* listens to when a user selects an element on 
+  /* mouse event listener for list
    * 
    */
-  private class ChallengeListener implements ListSelectionListener {
-    public void valueChanged(ListSelectionEvent listClick) {
-      /* only perform action once, when mouse button is released
-       * Send message to server that challenge is being issued
-       */
-      if(!listClick.getValueIsAdjusting()) {
-        String challenged = userList.getSelectedValue();
-        String challenger = username;
-        
-        // show the challenge pop up menu below the person 
-        if(challenged != " ") {
-          int userIndex = userList.getSelectedIndex();
-          challengeMenu.show((Component) userList,0,0);
-        }
-        
-        System.out.println(userList.getSelectedValue());
-        System.out.println("list select");
-      }
+  private class ChallengeListener extends MouseAdapter {
+   public void mouseClicked(MouseEvent evt) {
+    String challenged = userList.getSelectedValue();
+    String challenger = username;
+    if(challenged != " " && challenged != username) {
+      int userIndex = userList.getSelectedIndex();
+      challengeMenu.show((Component) userList,0,0);
     }
+   }
   }
   
   // Need a listener to notice when the server sends a message to update the list of users.
@@ -222,12 +222,46 @@ public class Lobby extends JPanel {
    *   }
    * }
    */
+  /** Creates the center portion of the game window
+   *  Has a create game button as well as a list of all active games.
+   *  Clicking on an active game will open a pop-up menu giving the option to 
+   *  join that game. 
+   *  As far as I know, games should be removed from the list once they begin.
+   *  
+   */
   public void makeCenter() {
     JButton game_Request = new JButton("Join Game");
+    game_Request.setVisible(false);
     JButton create_game = new JButton("Create Game");
     
-    center.add(game_Request); // need message "N~[room name]~maxNumPlayers" around here
+    currentGames = new DefaultListModel<String>();
+    
+    gameList = new JList<String>(currentGames);
+    
+    JScrollPane gamePane = new JScrollPane(gameList);
+    gamePane.setAlignmentX(CENTER_ALIGNMENT);
+    
+    gameList.addMouseListener(new JoinListener());
+    gameList.setPreferredSize(new Dimension(150, 300));
+    // need this following line of code in a conditional that runs whenever gameList
+    // gets updated. make it part of the function that listens from server
+    //currentGames.addElement(emptyGameList);
+    currentGames.addElement(" ");
+    
+    center.setLayout(new BoxLayout(center, BoxLayout.Y_AXIS));
+    //center.add(game_Request); // need message "N~[room name]~maxNumPlayers" around here
     center.add(create_game);
+    center.add(Box.createRigidArea(new Dimension(0,5)));
+    center.add(gamePane);
+  }
+  
+  private class JoinListener extends MouseAdapter {
+    public void mouseClicked(MouseEvent evt) {
+      String joined = gameList.getSelectedValue();
+      if(!joined.equals(emptyGameList)) {
+        // set up the code for what to do
+      }
+    }
   }
 
   // The lobby chat 
@@ -272,6 +306,34 @@ public class Lobby extends JPanel {
         }
       }
       else { }; // do nothing
+    }
+  }
+  
+  /**
+   * Will update the chat log as messages are sent
+   * @param username: the username of the user who sent the message 
+   * @param message: the message sent
+   */
+  public void updateChat(String username, String message) {
+    chatLog.append(username + ": " + message + "\n");
+  }
+  
+  /**
+   *  Will update the userlist
+   * @param mode: the mode of the change. "A" represents adding to the userlist.
+   * "R" represents removing from the userlist.
+   * @param username: The username of the user who sent the message
+   */
+  public void updateUserList(String mode, String username) {
+    if (mode.equals("A")) {
+      currentUsers.addElement(username);
+    }
+    else if (mode.equals("R")) {
+      currentUsers.removeElement(username);
+    }
+    else {
+      // shouldn't run
+      System.err.println("Error. That is an invalid userlist update command");
     }
   }
 }

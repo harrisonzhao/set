@@ -22,6 +22,13 @@ public class SetClientProtocol extends Protocol {
   String serverIp;
   int serverPort;
   
+  /*
+   * References to the game windows so that we can call their member functions
+   */
+  Lobby lobRef;
+  Login logRef;
+  // GameRoom gameRef;
+  
   /**
    * Constructor, modify arguments passed to it in SetClientMain
    * @param serverIp
@@ -153,7 +160,10 @@ Special flags
         //[sender's username] (message)
         // send to lobby chat
     //  C~[message] : lobby chat
-    //C~[username]~[message] : chat username messaged lobby
+    //C~[username]~[message] : chat username messaged lobbying 
+        String username = messagePieces[1];
+        String chatMessage = messagePieces[2];
+        lobRef.updateChat(username, chatMessage);
         break;
       case 'T':
       /*
@@ -164,6 +174,9 @@ T~[username]~[message] : sends out message to gameroom from [username]
       case 'P':
         /* P~A~name :update players in lobby table of users
      P~R~name: removes name from lobby table of users*/
+        String mode = messagePieces[1];
+        String senderUsername = messagePieces[2];
+        lobRef.updateUserList(mode, senderUsername);
         break;
       case 'U':
         /*
@@ -236,5 +249,10 @@ U~Y~[room number] : decrease current number players display for gameroom
       break;
     }*/
     
+  }
+  public void grabPanels(Login log, Lobby lob/*, gameRoom game */) {
+    this.logRef = log;
+    this.lobRef = lob;
+    //this.gameRef = game;
   }
 }

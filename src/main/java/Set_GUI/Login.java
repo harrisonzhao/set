@@ -61,12 +61,17 @@ public class Login extends JFrame implements ActionListener {
    * Each card is a different screen: Login, Lobby, and the Game itself. The other screens have their GUIs created in Lobby.java
    * and Set_Game.java respectively. 
    * <p>
+   * Sets up the JComponent structure for everything. It sets up a refrence to the
+   * calling object (SetClientProtocol) and sets up the GUI panel references for the
+   * Client.
    */
   public Login(SetClientProtocol callingObj) {
     this.callingObj = callingObj;
     //System.out.println("Hello from login");
     master = new JPanel(new CardLayout());
     lobby_Panel = new Lobby(this);
+    // need to add game panel to this function call
+    this.callingObj.grabPanels(this, lobby_Panel);
     cl = (CardLayout)(master.getLayout());
     master.add(panel, LOGIN);
     master.add(lobby_Panel, LOBBY);
