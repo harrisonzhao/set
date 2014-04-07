@@ -229,7 +229,9 @@ public class Lobby extends JPanel {
     public void actionPerformed(ActionEvent evt) {
       // is this the right way to get the room number?
       String roomNumber = gameList.getSelectedValue();
-      callingObj.sendMessageToServer("J~"+roomNumber);
+      if(!roomNumber.equals(" ")) {
+        callingObj.sendMessageToServer("J~"+roomNumber);
+      }
     }
   }
   
