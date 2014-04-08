@@ -72,6 +72,28 @@ public class Lobby extends JPanel {
   }
   
   /**
+   * Enters the lobby with your specified username.
+   * <p>
+   * Sets the default button for the lobby window and adds the user's username to the server's list of active users. Also sets the welcome
+   * text
+   * <p>
+   * @param username Identifies the name of the user using this instance of the game lobby.
+   */
+  public void enterLobby (String username, SetClientProtocol callingObj) {
+    this.username = username;
+    this.callingObj = callingObj;
+    
+    // probably won't need this in the end.
+    //currentUsers.addElement(username);
+    
+    // or send the new username to the server to update the list (probably that)
+    
+    welcome.setText("Welcome " + username);
+    this.getRootPane().setDefaultButton(sendMessage);
+  }
+
+  /**
+
    * Creates the GUI for the Lobby page
    * <p>
    * Uses a Border Layout Manager to place all components in separate parts of the screen. 
@@ -102,34 +124,9 @@ public class Lobby extends JPanel {
     add(panel);
   }
 
-  private class IssueChallengeListener implements ActionListener {
-    public void actionPerformed(ActionEvent evt) {
-      // send challenge request to the server which will handle it.
-    }
-  }
-  
   /**
-   * Enters the lobby with your specified username.
-   * <p>
-   * Sets the default button for the lobby window and adds the user's username to the server's list of active users. Also sets the welcome
-   * text
-   * <p>
-   * @param username Identifies the name of the user using this instance of the game lobby.
+   *  The heading for the lobby page
    */
-  public void enterLobby (String username, SetClientProtocol callingObj) {
-    this.username = username;
-    this.callingObj = callingObj;
-    
-    // probably won't need this in the end.
-    //currentUsers.addElement(username);
-    
-    // or send the new username to the server to update the list (probably that)
-    
-    welcome.setText("Welcome " + username);
-    this.getRootPane().setDefaultButton(sendMessage);
-  }
-  
-  // The heading for the lobby page
   public void makeTop() {
     
     //image for header
@@ -141,8 +138,8 @@ public class Lobby extends JPanel {
       // Here's code for getting the current working directory, but i'm not sure
       // if we need that. the hard coded one works fine for now. It may be an issue
       // later though depending on how we're running the client code.
-      String dirtest = System.getProperty("user.dir");
-      System.out.println("Current working directory = " + dirtest);
+      //String dirtest = System.getProperty("user.dir");
+      //System.out.println("Current working directory = " + dirtest);
       header = ImageIO.read(new File("src/main/resources/set_card.png"));
     }
     catch (IOException ex) {
@@ -157,6 +154,7 @@ public class Lobby extends JPanel {
       headerLabel = new JLabel(new ImageIcon(header));
       headerLabel.setAlignmentX(CENTER_ALIGNMENT);
     }
+    
     welcome = new JLabel();
     welcome.setAlignmentX(LEFT_ALIGNMENT);
 
@@ -189,13 +187,11 @@ public class Lobby extends JPanel {
     //top.add(Logout);
   }
   
-  /* List of players requesting games.
-   * Needs a list populated by the server with available games
-   * and an action listepaper marioner to send accepted games.
+  /**
+   * Creates a list of players logged in.
    */
   public void makeLeft() {
     currentUsers = new DefaultListModel<String>();
-    
     userList = new JList<String>(currentUsers);
     
     JScrollPane userPane = new JScrollPane(userList);
@@ -203,12 +199,88 @@ public class Lobby extends JPanel {
     
     //userList.addListSelectionListener(new ChallengeListener2());
     userList.addMouseListener(new ChallengeListener());
-    userList.setPreferredSize(new Dimension(150, 300));
+    userList.setPreferredSize(new Dimension(100, 100));
     //currentUsers.addElement(" ");
     // dummy user for testing purposes
     currentUsers.addElement("ArtificalBob");
 
-    left.add(userPane);
+    JLabel titlePanel = new JLabel("Users in Lobby");
+    JPanel subPanel = new JPanel();
+    subPanel.setLayout(new BoxLayout(subPanel, BoxLayout.Y_AXIS));
+    subPanel.add(titlePanel);
+    subPanel.add(userPane);
+    
+    left.setLayout(new BoxLayout(left, BoxLayout.X_AXIS));
+    left.add(subPanel);
+    left.add(Box.createRigidArea(new Dimension(50,0)));
+  }
+
+  // The lobby chat 
+  public void makeRight() {
+    right.setLayout(new BoxLayout(right, BoxLayout.Y_AXIS));
+    
+    // the header for the chat area
+    chatHeader = new JLabel(CHAT_HEADER);
+    chatHeader.setAlignmentX(CENTER_ALIGNMENT);
+    
+    // creating and organizing the component that stores the chatlog
+    chatLog = new JTextArea(15,30);
+    chatLog.setEditable(false);
+    chatLog.setLineWrap(true);
+    
+    // the field where you type your messages to the chat
+    messageInput = new JTextField(15);
+    
+    // submit button. Invisible since enter activates it
+    sendMessage = new JButton("Send");
+    sendMessage.addActionListener(new ChatButtonListener());
+    sendMessage.setVisible(false);
+    
+    // Adding all the components to the right side of the screen
+    right.add(chatHeader);
+    right.add(chatLog);
+    right.add(messageInput);
+    right.add(sendMessage);
+  }
+
+  /** 
+   *  Creates the center portion of the game window
+   *  Has a create game button as well as a list of all active games.
+   *  Clicking on an active game will open a pop-up menu giving the option to 
+   *  join that game. 
+   *  As far as I know, games should be removed from the list once they begin.
+   *  
+   */
+  public void makeCenter() {
+    JButton game_Request = new JButton("Join Game");
+    game_Request.setVisible(false);
+    JButton create_game = new JButton("Create Game");
+    
+    create_game.addActionListener(new CreationListener());
+    
+    currentGames = new DefaultListModel<String>();
+    
+    gameList = new JList<String>(currentGames);
+    
+    JScrollPane gamePane = new JScrollPane(gameList);
+    gamePane.setAlignmentX(CENTER_ALIGNMENT);
+    
+    // temporary game room for testing
+    currentGames.addElement("1024: Artificial_Game 1/4 open");
+    
+    gameList.addMouseListener(new JoinListener());
+    gameList.setPreferredSize(new Dimension(200, 300));
+    
+    JPanel subPanel = new JPanel();
+    subPanel.setLayout(new BoxLayout(subPanel, BoxLayout.Y_AXIS));
+    subPanel.add(create_game);
+    subPanel.add(Box.createRigidArea(new Dimension(0,5)));
+    subPanel.add(gamePane);
+    
+    center.setLayout(new BoxLayout(center, BoxLayout.X_AXIS));
+    //center.add(game_Request); // need message "N~[room name]~maxNumPlayers" around here
+    center.add(subPanel);
+    center.add(Box.createRigidArea(new Dimension(50,0)));
   }
 
   /* mouse event listener for list
@@ -225,59 +297,74 @@ public class Lobby extends JPanel {
    }
   }
   
+  private class IssueChallengeListener implements ActionListener {
+    public void actionPerformed(ActionEvent evt) {
+      // send challenge request to the server which will handle it.
+    }
+  }
+
+  /**
+   * blahblahblah
+   * @author alejandro
+   *
+   */
+  public class CreationListener implements ActionListener {
+    public void actionPerformed(ActionEvent evt) {
+      JPopupMenu gameCreate = new JPopupMenu();
+      // need to create a field here to input game name and maxNumPlayers
+      // need to set up this window to have a tab to aaron's gameRoom stuff
+    }
+  }
+
+  private class JoinListener extends MouseAdapter {
+    public void mouseClicked(MouseEvent evt) {
+      String joined = gameList.getSelectedValue();
+      if(!joined.equals(emptyGameList)) {
+        // set up the code for what to do
+        joinMenu.show((Component) gameList,0,0);
+      }
+    }
+  }
+
   private class JoinGameListener implements ActionListener {
     public void actionPerformed(ActionEvent evt) {
       // is this the right way to get the room number?
       String roomInfo = gameList.getSelectedValue();
       // parse roomInfo to grab room number
-      /*String [] roombits = roomInfo.split()
-      if(!roomNumber.equals(" ")) {
-        callingObj.sendMessageToServer("J~"+roomNumber);
-      }*/
+      String [] roombits = roomInfo.split(" ");
+      // removing colon in room number
+      int roomNumber = Integer.parseInt
+          (roombits[0].substring(0,roombits[0].length()-1));
+      callingObj.sendMessageToServer("J~"+roomNumber);
     }
   }
-  
-  /**
-   * Creates a new game room from the parameters specified in the game protocol
-   */
-  public void addGameRoom(int roomNumber, String roomName, 
-      int curNumPlayer, int maxNumPlayer, boolean status) {
-    GameRoomData newRoom = new GameRoomData(roomName, curNumPlayer, 
-        maxNumPlayer, status);
-    gameRoomList.put(roomNumber, newRoom);
-  }
-  
-  public void removeGameRoom(int roomNumber) {
-    gameRoomList.remove(roomNumber);
-  }
-  
-  public void setInactive(int roomNum) {
-    GameRoomData gameRoom = gameRoomList.get(roomNum);
-    gameRoom.setInactive();
+
+  private class ChatButtonListener implements ActionListener {    
+    public void actionPerformed(ActionEvent event) {
+      if(messageInput.isFocusOwner()) {
+        //System.out.println("test button press\n");
+        String message = messageInput.getText();
+        if(!message.equals("")) { 
+          // this line is temporary
+          chatLog.append(username + ": " + message + "\n");
+          
+          messageInput.setText("");
+          callingObj.sendMessageToServer("C~"+message);
+        }
+      }
+      else { }; // do nothing
+    }
   }
 
-  public void setPlaying(int roomNum) {
-    GameRoomData gameRoom = gameRoomList.get(roomNum);
-    gameRoom.setPlaying();
-  }
-  
-  public void increasePlayers(int roomNum) {
-    GameRoomData gameRoom = gameRoomList.get(roomNum);
-    gameRoom.addPlayer();
-  }
-  
-  public void decreasePlayers(int roomNum) {
-    GameRoomData gameRoom = gameRoomList.get(roomNum);
-    gameRoom.removePlayer();
-  }
-  
   // contains the game room data.
   private class GameRoomData {
-    public String roomName;
+    String roomName;
     int currentNumPlayers;
     int maxNumPlayers;
     boolean playingStatus; // true if playing
     boolean full; // true if game room is full
+    
+    String gameRoomInfo;
     
     public GameRoomData(String roomName, int currentNumPlayers, 
         int maxNumPlayers, boolean status) {
@@ -289,6 +376,14 @@ public class Lobby extends JPanel {
       this.full = false;
     }
     
+    public void setListString(String gameRoomInfo) {
+      this.gameRoomInfo = gameRoomInfo;
+    }
+    
+    public String getListString() {
+      return gameRoomInfo;
+    }
+  
     public boolean testFull() {
       if (currentNumPlayers == maxNumPlayers) {
         full = true;
@@ -324,100 +419,51 @@ public class Lobby extends JPanel {
     }
     
   }
-  
-  // Need a listener to notice when the server sends a message to update the list of users.
-  /* private class UpdateUserList implements *Listener {
-   *   public void serverMessageListener(ServerMessageEvent message) {
-   *     currentUsers.clear();
-   *     for username in message {
-   *       currentUsers.addElement(username);
-   *     }
-   *   }
-   * }
+
+  /**
+   * Creates a new game room from the parameters specified in the game protocol
    */
-  /** Creates the center portion of the game window
-   *  Has a create game button as well as a list of all active games.
-   *  Clicking on an active game will open a pop-up menu giving the option to 
-   *  join that game. 
-   *  As far as I know, games should be removed from the list once they begin.
-   *  
-   */
-  public void makeCenter() {
-    JButton game_Request = new JButton("Join Game");
-    game_Request.setVisible(false);
-    JButton create_game = new JButton("Create Game");
-    
-    currentGames = new DefaultListModel<String>();
-    
-    gameList = new JList<String>(currentGames);
-    
-    JScrollPane gamePane = new JScrollPane(gameList);
-    gamePane.setAlignmentX(CENTER_ALIGNMENT);
-    
-    gameList.addMouseListener(new JoinListener());
-    gameList.setPreferredSize(new Dimension(100, 300));
-    
-    center.setLayout(new BoxLayout(center, BoxLayout.Y_AXIS));
-    //center.add(game_Request); // need message "N~[room name]~maxNumPlayers" around here
-    center.add(create_game);
-    center.add(Box.createRigidArea(new Dimension(0,5)));
-    center.add(gamePane);
-    center.add(Box.createRigidArea(new Dimension(50,0)));
+  public void addGameRoom(int roomNumber, String roomName, 
+      int curNumPlayer, int maxNumPlayer, boolean status) {
+    GameRoomData newRoom = new GameRoomData(roomName, curNumPlayer, 
+        maxNumPlayer, status);
+    gameRoomList.put(roomNumber, newRoom);
+    String statusWord = status == true ? "Playing" : "Open";
+    String gameRoomInfo = roomName + " " + roomNumber + " " + 
+        curNumPlayer + "/" + maxNumPlayer + " " + statusWord;
+    currentGames.addElement(gameRoomInfo);
+    newRoom.setListString(gameRoomInfo);
   }
   
-  private class JoinListener extends MouseAdapter {
-    public void mouseClicked(MouseEvent evt) {
-      String joined = gameList.getSelectedValue();
-      if(!joined.equals(emptyGameList)) {
-        // set up the code for what to do
-        joinMenu.show((Component) gameList,0,0);
-      }
-    }
+  /**
+   * Removes the specified game from the window and removes it from the master 
+   * hash table of games.
+   */
+  public void removeGameRoom(int roomNumber) {
+    GameRoomData deadRoom = gameRoomList.get(roomNumber);
+    String gameRoomInfo = deadRoom.getListString();
+    currentGames.removeElement(gameRoomInfo);
+    gameRoomList.remove(roomNumber);
+  }
+  
+  public void setInactive(int roomNum) {
+    GameRoomData gameRoom = gameRoomList.get(roomNum);
+    gameRoom.setInactive();
   }
 
-  // The lobby chat 
-  public void makeRight() {
-    right.setLayout(new BoxLayout(right, BoxLayout.Y_AXIS));
-    
-    // the header for the chat area
-    chatHeader = new JLabel(CHAT_HEADER);
-    chatHeader.setAlignmentX(CENTER_ALIGNMENT);
-    
-    // creating and organizing the component that stores the chatlog
-    chatLog = new JTextArea(15,30);
-    chatLog.setEditable(false);
-    chatLog.setLineWrap(true);
-    
-    // the field where you type your messages to the chat
-    messageInput = new JTextField(15);
-    
-    // submit button. Invisible since enter activates it
-    sendMessage = new JButton("Send");
-    sendMessage.addActionListener(new ChatButtonListener());
-    sendMessage.setVisible(false);
-    
-    // Adding all the components to the right side of the screen
-    right.add(chatHeader);
-    right.add(chatLog);
-    right.add(messageInput);
-    right.add(sendMessage);
+  public void setPlaying(int roomNum) {
+    GameRoomData gameRoom = gameRoomList.get(roomNum);
+    gameRoom.setPlaying();
   }
   
-  private class ChatButtonListener implements ActionListener {    
-    public void actionPerformed(ActionEvent event) {
-      if(messageInput.isFocusOwner()) {
-        //System.out.println("test button press\n");
-        String message = messageInput.getText();
-        if(!message.equals("")) { 
-          // this line is temporary
-          chatLog.append(username + ": " + message + "\n");
-          
-          messageInput.setText("");
-          callingObj.sendMessageToServer("C~"+message);
-        }
-      }
-      else { }; // do nothing
-    }
+  public void increasePlayers(int roomNum) {
+    GameRoomData gameRoom = gameRoomList.get(roomNum);
+    gameRoom.addPlayer();
+  }
+  
+  public void decreasePlayers(int roomNum) {
+    GameRoomData gameRoom = gameRoomList.get(roomNum);
+    gameRoom.removePlayer();
   }
   
   /**
@@ -428,7 +474,7 @@ public class Lobby extends JPanel {
   public void updateChat(String username, String message) {
     chatLog.append(username + ": " + message + "\n");
   }
-  
+
   /**
    *  Will update the userlist
    * @param mode: the mode of the change. "A" represents adding to the userlist.

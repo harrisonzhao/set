@@ -277,7 +277,7 @@ public class Login extends JFrame implements ActionListener {
         inputPassword.setText("");
         
         // setting up frame for the lobby window and switching to it.
-        setSize(800,450);
+        setSize(1000,450);
         lobby_Panel.enterLobby(yourUsername, callingObj);
         right.setVisible(false);
         setTitle(LOBBY);
