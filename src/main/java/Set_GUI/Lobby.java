@@ -65,7 +65,23 @@ public class Lobby extends JPanel {
   
   // hash table for game rooms
   private HashMap<Integer,GameRoomData> gameRoomList;
+
+  // stuff for creating a game
+  JPopupMenu gameCreate = new JPopupMenu();
+
   
+  
+  JLabel gameName = new JLabel("Game Name:");
+  JLabel maxPlayers = new JLabel("Max Number of Players:");
+  
+  final JTextField gameNameField = new JTextField(10);
+  final JTextField maxPlayerField = new JTextField(2);
+  
+  JPanel namePanel = new JPanel();
+  JPanel playerPanel = new JPanel();
+  
+
+
   public Lobby(Login login_Frame) {
     this.login_Frame = login_Frame;
 
@@ -252,6 +268,8 @@ public class Lobby extends JPanel {
    *  
    */
   public void makeCenter() {
+    gameCreate.setLayout(new BoxLayout(gameCreate, BoxLayout.Y_AXIS));
+
     JButton game_Request = new JButton("Join Game");
     game_Request.setVisible(false);
     JButton create_game = new JButton("Create Game");
@@ -281,6 +299,15 @@ public class Lobby extends JPanel {
     //center.add(game_Request); // need message "N~[room name]~maxNumPlayers" around here
     center.add(subPanel);
     center.add(Box.createRigidArea(new Dimension(50,0)));
+    
+    namePanel.setLayout(new BoxLayout(namePanel, BoxLayout.X_AXIS));
+    playerPanel.setLayout(new BoxLayout(playerPanel, BoxLayout.X_AXIS));
+    
+    namePanel.add(gameName);
+    namePanel.add(gameNameField);
+    
+    playerPanel.add(maxPlayers);
+    playerPanel.add(maxPlayerField);
   }
 
   /* mouse event listener for list
@@ -310,9 +337,41 @@ public class Lobby extends JPanel {
    */
   public class CreationListener implements ActionListener {
     public void actionPerformed(ActionEvent evt) {
-      JPopupMenu gameCreate = new JPopupMenu();
-      // need to create a field here to input game name and maxNumPlayers
-      // need to set up this window to have a tab to aaron's gameRoom stuff
+      /*JPopupMenu gameCreate = new JPopupMenu();
+
+      gameCreate.setLayout(new BoxLayout(gameCreate, BoxLayout.Y_AXIS));
+      
+      
+      JLabel gameName = new JLabel("Game Name:");
+      JLabel maxPlayers = new JLabel("Max Number of Players:");
+      
+      final JTextField gameNameField = new JTextField(10);
+      final JTextField maxPlayerField = new JTextField(2);
+      
+      JPanel namePanel = new JPanel();
+      JPanel playerPanel = new JPanel();
+      
+      namePanel.setLayout(new BoxLayout(namePanel, BoxLayout.X_AXIS));
+      playerPanel.setLayout(new BoxLayout(playerPanel, BoxLayout.X_AXIS));
+      
+      namePanel.add(gameName);
+      namePanel.add(gameNameField);
+      
+      playerPanel.add(maxPlayers);
+      playerPanel.add(maxPlayerField);*/
+      gameCreate.show((Component) create_Game,0,0);
+      // need to figure out how to make popup menu show up here
+      
+      
+      JButton submit = new JButton("OK");
+      submit.addActionListener(new ActionListener() {
+        public void actionPerformed(ActionEvent evt) {
+          String newGameName = gameNameField.getText();
+          String newPlayerMax = maxPlayerField.getText();
+          callingObj.sendMessageToServer("N~"+newGameName+"~"+newPlayerMax);
+        }
+      });
+      
     }
   }
 
