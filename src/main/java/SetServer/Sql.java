@@ -4,9 +4,8 @@
  * and open the template in the editor.
  */
 
-package src.main.java.SetServer;
+package SetServer;
 
-import src.main.java.SetServer.*;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;

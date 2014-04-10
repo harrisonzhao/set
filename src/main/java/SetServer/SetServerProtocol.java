@@ -20,8 +20,8 @@
 //username, password, rating
 //db username: root password:cooperee
            
-//package SetServer;
-package src.main.java.SetServer;
+package SetServer;
+//package src.main.java.SetServer;
 
 import connectionManager.*;
 import java.net.Socket;

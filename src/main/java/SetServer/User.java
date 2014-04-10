@@ -4,7 +4,7 @@
  * and open the template in the editor.
  */
 
-package src.main.java.SetServer;
+package SetServer;
 
 /**
  *
