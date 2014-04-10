@@ -11,12 +11,25 @@ package SetServer;
  * @author Harrison
  */
 public class User {
+  int id;
   public String username;
+  public String password;
   public int currentGameRoom;
-  public int rating;
-  public User(String username, int currentGameRoom, int rating) {
+  public double rating;
+  public User(int id, String username, String password,
+          double rating, int currentGameRoom) {
     this.username = username;
     this.currentGameRoom = currentGameRoom;
     this.rating = rating;
+    this.id = id;
+    this.password = password;
+  }
+  
+  public User(){
+    id = -1;
+    username = "";
+    password = "";
+    rating = -1;
+    currentGameRoom = -1;
   }
 }
