@@ -20,7 +20,8 @@
 //username, password, rating
 //db username: root password:cooperee
            
-package SetServer;
+//package SetServer;
+package src.main.java.SetServer;
 
 import connectionManager.*;
 import java.net.Socket;
@@ -512,7 +513,7 @@ public class SetServerProtocol extends Protocol {
     dbConnection = DriverManager.getConnection(
             "jdbc:mysql://IP:Port", "userName", "passWord");     
     try (Statement stmt = dbConnection.createStatement()) {
-      int updatedScore;
+      double updatedScore;
       for (int i = 0; i != winners.size(); ++i) {
         User current = users.get(winners.get(i));
         updatedScore = current.rating + addedScore;

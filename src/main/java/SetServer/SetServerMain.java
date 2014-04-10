@@ -4,7 +4,7 @@
  * and open the template in the editor.
  */
 
-package SetServer;
+package src.main.java.SetServer;
 
 import connectionManager.ConnectionManager;
 
