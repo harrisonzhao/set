@@ -91,6 +91,7 @@ public class SetServerProtocol extends Protocol {
    */
   @Override
   public void processManagerMessages(Message message) {
+    System.out.println("received msg: " + message);
     try {
       incomingMessage = incomingMessages.take();
       String [] messagePieces;
@@ -98,36 +99,46 @@ public class SetServerProtocol extends Protocol {
       switch(messagePieces[0].charAt(0)) {
         case 'L': 
           pLogin(incomingMessage.connectedID, messagePieces); 
+          System.out.println("process login completed");
           break;
         case 'R':
           pRegistration(incomingMessage.connectedID, messagePieces);
+          System.out.println("process registration completed");
           break;
         case 'D':
           pDisconnection(incomingMessage.connectedID, messagePieces);
+          System.out.println("process disconnection completed");
           break;
         case 'N':
           pCreateGame(incomingMessage.connectedID, messagePieces);
+          System.out.println("processing CreateGame: complete");
           break;
         case 'J':
           pJoinGame(incomingMessage.connectedID, messagePieces);
+          System.out.println("processing JoinGame: complete");
           break;
         case 'G':
           pStartGame(incomingMessage.connectedID, messagePieces);
+          System.out.println("processing StartGame: complete");
           break;
         case 'S':
           pSetRequest(incomingMessage.connectedID, messagePieces);
+          System.out.println("processing SetRequest: complete");
           break;
         case 'E':
           pExitGame(incomingMessage.connectedID, messagePieces);
+          System.out.println("processing ExitGame: completed");
           break;
         case 'C':
           pLobbyChat(incomingMessage.connectedID, messagePieces);
+          System.out.println("processing LobbyChat: complete");
           break;
         case 'T':
           pGameChat(incomingMessage.connectedID, messagePieces);
+          System.out.println("processing GameChat: complete");
           break;
         }
-    } catch (SQLException | InterruptedException e) {
+    } catch (InterruptedException e) {
         System.out.println("Either Database access error or Interrupted");
     }
   }
@@ -143,8 +154,7 @@ public class SetServerProtocol extends Protocol {
   //accepts message: L~username~password
   //sends either an error to client (X~[message])
   //or a request to update everyone's lobby tables (P~A~[logged in user])
-  void pLogin (int clientID, String [] messagePieces) 
-          throws SQLException {
+  void pLogin (int clientID, String [] messagePieces) {
     
     if (messagePieces.length != 3) {
       System.err.println("Message length error!");
@@ -180,8 +190,7 @@ public class SetServerProtocol extends Protocol {
   //accepts message: R~Username~Password
   //sends either an error to client (X~[message])
   //or a request to update everyone's lobby tables (P~A~[logged in user])
-  void pRegistration(int clientID, String [] messagePieces) 
-          throws SQLException {
+  void pRegistration(int clientID, String [] messagePieces) {
     if (messagePieces.length != 3) {
       System.err.println("Message error!");
       sendMessage(clientID, "X~Invalid username! Probably contains '~'");
@@ -212,9 +221,7 @@ public class SetServerProtocol extends Protocol {
   //
   //sends out G~R if gameroom number of ready players is reset
   //gameroom should allow players to click on ready button again
-  void pDisconnection(int clientID, String [] messagePieces) 
-          throws SQLException {
-    
+  void pDisconnection(int clientID, String [] messagePieces) {
     if (messagePieces.length != 1) {
       System.err.println("Disconnection message length error!");
       return;
@@ -383,7 +390,7 @@ public class SetServerProtocol extends Protocol {
   
   //accepts message: S~card1~card2~card3
   //sends a message of form G~flag~board~scores
-  void pSetRequest(int clientID, String [] messagePieces) throws SQLException{
+  void pSetRequest(int clientID, String [] messagePieces) {
     if (messagePieces.length != 4) {
       System.err.println("Set message length error!");
       return;
@@ -404,8 +411,7 @@ public class SetServerProtocol extends Protocol {
   //removes users from the room and handles game over if necessary
   //sends out U~R~[room removed] to update list of gamerooms
   //
-  void pExitGame(int clientID, String [] messagePieces) 
-          throws SQLException {
+  void pExitGame(int clientID, String [] messagePieces) {
     if (messagePieces.length != 1) {
       System.err.println("Leave game message length error!");
       return;
@@ -483,7 +489,8 @@ public class SetServerProtocol extends Protocol {
   // Decide what to do with game room
   //handle what to do upon game over
   // sends out G~R
-  void handleGameOver(GameRoom room) throws SQLException {
+  void handleGameOver(GameRoom room) {
+    System.out.println("handling GameOver");
     if (room.isCompleted() == false)
       System.err.println("Bug!");
     messageGameRoom(room, "The game is over. Ratings updating...");
@@ -515,6 +522,7 @@ public class SetServerProtocol extends Protocol {
     }
     room.resetRoom();
     messageGameRoom(room, "G~R");
+    System.out.println("handling GameOver: complete");  
   }
-  
+
 }
