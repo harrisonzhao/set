@@ -1,0 +1,75 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>SoftwareEngineering</groupId>
+  <artifactId>set</artifactId>
+  <packaging>jar</packaging>
+  <version>1.0</version>
+  <name>set</name>
+  <url>http://github.com/harrisonzhao/set</url>
+  <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+</properties>
+  <build>
+  <plugins>
+  
+    <plugin>
+      <groupId>org.apache.maven.plugins</groupId>
+      <artifactId>maven-compiler-plugin</artifactId>
+      <version>2.5.1</version>
+      <configuration>
+        <source>1.7</source>
+        <target>1.7</target>
+      </configuration>
+    </plugin>
+  </plugins>
+</build>
+
+
+<profiles>
+
+    <!-- Server -->
+    <profile><activation><property><name>
+        server
+    </name></property></activation>
+    <id>server</id>
+    <build><plugins><plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>exec-maven-plugin</artifactId>
+        <version>1.2.1</version>
+        <executions>
+        <execution>
+            <goals>
+              <goal>java</goal>
+            </goals>
+        </execution>
+        </executions>
+        <configuration>
+            <mainClass>SetServer.SetServerMain</mainClass>
+            <arguments>
+            </arguments>
+        </configuration>
+    </plugin></plugins></build></profile>
+    
+    <!-- Client -->
+    <profile><activation><property><name>
+        client
+    </name></property></activation>
+    <id>client</id>
+    <build><plugins><plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>exec-maven-plugin</artifactId>
+        <version>1.2.1</version>
+        <executions><execution><goals><goal>
+            java
+        </goal></goals></execution></executions>
+        
+        <configuration>
+            <mainClass>Set_GUI.SetClientMain</mainClass>
+            <arguments>
+            </arguments>
+        </configuration>
+    </plugin></plugins></build></profile>
+    
+</profiles>
+</project>

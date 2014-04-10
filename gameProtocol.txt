@@ -11,6 +11,11 @@ FLAG:
 	N: Someone failed a set scores need updating
 	F: Game is over, do game over behavior
 	B: Board state, no changes to scores
+  S: start game
+
+Special flags
+  U: will be G~U~[user1]~[user1score]~... where ... means possibly multiple lists users+scores
+  R: resets room and ready button
 
 BOARD:
 	Board separated by " "
@@ -33,3 +38,48 @@ Cards:
 
 Request type 2: Start game.
 G (ASK WING XHAO THE SPECIFICS OF THIS SHIT)
+
+==================================================
+Client to server
+
+L~username~password          :Login
+R~username~password          :Registration
+N~[room name]~maxNumPlayers  :Create Game
+J~[room number]              :Join Game
+G                            :Start Game (ready button pressed)
+S~card1~card2~card3          :Set request
+E                            :Exit Game
+C~Message                    :Lobby Chat
+T~Message                    :Game Chat
+
+===================================================
+Server to client
+
+LOBBY STUFF
+=============
+C~[message] : lobby chat
+C~[username]~[message] : chat username messaged lobby
+E : exit gameroom
+J~I :Could not join, game in progress
+J~F :Game Room is full
+P~R~[username] :remove client from lobby table of users
+P~A~[username] :add client username to lobby table of users
+
+For displaying game room in lobby table:
+Status is either "Inactive" or "Playing"
+U~A~[room number]~[rm name]~[curr numPlayers]~[max player]~[status]: adds to list of gamerooms
+U~R~[room number removed] : to update list of gamerooms, removes room with that number id
+U~I~[room number] : Set inactive
+U~P~[room number] : currently playing
+U~X~[room number] : increase current number players display for gameroom
+U~Y~[room number] : decrease current number players display for gameroom
+
+X~[error message] : Error
+
+
+GAME ROOM STUFF
+===============
+G (SEE ABOVE)     : Game room stuff
+E : exit game room
+T~[message] : send message to game room
+T~[username]~[message] : sends out message to gameroom from [username]

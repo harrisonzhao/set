@@ -73,4 +73,12 @@ public abstract class Protocol {
     throw new UnsupportedOperationException("Not supported yet.");
   }
   
+  public void sendMessage(int connectedID, String message) {
+    try {
+      outgoingMessages.put(new Message(connectedID, message));
+    } catch (InterruptedException e) {
+      System.err.println(
+              "Unable to send message: " + message + " to" + connectedID);
+    }
+  } 
 }

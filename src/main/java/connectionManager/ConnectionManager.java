@@ -12,6 +12,7 @@
 
 package connectionManager;
 
+import java.io.IOException;
 import java.net.Socket;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ConcurrentMap;
@@ -34,6 +35,8 @@ public class ConnectionManager {
    * port that server socket listens on for incoming connections
    * @param protocol
    * protocol that the connection manager uses
+   * @throws IOException
+   * @throws InterruptedException 
    */
   public ConnectionManager(int serverPort, Protocol protocol) {
     this.protocol = protocol;

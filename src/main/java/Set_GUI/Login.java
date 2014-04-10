@@ -61,12 +61,17 @@ public class Login extends JFrame implements ActionListener {
    * Each card is a different screen: Login, Lobby, and the Game itself. The other screens have their GUIs created in Lobby.java
    * and Set_Game.java respectively. 
    * <p>
+   * Sets up the JComponent structure for everything. It sets up a refrence to the
+   * calling object (SetClientProtocol) and sets up the GUI panel references for the
+   * Client.
    */
   public Login(SetClientProtocol callingObj) {
     this.callingObj = callingObj;
     //System.out.println("Hello from login");
     master = new JPanel(new CardLayout());
     lobby_Panel = new Lobby(this);
+    // need to add game panel to this function call
+    this.callingObj.grabPanels(this, lobby_Panel);
     cl = (CardLayout)(master.getLayout());
     master.add(panel, LOGIN);
     master.add(lobby_Panel, LOBBY);
@@ -119,13 +124,27 @@ public class Login extends JFrame implements ActionListener {
    */
   public void makeTop() {
     // Image for header
-    BufferedImage header = null; // is there a cleaner way to do this? I don't like doing it this way.
+    BufferedImage header;
+    Boolean image_succeed = true;
+    JLabel headerLabel;
     try {
-      header = ImageIO.read(new File("src/set_card.png"));
-    } catch (IOException ex) {
-      // handle exception
+      String dirtest = System.getProperty("user.dir");
+      System.out.println("Current working directory = " + dirtest);
+      header = ImageIO.read(new File("src/main/resources/set_card.png"));
     }
-    JLabel headerLabel = new JLabel(new ImageIcon(header));
+    catch (IOException ex) {
+      // handle exception
+      image_succeed = false;
+      header = null;
+    }
+    if(!image_succeed) {
+      headerLabel = new JLabel("Image Not Found");
+    }
+    else {
+      headerLabel = new JLabel(new ImageIcon(header));
+      headerLabel.setAlignmentX(CENTER_ALIGNMENT);
+    }
+
     
     // text for header
     top.setLayout(new BoxLayout(top, BoxLayout.Y_AXIS));
@@ -237,7 +256,7 @@ public class Login extends JFrame implements ActionListener {
       char[] yourPassword = inputPassword.getPassword();
       
       // send message to server
-      callingObj.sendMessage("L~" + yourUsername + "~" + new String(yourPassword));
+      callingObj.sendMessageToServer("L~" + yourUsername + "~" + new String(yourPassword));
       
       // temporary fix while we implement the database querying
       String correctUsername = "cooper";
@@ -258,7 +277,7 @@ public class Login extends JFrame implements ActionListener {
         inputPassword.setText("");
         
         // setting up frame for the lobby window and switching to it.
-        setSize(800,450);
+        setSize(1000,450);
         lobby_Panel.enterLobby(yourUsername, callingObj);
         right.setVisible(false);
         setTitle(LOBBY);
@@ -276,7 +295,7 @@ public class Login extends JFrame implements ActionListener {
       char[] yourPassword = inputPassword.getPassword();
       
       // server connection
-      callingObj.sendMessage("R~" + yourUsername + "~" + new String(yourPassword));
+      callingObj.sendMessageToServer("R~" + yourUsername + "~" + new String(yourPassword));
       
       // placeholder for non-server testing follows
       boolean invalid;
@@ -351,7 +370,8 @@ public class Login extends JFrame implements ActionListener {
   }
   
   private void windowClose() {
-    callingObj.sendMessage("D");
+    callingObj.sendMessageToServer("D");
     dispose();
+    System.exit(0);
   }
 }

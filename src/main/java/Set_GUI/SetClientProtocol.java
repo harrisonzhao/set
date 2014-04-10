@@ -22,6 +22,13 @@ public class SetClientProtocol extends Protocol {
   String serverIp;
   int serverPort;
   
+  /*
+   * References to the game windows so that we can call their member functions
+   */
+  Lobby lobRef;
+  Login logRef;
+  // GameRoom gameRef;
+  
   /**
    * Constructor, modify arguments passed to it in SetClientMain
    * @param serverIp
@@ -122,6 +129,25 @@ public class SetClientProtocol extends Protocol {
             G~U~[game room userlist string] update names+scores
                  whenever a name is added or removed
                :Update GameRoom in game*/
+/*
+               G~FLAG~BOARD~SCORES
+
+eg...
+
+G~Y~1 20 32 22 23 2 6 7 9 3 70 72~9 6
+
+FLAG:
+  Y: Someone got a set scores need updating
+  N: Someone failed a set scores need updating
+  F: Game is over, do game over behavior
+  B: Board state, no changes to scores
+  S: start game
+
+Special flags
+  U: will be G~U~[user1]~[user1score]~... where ... means possibly multiple lists users+scores
+  R: resets room and ready button
+  */
+
         break;
       case 'E':
         // exited GameRoom
@@ -130,27 +156,96 @@ public class SetClientProtocol extends Protocol {
         /* J~I :Could not join, game in progress
         J~F :Game Room is full*/
         break;
-      case 'R':
-        // reset gameroom
-        break;
       case 'C':
         //[sender's username] (message)
         // send to lobby chat
+    //  C~[message] : lobby chat
+    //C~[username]~[message] : chat username messaged lobbying 
+        String username = messagePieces[1];
+        String chatMessage = messagePieces[2];
+        lobRef.updateChat(username, chatMessage);
         break;
       case 'T':
-        /* Username~(message): game chat
-         * ~(message): system message
+      /*
+T~[message] : send message to game room
+T~[username]~[message] : sends out message to gameroom from [username]
          */
         break;
       case 'P':
         /* P~A~name :update players in lobby table of users
      P~R~name: removes name from lobby table of users*/
+        System.err.println("Attempting to update list of lobby table of users");
+        String mode = messagePieces[1];
+        String senderUsername = messagePieces[2];
+        lobRef.updateUserList(mode, senderUsername);
         break;
       case 'U':
         /*
-         * U~A~[room number]~[room name]~[current numPlayers]~[max players]~[status]
-         * U~R~[room number]
+         * U~A~[room number]~[rm name]~[curr numPlayers]~[max player]~[status]: adds to list of gamerooms
+         * U~R~[room number removed] : to update list of gamerooms, removes room with that number id
+         * U~I~[room number] : Set to not playing
+         * U~P~[room number] : currently playing
+         * U~X~[room number] : increase current number players display for gameroom
+         * U~Y~[room number] : decrease current number players display for gameroom
          */
+        int roomNum, curNumPlayers, maxNumPlayers;
+        String roomName, statusString;
+        boolean status;
+        
+        roomNum = Integer.parseInt(messagePieces[2]);
+        
+        switch(messagePieces[1].charAt(0)) {
+          /* U~A~[room number]~[rm name]~[curr numPlayers]~[max player]~[status]: 
+           * adds to list of gamerooms
+           */
+          case 'A': 
+            roomName = messagePieces[3];
+            curNumPlayers = Integer.parseInt(messagePieces[4]);
+            maxNumPlayers = Integer.parseInt(messagePieces[5]);
+            statusString = messagePieces[6];
+            status = statusString.equals("Playing");
+            
+            lobRef.addGameRoom(roomNum, roomName, curNumPlayers, 
+                maxNumPlayers, status);
+            break;
+            
+          /* U~R~[room number removed] : 
+           * to update list of gamerooms, removes room with that number id
+           */
+          case 'R':          
+            lobRef.removeGameRoom(roomNum);
+            break;
+            
+          /* U~I~[room number] : 
+           * Set to not playing
+           */
+          case 'I':
+            lobRef.setInactive(roomNum);
+            break;
+            
+          /* U~P~[room number] : 
+           * currently playing
+           */
+          case 'P':
+            lobRef.setPlaying(roomNum);
+            break;
+            
+          /* U~X~[room number] : 
+           * increase current number players display for gameroom
+           */
+          case 'X':
+            lobRef.increasePlayers(roomNum);
+            break;
+            
+          /* U~Y~[room number] : 
+           * decrease current number players display for gameroom
+           */
+          case 'Y':
+            lobRef.decreasePlayers(roomNum);
+            break;
+          default:
+            System.err.println("Error with gameList update message");
+          }
         break;
     }
   }
@@ -213,5 +308,10 @@ public class SetClientProtocol extends Protocol {
       break;
     }*/
     
+  }
+  public void grabPanels(Login log, Lobby lob/*, gameRoom game */) {
+    this.logRef = log;
+    this.lobRef = lob;
+    //this.gameRef = game;
   }
 }
