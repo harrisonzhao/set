@@ -143,7 +143,7 @@ public class Sql {
 	{
     Sql sql = new Sql();
     //sql.connectTest();
-    sql.addUser("david", "securepassword");
+    //sql.addUser("david", "securepassword");
     User su = sql.getUserFromUsername("david");
     System.out.println(su.id + " " + su.username + " " + su.password + " " + su.rating);
     su.rating = 1500;
