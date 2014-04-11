@@ -154,6 +154,11 @@ public class Lobby extends JPanel {
     
     playerPanel.add(maxPlayers);
     playerPanel.add(maxPlayerField);
+    // change this to use JOptionPane & JDialog
+    // popup menu is giving me issues
+    //http://docs.oracle.com/javase/tutorial/uiswing/components/dialog.html#input
+    gameNameField.setEditable(true);
+    maxPlayerField.setEditable(true);
     
     submit = new JButton("OK");
     submit.addActionListener(new ActionListener() {

@@ -4,7 +4,7 @@
  * and open the template in the editor.
  */
 
-package SetServer.src.gamebackend;
+package gamebackend;
 import java.util.*;
 /**
  *

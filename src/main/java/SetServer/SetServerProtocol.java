@@ -32,7 +32,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Map;
 import java.util.HashMap;
-import SetServer.src.gamebackend.*;
+import gamebackend.*;
 import java.io.BufferedReader;
 import java.util.ArrayList;
 import java.util.List;
