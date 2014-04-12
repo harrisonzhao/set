@@ -120,6 +120,8 @@ public class SetClientProtocol extends Protocol {
     switch(messagePieces[0].charAt(0)) {
       case 'X':
         // parse (errorMSG): Login/Register error
+        String errorText = messagePieces[1];
+        logRef.setErrorText(errorText);
         break;
       case 'G':
 /*        G~S start?
@@ -273,41 +275,7 @@ T~[username]~[message] : sends out message to gameroom from [username]
     
     System.out.println("testing");
     sendMessageToServer(message);
-    System.out.println("success, sent:" + message);
-    /*String [] MessagePieces = message.split("~");
-    switch(MessagePieces[0].charAt(0)) {
-    case 'L':
-      // login
-      break;
-    case 'R':
-      // register
-      break;
-    case 'D':
-      //disconnect
-      break;
-    case 'N':
-      // Create Game
-      break;
-    case 'J':
-      // Join Game
-      break;
-    case 'G':
-      // start game
-      break;
-    case 'S':
-      // set request
-      break;
-    case 'E':
-      //Exit game
-      break;
-    case 'C':
-      //lobby chat
-      break;
-    case 'T':
-      // game chat
-      break;
-    }*/
-    
+    System.out.println("success, sent:" + message);    
   }
   public void grabPanels(Login log, Lobby lob/*, gameRoom game */) {
     this.logRef = log;
