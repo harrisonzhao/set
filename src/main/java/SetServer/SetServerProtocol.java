@@ -91,7 +91,7 @@ public class SetServerProtocol extends Protocol {
    */
   @Override
   public void processManagerMessages(Message message) {
-    System.out.println("received msg: " + message);
+    System.out.println("received msg: " + message.message);
     try {
       incomingMessage = incomingMessages.take();
       String [] messagePieces;
@@ -193,7 +193,9 @@ public class SetServerProtocol extends Protocol {
   void pRegistration(int clientID, String [] messagePieces) {
     if (messagePieces.length != 3) {
       System.err.println("Message error!");
-      sendMessage(clientID, "X~Invalid username! Probably contains '~'");
+      sendMessage(clientID, "X~<html><p><center>Invalid username!<br>" +
+      		"Probably contains<br>'~'</center></p></html>");
+      // Harrison, this message is silly, it gets cut off at the tilde.
       return;
     }
     

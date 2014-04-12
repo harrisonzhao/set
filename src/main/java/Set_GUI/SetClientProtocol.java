@@ -86,6 +86,8 @@ public class SetClientProtocol extends Protocol {
    * @param message 
    */
   public void sendMessageToServer(String message) {
+    // temp
+    System.out.println("Message sent is: " + message);
     sendMessage(serverId, message);
   }
   
@@ -115,7 +117,7 @@ public class SetClientProtocol extends Protocol {
    */
   @Override
   public void processManagerMessages(Message message) {
-    System.out.println("Received message: " + message);
+    System.out.println("Received message: " + message.message);
     String [] messagePieces = message.message.split("~");
     switch(messagePieces[0].charAt(0)) {
       case 'X':
@@ -179,6 +181,9 @@ T~[username]~[message] : sends out message to gameroom from [username]
      P~R~name: removes name from lobby table of users*/
         String mode = messagePieces[1];
         String senderUsername = messagePieces[2];
+        if(mode.equals("A") & logRef.isLoggedIn) {
+          logRef.login(senderUsername);
+        }
         lobRef.updateUserList(mode, senderUsername);
         break;
       case 'U':
