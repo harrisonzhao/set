@@ -56,6 +56,11 @@ public class Login extends JFrame implements ActionListener {
   // login button
   private JButton logButton;
   
+  /**
+   * Indicates if this client is logged in
+   */
+  public boolean isLoggedIn;
+  
   /** Constructor: Creates a card layout for screen switching and sets up the main login page 
    * <p>
    * Each card is a different screen: Login, Lobby, and the Game itself. The other screens have their GUIs created in Lobby.java
@@ -76,6 +81,9 @@ public class Login extends JFrame implements ActionListener {
     master.add(panel, LOGIN);
     master.add(lobby_Panel, LOBBY);
     //master.add(game_Panel, GAME);
+    
+    isLoggedIn = false;
+    
     cl.show(master, LOGIN);
 
     createGUI();
@@ -251,7 +259,7 @@ public class Login extends JFrame implements ActionListener {
      * Action Listener for Login/Register Button. 
      * Queries the database and determines if username/password combination is correct
      */
-    right.setVisible(false);
+    //right.setVisible(false);
     if("Login".equals(e.getActionCommand())) {
       boolean isCorrect = true;
       String yourUsername = inputUsername.getText();
@@ -260,9 +268,6 @@ public class Login extends JFrame implements ActionListener {
       // send message to server
       callingObj.sendMessageToServer("L~" + yourUsername + "~" + new String(yourPassword));
       
-      inputUsername.setText("");
-      inputPassword.setText("");
-
       // temporary fix while we implement the database querying
       //String correctUsername = "cooper";
       //char[] correctPassword = {'o', 'p', 'e', 'n'}; //, 's', 'e', 's', 'a', 'm', 'e'};
@@ -304,10 +309,6 @@ public class Login extends JFrame implements ActionListener {
       // server connection
       callingObj.sendMessageToServer("R~" + yourUsername + "~" + new String(yourPassword));
       
-      // placeholder for non-server testing follows
-      //boolean invalid;
-      //invalid = !yourUsername.equals("cooper");
-      
       /*if(yourUsername.equals("")) {
         String registrationInstructions = "<html><p><center>Type in your <br>" +
             "desired username & <br> password in the <br>specified fields <br>" +
@@ -333,7 +334,11 @@ public class Login extends JFrame implements ActionListener {
       
       } */
 
+      inputUsername.setText("");
+      inputPassword.setText("");
+
     }
+    
     
     /*
      * Error code. This shouldn't ever run.
@@ -353,6 +358,7 @@ public class Login extends JFrame implements ActionListener {
   public void logout() {
     this.getRootPane().setDefaultButton(logButton);
     setSize(400,400);
+    isLoggedIn = false;
     cl.show(master, LOGIN);
   }
   
@@ -391,5 +397,16 @@ public class Login extends JFrame implements ActionListener {
     System.exit(0);
   }
   
-
+  /**
+   * Logs the player in if the call to the server was successful
+   */
+  public void login(String username) {
+    isLoggedIn = true;
+    
+    setSize(1000,450);
+    lobby_Panel.enterLobby(username, callingObj);
+    right.setVisible(false);
+    setTitle(LOBBY);
+    cl.show(master, LOBBY);
+  }
 }
