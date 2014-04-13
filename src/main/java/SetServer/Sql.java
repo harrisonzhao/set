@@ -52,7 +52,7 @@ public class Sql {
       Statement stmt = dbConnection.createStatement();
       stmt.execute(query);
       dbConnection.close();
-      
+      System.out.println("done w/ sql");
     }catch(SQLException | ClassNotFoundException e){
       System.out.println(e.getMessage());
     }

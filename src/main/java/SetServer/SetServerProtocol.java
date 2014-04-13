@@ -91,7 +91,7 @@ public class SetServerProtocol extends Protocol {
    */
   @Override
   public void processManagerMessages(Message message) {
-    System.out.println("received msg: " + message);
+    System.out.println("received msg: " + message.message);
     try {
       incomingMessage = incomingMessages.take();
       String [] messagePieces;
@@ -137,6 +137,8 @@ public class SetServerProtocol extends Protocol {
           pGameChat(incomingMessage.connectedID, messagePieces);
           System.out.println("processing GameChat: complete");
           break;
+        default:
+          System.out.println("Invalid Message!: " + message.message);
         }
     } catch (InterruptedException e) {
         System.out.println("Either Database access error or Interrupted");
