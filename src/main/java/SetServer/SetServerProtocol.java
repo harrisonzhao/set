@@ -92,56 +92,51 @@ public class SetServerProtocol extends Protocol {
   @Override
   public void processManagerMessages(Message message) {
     System.out.println("received msg: " + message.message);
-    try {
-      incomingMessage = incomingMessages.take();
-      String [] messagePieces;
-      messagePieces = incomingMessage.message.split("~");
-      switch(messagePieces[0].charAt(0)) {
-        case 'L': 
-          pLogin(incomingMessage.connectedID, messagePieces); 
-          System.out.println("process login completed");
-          break;
-        case 'R':
-          pRegistration(incomingMessage.connectedID, messagePieces);
-          System.out.println("process registration completed");
-          break;
-        case 'D':
-          pDisconnection(incomingMessage.connectedID, messagePieces);
-          System.out.println("process disconnection completed");
-          break;
-        case 'N':
-          pCreateGame(incomingMessage.connectedID, messagePieces);
-          System.out.println("processing CreateGame: complete");
-          break;
-        case 'J':
-          pJoinGame(incomingMessage.connectedID, messagePieces);
-          System.out.println("processing JoinGame: complete");
-          break;
-        case 'G':
-          pStartGame(incomingMessage.connectedID, messagePieces);
-          System.out.println("processing StartGame: complete");
-          break;
-        case 'S':
-          pSetRequest(incomingMessage.connectedID, messagePieces);
-          System.out.println("processing SetRequest: complete");
-          break;
-        case 'E':
-          pExitGame(incomingMessage.connectedID, messagePieces);
-          System.out.println("processing ExitGame: completed");
-          break;
-        case 'C':
-          pLobbyChat(incomingMessage.connectedID, messagePieces);
-          System.out.println("processing LobbyChat: complete");
-          break;
-        case 'T':
-          pGameChat(incomingMessage.connectedID, messagePieces);
-          System.out.println("processing GameChat: complete");
-          break;
-        default:
-          System.out.println("Invalid Message!: " + message.message);
-        }
-    } catch (InterruptedException e) {
-        System.out.println("Either Database access error or Interrupted");
+    String [] messagePieces;
+    messagePieces = message.message.split("~");
+    switch(messagePieces[0].charAt(0)) {
+      case 'L': 
+        pLogin(message.connectedID, messagePieces); 
+        System.out.println("process login completed");
+        break;
+      case 'R':
+        pRegistration(message.connectedID, messagePieces);
+        System.out.println("process registration completed");
+        break;
+      case 'D':
+        pDisconnection(message.connectedID, messagePieces);
+        System.out.println("process disconnection completed");
+        break;
+      case 'N':
+        pCreateGame(message.connectedID, messagePieces);
+        System.out.println("processing CreateGame: complete");
+        break;
+      case 'J':
+        pJoinGame(message.connectedID, messagePieces);
+        System.out.println("processing JoinGame: complete");
+        break;
+      case 'G':
+        pStartGame(message.connectedID, messagePieces);
+        System.out.println("processing StartGame: complete");
+        break;
+      case 'S':
+        pSetRequest(message.connectedID, messagePieces);
+        System.out.println("processing SetRequest: complete");
+        break;
+      case 'E':
+        pExitGame(message.connectedID, messagePieces);
+        System.out.println("processing ExitGame: completed");
+        break;
+      case 'C':
+        pLobbyChat(message.connectedID, messagePieces);
+        System.out.println("processing LobbyChat: complete");
+        break;
+      case 'T':
+        pGameChat(message.connectedID, messagePieces);
+        System.out.println("processing GameChat: complete");
+        break;
+      default:
+        System.out.println("Invalid Message!: " + message.message);
     }
   }
 
@@ -195,9 +190,8 @@ public class SetServerProtocol extends Protocol {
   void pRegistration(int clientID, String [] messagePieces) {
     if (messagePieces.length != 3) {
       System.err.println("Message error!");
-      sendMessage(clientID, "X~<html><p><center>Invalid username!<br>" +
-      		"Probably contains<br>'~'</center></p></html>");
-      // Harrison, this message is silly, it gets cut off at the tilde.
+      sendMessage(clientID, "X~<html><p><center>Invalid Name!<br>" +
+      		"Probably contains '~'<br></center></p></html>");
       return;
     }
     

@@ -82,10 +82,8 @@ public class ConnectionManager {
       message = null;
       try {
         message = incomingMessages.take();
-      } catch (InterruptedException e) {
-      }
-      if (message != null) {
         protocol.processManagerMessages(message);
+      } catch (InterruptedException e) {
       }
     }
   }
