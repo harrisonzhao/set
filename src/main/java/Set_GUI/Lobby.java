@@ -106,7 +106,6 @@ public class Lobby extends JPanel {
   }
 
   /**
-
    * Creates the GUI for the Lobby page
    * <p>
    * Uses a Border Layout Manager to place all components in separate parts of the screen. 
@@ -250,9 +249,6 @@ public class Lobby extends JPanel {
     //userList.addListSelectionListener(new ChallengeListener2());
     userList.addMouseListener(new ChallengeListener());
     userList.setPreferredSize(new Dimension(100, 100));
-    //currentUsers.addElement(" ");
-    // dummy user for testing purposes
-    currentUsers.addElement("ArtificalBob");
 
     JLabel titlePanel = new JLabel("Users in Lobby");
     JPanel subPanel = new JPanel();
@@ -308,7 +304,12 @@ public class Lobby extends JPanel {
     game_Request.setVisible(false);
     JButton create_game = new JButton("Create Game");
     
-    create_game.addActionListener(new CreationListener());
+    create_game.addActionListener(new ActionListener {
+      public void actionPerformed(ActionEvent evt) {
+        gameCreate.show((Component) gameList, 0,0);
+      }
+    });
+      //new CreationListener());
     
     currentGames = new DefaultListModel<String>();
     
@@ -369,38 +370,13 @@ public class Lobby extends JPanel {
    * @author alejandro
    *
    */
-  public class CreationListener implements ActionListener {
-    public void actionPerformed(ActionEvent evt) {
-      /*JPopupMenu gameCreate = new JPopupMenu();
-
-      gameCreate.setLayout(new BoxLayout(gameCreate, BoxLayout.Y_AXIS));
+  //public class CreationListener implements ActionListener {
+  //  public void actionPerformed(ActionEvent evt) {
+          
+  //    gameCreate.show((Component) gameList, 0,0);
       
-      
-      JLabel gameName = new JLabel("Game Name:");
-      JLabel maxPlayers = new JLabel("Max Number of Players:");
-      
-      final JTextField gameNameField = new JTextField(10);
-      final JTextField maxPlayerField = new JTextField(2);
-      
-      JPanel namePanel = new JPanel();
-      JPanel playerPanel = new JPanel();
-      
-      namePanel.setLayout(new BoxLayout(namePanel, BoxLayout.X_AXIS));
-      playerPanel.setLayout(new BoxLayout(playerPanel, BoxLayout.X_AXIS));
-      
-      namePanel.add(gameName);
-      namePanel.add(gameNameField);
-      
-      playerPanel.add(maxPlayers);
-      playerPanel.add(maxPlayerField);*/
-      //gameCreate.show((Component) create_Game,0,0);
-      // need to figure out how to make popup menu show up here
-      
-      
-      gameCreate.show((Component) gameList, 0,0);
-      
-    }
-  }
+  //  }
+  //}
 
   private class JoinListener extends MouseAdapter {
     public void mouseClicked(MouseEvent evt) {
@@ -471,6 +447,7 @@ public class Lobby extends JPanel {
     }
   
     public boolean testFull() {
+      //full = currentNumPlayers == maxNumPlayers ? true : false;
       if (currentNumPlayers == maxNumPlayers) {
         full = true;
       }
