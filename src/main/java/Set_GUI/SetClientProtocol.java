@@ -181,10 +181,26 @@ T~[username]~[message] : sends out message to gameroom from [username]
      P~R~name: removes name from lobby table of users*/
         String mode = messagePieces[1];
         String senderUsername = messagePieces[2];
-        if(mode.equals("A") & logRef.isLoggedIn) {
-          logRef.login(senderUsername);
+        switch(mode) {
+        case "A":
+          System.out.println("logRef.isLoggedIn = " + logRef.isLoggedIn +
+              "logRef.myUsername = " + logRef.myUsername);
+          if(!logRef.isLoggedIn && logRef.myUsername.equals(senderUsername)) {
+            logRef.login(senderUsername);
+          }
+          lobRef.updateUserList("A", senderUsername);
+          // need code to populate userlist for new players
+          break;
+        case "R":
+          if(logRef.isLoggedIn && logRef.myUsername.equals(senderUsername)) {
+            logRef.logout();
+            logRef.updateUserList("R", senderUsername);
+          }
+          break;
+        default:
+          System.err.println("Error with P~ message");
+            
         }
-        lobRef.updateUserList(mode, senderUsername);
         break;
       case 'U':
         /*

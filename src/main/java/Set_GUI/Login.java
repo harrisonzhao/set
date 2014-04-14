@@ -19,7 +19,9 @@ import java.util.*;
  * @since 2014-02-21
  */
 public class Login extends JFrame implements ActionListener {
-
+  // username for this client instance
+  public String myUsername;
+  
   // master panel that will contain all windows
   private JPanel master;
   
@@ -402,7 +404,8 @@ public class Login extends JFrame implements ActionListener {
    */
   public void login(String username) {
     isLoggedIn = true;
-    
+    myUsername = username;
+    System.out.println("I just tried to login");
     setSize(1000,450);
     lobby_Panel.enterLobby(username, callingObj);
     right.setVisible(false);
