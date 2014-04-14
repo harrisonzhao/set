@@ -78,10 +78,10 @@ public class SetServerProtocol extends Protocol {
       Set<Integer> userIds = sockets.keySet();
       for (Integer userId : userIds) {
         try {
-          outgoingMessages.put(new Message(connectedID, message));
+          outgoingMessages.put(new Message(userId, message));
         } catch (InterruptedException e) {
           System.err.println(
-                  "Unable to send message: " + message + " to" + connectedID);
+                  "Unable to send message: " + message + " to" + userId);
         }
       }
     } else {
