@@ -148,8 +148,10 @@ import java.sql.SQLE~
 
   void sendUpdatedInfo(int clientID) {
     Collection<User> userObjs = users.values();
+    String username = users.get(clientID).username;
     for (User user : userObjs) {
-      sendMessage(clientID, "P~A~" + user.username);
+      if (username != user.username)
+        sendMessage(clientID, "P~A~" + user.username);
     }
     Set<Integer> gameRoomIds = gameRooms.keySet();
     GameRoom room = null;
@@ -205,6 +207,7 @@ import java.sql.SQLE~
       if (messagePieces[2].equals(usr.password)) {
         users.put(clientID, usr);
         sendMessage(-1, "P~A~" + messagePieces[1]);
+        sendUpdatedInfo(clientID);
       } else {
         sendMessage(clientID, "X~Invalid password");
       }
@@ -231,6 +234,7 @@ import java.sql.SQLE~
       System.out.println("Created new user: " + messagePieces[1]);
       users.put(clientID, usr);
       sendMessage(-1, "P~A~" + messagePieces[1]);
+      sendUpdatedInfo(clientID);
     }
   }
   
