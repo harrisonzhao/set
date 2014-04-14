@@ -256,91 +256,29 @@ public class Login extends JFrame implements ActionListener {
    * Sends message for registration and for login
    */
   public void actionPerformed(ActionEvent e) {
+
+    // sets username
+    String yourUsername = inputUsername.getText();
+    char[] yourPassword = inputPassword.getPassword();
+    myUsername = yourUsername;
     
     /*
      * Action Listener for Login/Register Button. 
      * Queries the database and determines if username/password combination is correct
      */
-    //right.setVisible(false);
-    if("Login".equals(e.getActionCommand())) {
-      boolean isCorrect = true;
-      String yourUsername = inputUsername.getText();
-      char[] yourPassword = inputPassword.getPassword();
-      
+    if("Login".equals(e.getActionCommand())) {      
       // send message to server
       callingObj.sendMessageToServer("L~" + yourUsername + "~" + new String(yourPassword));
-      
-      // temporary fix while we implement the database querying
-      //String correctUsername = "cooper";
-      //char[] correctPassword = {'o', 'p', 'e', 'n'}; //, 's', 'e', 's', 'a', 'm', 'e'};
-  
-      //isCorrect = Arrays.equals(yourPassword, correctPassword) & yourUsername.equals(correctUsername);
-      
-      /*if(!isCorrect) {
-        String errorText = "<html><p><center>Login Failed.<br>" +
-            "That username & <br> password do not match  <br>" +
-            "any in the system. <br> Please try again <br> or register " +
-            "a <br> new username.</center></p></html>";
-        jErrorText.setText(errorText);
-        right.setVisible(true);
-      }*/
-      /*else {
-        // clearing username and password fields
-        inputUsername.setText("");
-        inputPassword.setText("");
-        
-        // setting up frame for the lobby window and switching to it.
-        setSize(1000,450);
-        lobby_Panel.enterLobby(yourUsername, callingObj);
-        right.setVisible(false);
-        setTitle(LOBBY);
-        cl.show(master, LOBBY);
-         
-        }*/
-     }
+    }
     
     /*
      * Action Listener for Registration Button. Determines if username is valid then sends the 
      * new registration information to the database.
      */
     else if("Register".equals(e.getActionCommand())) {
-
-      String yourUsername = inputUsername.getText();
-      char[] yourPassword = inputPassword.getPassword();
-      
       // server connection
       callingObj.sendMessageToServer("R~" + yourUsername + "~" + new String(yourPassword));
-      
-      /*if(yourUsername.equals("")) {
-        String registrationInstructions = "<html><p><center>Type in your <br>" +
-            "desired username & <br> password in the <br>specified fields <br>" +
-            "and press register.</center></p></html>";
-        jErrorText.setText(registrationInstructions);
-        right.setVisible(true);
-      }*/
-      /*else {
-        String successfulRegistration = "<html><p><center>Your registration <br> was successful.<br>" +
-          "Welcome " + yourUsername + ".<br> Use your new <br> username & password <br>to login.</center></p></html>";
-        jErrorText.setText(successfulRegistration);
-        right.setVisible(true);
-      } */     
-      // Code for sending username/password combination to the database.
-      /*else if(invalid) {
-        String errorText = "<html><p><center>Registration Failed.<br>" +
-            "That username is <br> already in use<br>" +
-            "in the system. <br> Please try again <br> with another" +
-            "<br> username.</center></p></html>";
-        jErrorText.setText(errorText);
-  
-        right.setVisible(true);
-      
-      } */
-
-      inputUsername.setText("");
-      inputPassword.setText("");
-
     }
-    
     
     /*
      * Error code. This shouldn't ever run.
@@ -348,6 +286,9 @@ public class Login extends JFrame implements ActionListener {
     else {
       System.err.println("We shouldn't see this");
     }
+
+    inputUsername.setText("");
+    inputPassword.setText("");
     
   }
 

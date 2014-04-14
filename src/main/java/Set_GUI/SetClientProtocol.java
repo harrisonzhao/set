@@ -194,7 +194,7 @@ T~[username]~[message] : sends out message to gameroom from [username]
         case "R":
           if(logRef.isLoggedIn && logRef.myUsername.equals(senderUsername)) {
             logRef.logout();
-            logRef.updateUserList("R", senderUsername);
+            lobRef.updateUserList("R", senderUsername);
           }
           break;
         default:
