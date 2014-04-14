@@ -161,7 +161,7 @@ public class GameRoom {
   public boolean isCompleted() {
     return state == 2;
   }
-  
+
   public void setCompleted() {
     state = 2;
   }

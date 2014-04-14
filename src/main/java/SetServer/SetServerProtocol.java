@@ -24,6 +24,7 @@ package SetServer;
 //package src.main.java.SetServer;
 
 import connectionManager.*;
+import gamebackend.*;
 import java.net.Socket;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -32,9 +33,10 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Map;
 import java.util.HashMap;
-import gamebackend.*;
 import java.io.BufferedReader;
 import java.util.ArrayList;
+import java.util.Set;
+import java.util.Collection;
 import java.util.List;
 
 public class SetServerProtocol extends Protocol {
@@ -68,6 +70,30 @@ public class SetServerProtocol extends Protocol {
     //intentionally left empty
   }
   
+
+  //need to be able to send message to all
+  @Override
+  public void sendMessage(int connectedID, String message) {
+    if (connectedID == -1) {
+      Set<Integer> userIds = sockets.keySet();
+      for (Integer userId : userIds) {
+        try {
+          outgoingMessages.put(new Message(connectedID, message));
+        } catch (InterruptedException e) {
+          System.err.println(
+                  "Unable to send message: " + message + " to" + connectedID);
+        }
+      }
+    } else {
+      try {
+        outgoingMessages.put(new Message(connectedID, message));
+      } catch (InterruptedException e) {
+        System.err.println(
+                "Unable to send message: " + message + " to" + connectedID);
+      }
+    }
+  } 
+
   public void handleDisconnection(int connectedID) {
     try {
       incomingMessages.put(new Message(connectedID, "D"));
@@ -140,11 +166,31 @@ public class SetServerProtocol extends Protocol {
     }
   }
 
+  void sendUpdatedInfo(int clientID) {
+    Collection<User> userObjs = users.values();
+    for (User user : userObjs) {
+      sendMessage(clientID, "P~A~" + user.username);
+    }
+    Set<Integer> gameRoomIds = gameRooms.keySet();
+    GameRoom room = null;
+    String status;
+    for (Integer gameRoomId : gameRoomIds) {
+      room = gameRooms.get(gameRoomId);
+      if (room.isPlaying())
+        status = "Playing";
+      else
+        status = "Inactive";
+      sendMessage(clientID, "U~A~"+gameRoomId+"~"
+            +room.getName()+"~"+room.getNumPlayers()
+            +"~"+room.getMaxNumPlayers()+"~"+status);
+    }
+            
+  }
+
   /**
    * 
    * @param clientID
    * @param messagePieces
-   * @throws SQLException 
    */
   //First three are functions that require SQL connection
   //have to connect and close after each query because of connection timeout
@@ -379,6 +425,7 @@ public class SetServerProtocol extends Protocol {
       room.incNumReady();
       messageGameRoom(room, "T~" + users.get(clientID).username + " is ready!");
       if (room.getNumPlayers() == room.getNumReady()) {
+        room.setPlaying();
         messageGameRoom(room, "T~All users are ready. Game start!");
         messageGameRoom(room, room.InitializeGame());
         sendMessage(-1, "U~P~" + starter.currentGameRoom);
