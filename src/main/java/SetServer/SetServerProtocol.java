@@ -29,14 +29,34 @@ import java.net.Socket;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
-import java.sql.SQLE~
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.Map;
+import java.util.HashMap;
+import java.io.BufferedReader;
+import java.util.ArrayList;
+import java.util.Set;
+import java.util.Collection;
+import java.util.List;
 
+public class SetServerProtocol extends Protocol {
+  
+  Connection dbConnection = null;
+  final Map<Integer, User> users;
+  final Map<Integer, GameRoom> gameRooms;
+  int numRooms;
+  Message incomingMessage;
+  Sql sql;
+  
+  public SetServerProtocol() {
+    super();
+    isrunning = true;
     users = new HashMap<>();
     gameRooms = new HashMap<>();
     numRooms = 0;
     sql = new Sql();
   }
-  
+
   //returns true to accept a connection
   @Override
   public boolean processAcceptorMessages(int numConnections, 
@@ -196,8 +216,8 @@ import java.sql.SQLE~
       //if user is send error message to client
       for (User current : users.values()) {
         if (messagePieces[1].equals(current.username)) {
-          sendMessage(clientID, "X~<html><p><center>
-            Username is<br>already online</center></p></html>");
+          sendMessage(clientID, "X~<html><p><center>" +
+            "Username is<br>already online</center></p></html>");
           return;
         }
       }
@@ -221,7 +241,7 @@ import java.sql.SQLE~
     if (messagePieces.length != 3) {
       System.err.println("Message error!");
       sendMessage(clientID, "X~<html><p><center>Invalid Name!<br>" +
-      		"Probably contains '~'<br></center></p></html>");
+          "Probably contains '~'<br></center></p></html>");
       return;
     }
     
