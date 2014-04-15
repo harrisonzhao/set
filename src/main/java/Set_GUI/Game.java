@@ -24,7 +24,7 @@ public class Game extends JPanel {
 
 	Game(Lobby lobby_frame){
 		this.lobby_frame = lobby_frame;
-		createAndShowGUI();
+		//createAndShowGUI();
 	}
 
 	

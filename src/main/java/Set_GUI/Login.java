@@ -28,7 +28,7 @@ public class Login extends JFrame implements ActionListener {
   // String constants to represent the different windows
   private final static String LOGIN = "Set Login Screen";
   private final static String LOBBY = "Set Lobby Screen";
-  private final static String GAME = "Set Game Room";
+  private final static String GAME = "Let's Play Set!";
   
   // Card Layout for changing the window focus. Needs to be changed within another class
   private CardLayout cl; 
@@ -104,6 +104,7 @@ public class Login extends JFrame implements ActionListener {
     */
   public final void createGUI() {
     lobby_Panel.createGUI();
+    game_panel.createAndShowGUI();
     makeTop();
     makeBottom();
     makeRight();
@@ -307,16 +308,6 @@ public class Login extends JFrame implements ActionListener {
   }
   
   /**
-   * Enters the game room from the Game lobby.
-   * <p>
-   * Sets the window size to appropriate dimensions, loads the Game page card, and sets the default button for that window.
-   */
-  public void enterGame() {
-    this.getRootPane().setDefaultButton(logButton); // change this to appropriate button
-    setSize(400,400); // figure out appropriate size
-    cl.show(master, GAME);
-  }
-  /**
    * Exits the user from the game itself.
    * <p>
    * Sets the window size to the lobby dimensions and shows the Lobby page card.
@@ -347,11 +338,25 @@ public class Login extends JFrame implements ActionListener {
   public void login(String username) {
     isLoggedIn = true;
     myUsername = username;
-    System.out.println("I just tried to login");
+    //System.out.println("I just tried to login");
     setSize(1000,450);
     lobby_Panel.enterLobby(username, callingObj);
     right.setVisible(false);
     setTitle(LOBBY);
     cl.show(master, LOBBY);
+  }
+
+    /**
+   * Enters the game room from the Game lobby.
+   * <p>
+   * Sets the window size to appropriate dimensions, loads the Game page card, and sets the default button for that window.
+   */
+  public void enterGame() {
+    this.getRootPane().setDefaultButton(logButton); // change this to appropriate button
+    System.out.println("I just tried to enter the game");
+    setSize(400,400); // figure out appropriate size
+    game_Panel.joinGame();
+    setTitle(GAME);
+    cl.show(master, GAME);
   }
 }
