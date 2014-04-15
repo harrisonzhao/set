@@ -33,7 +33,7 @@ public class Login extends JFrame implements ActionListener {
   // Card Layout for changing the window focus. Needs to be changed within another class
   private CardLayout cl; 
   private Lobby lobby_Panel;
-  //private Set_Game game_Panel;
+  private Game game_Panel;
   
   private SetClientProtocol callingObj;
   
@@ -74,15 +74,16 @@ public class Login extends JFrame implements ActionListener {
    */
   public Login(SetClientProtocol callingObj) {
     this.callingObj = callingObj;
-    //System.out.println("Hello from login");
+
     master = new JPanel(new CardLayout());
     lobby_Panel = new Lobby(this);
-    // need to add game panel to this function call
-    this.callingObj.grabPanels(this, lobby_Panel);
+    game_Panel = new Game(lobby_Panel);
+
+    callingObj.grabPanels(this, lobby_Panel, game_Panel);
     cl = (CardLayout)(master.getLayout());
     master.add(panel, LOGIN);
     master.add(lobby_Panel, LOBBY);
-    //master.add(game_Panel, GAME);
+    master.add(game_Panel, GAME);
     
     isLoggedIn = false;
     

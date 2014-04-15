@@ -27,7 +27,7 @@ public class SetClientProtocol extends Protocol {
    */
   Lobby lobRef;
   Login logRef;
-  // GameRoom gameRef;
+  Game gameRef;
   
   /**
    * Constructor, modify arguments passed to it in SetClientMain
@@ -298,9 +298,9 @@ T~[username]~[message] : sends out message to gameroom from [username]
     sendMessageToServer(message);
     System.out.println("success, sent:" + message);    
   }
-  public void grabPanels(Login log, Lobby lob/*, gameRoom game */) {
+  public void grabPanels(Login log, Lobby lob, Game game) {
     this.logRef = log;
     this.lobRef = lob;
-    //this.gameRef = game;
+    this.gameRef = game;
   }
 }

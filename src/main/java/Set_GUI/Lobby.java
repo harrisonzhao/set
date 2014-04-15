@@ -304,7 +304,7 @@ public class Lobby extends JPanel {
     game_Request.setVisible(false);
     JButton create_game = new JButton("Create Game");
     
-    create_game.addActionListener(new ActionListener {
+    create_game.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent evt) {
         gameCreate.show((Component) gameList, 0,0);
       }
