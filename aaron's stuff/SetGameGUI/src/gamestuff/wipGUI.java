@@ -1,85 +1,156 @@
 package gamestuff;
 
 import javax.swing.*;
+
 import java.net.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.*;
 
 
 // We'll see how this works:
+//board is good, write display and send functions, 
+//and get the event listeners up and working, as well as the scoreboard!
 
 
 public class wipGUI extends JFrame {
 	
+	static JPanel cardPane, leftside, bottomLeft, rightside;
+	String cardSelection[] = null;
+	HashMap<JToggleButton, String> cards = null;
 	
-	//I'm not good at sockets yet, so I haven't implemented a working version of the connection yet
-	//I took out everything else but what should work, which is commented out for now
-	//The layout is that we have the cards on the left, supposed to be checkboxes, but working on fixing that...
+	wipGUI(){
+		createAndShowGUI();
+	}
+
 	
-	//the top right should be a table showing player names and scores
-	//the bottom right should eventually be a functional chat widget
+	public void displayBoard(String srvr_string){
+		//----------------------------
+		//CALLED FROM SERVER
+		//----------------------------
+		cards.clear(); //clears board
+		//JToggleButton setCards[] = null;
+		// parse the message from the server and display the cards
+		String cardString = srvr_string.substring(4); // get rid of teh first 4 characters
+		String cardsToShow[] = cardString.split(" "); // break down string of cards
+		//then serve all the cards up:
+		for (int i = 0; i < cardsToShow.length; i++){
+			//String cardname = "card" + cardsToShow[i]; 
+			
+			JToggleButton setCard = new JToggleButton(new ImageIcon("resources/imgs/" + cardsToShow[i] + ".gif"));
+
+			setCard.setPreferredSize(new Dimension(100, 85));
+			setCard.setBackground(new Color(255, 255, 255));
+			setCard.addActionListener(new Selector());
+			//setCards[i] = setCard; //idk
+			cards.put(setCard, cardsToShow[i]); //add to hashmap to get back later...
+			cardPane.add(setCard);
+				
+		}
+		
+				
+	}
 	
-	//so far, i'm still working on formatting; things have been weird for two weeks; sorry it's behind...
-	//since i have nlp nearly done i've been focusing on getting the sockets and event handling to work, but to no avail.
-	//i know its not much, sorry again and I'll be working on it all weekend, as I did last weekend.
-	
-	//aside from the obvious, let me know what else you want/need implemented
-	
+	class Selector implements ActionListener{
+		public void actionPerformed(ActionEvent e){
+			JToggleButton selectedCard = (JToggleButton) e.getSource(); //return button object that got pressed
+			cardSelection[cardSelection.length] = cards.get(selectedCard); // return matching card number and add to array
+			
+		}
+		
+	}
 	
 	/*
-	private Socket socket;
-    private Out out;
-    private In in;
-
-	
-	public connectToServ(String acctname, String hostName) {
-		   
-		        try {
-		            socket = new Socket(hostName, 5122);
-		            out    = new Out(socket);
-		            in     = new In(socket);
-		        }
-		        catch (Exception ex) { ex.printStackTrace(); }
+	public void actionPerformed(ActionEvent e){
+		JToggleButton selectedCard = (JToggleButton) e.getSource(); //return button object that got pressed
+		cardSelection[cardSelection.length] = cards.get(selectedCard); // return matching card number and add to array
+		
 	}
 	*/
-
 	
-	private static void createAndShowGUI() {
+	class Submitter implements ActionListener{
+		public void actionPerformed(ActionEvent e){
+			if (cardSelection.length != 3){
+				//tell the user they done fucked up
+			} else {
+				String setSubmission = "S~";
+				for (int i = 0; i < 3; i++){
+					setSubmission = setSubmission + cardSelection[i] + " ";
+				}
+				//sendMessageToServer(setSubmission);
+				
+			}
+		}
+	}
+	
+	public static void submitSet(String selectedCards[]) {
+		if (selectedCards.length != 3){
+			//tell the user they done fucked up
+		} else {
+			String setSubmission = "S~";
+			for (int i = 0; i < 3; i++){
+				setSubmission = setSubmission + selectedCards[i] + " ";
+			}
+			//sendMessageToServer(setSubmission);
+			
+		}	
+		
+	}
+	
+	public void updateScores(String srvr_message){
+		//count number of players
+		//
+	}
+	
+	
+	
+	public void createAndShowGUI() {
 		JFrame mainframe = new JFrame("Let's Play Set!");
 		mainframe.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		mainframe.setPreferredSize(new Dimension(700, 600));
+		mainframe.setPreferredSize(new Dimension(650, 700));
 		//add two frames to this:
 		
-		//leftside shall have craploads of image buttons...(SET game cards)
-		JPanel leftside = new JPanel();
-		leftside.setBackground(new Color(248, 213, 131));
-		leftside.setPreferredSize(new Dimension(400, 600));
+		//leftside shall have craploads of image toggle buttons...(SET game cards)
+		leftside = new JPanel(new BorderLayout());
+		leftside.setBackground(new Color(95, 145, 150));
+		leftside.setPreferredSize(new Dimension(350, 700));
 		leftside.setVisible(true);
 		
+		cardPane = new JPanel(new FlowLayout());
+		cardPane.setBackground(new Color(95, 145, 150));
+		cardPane.setPreferredSize(new Dimension(350, 600));
+		
+		//holds button underneath cards
+		bottomLeft = new JPanel();
+		bottomLeft.setBackground(new Color(95, 145, 150));
+		bottomLeft.setPreferredSize(new Dimension(350, 50));
+		
 		//Right side will hold scorechart and chat
-		JPanel rightside = new JPanel();
+		rightside = new JPanel(new BorderLayout());
 		rightside.setBackground(new Color(150, 200, 200));
-		rightside.setPreferredSize(new Dimension(300, 600));
+		rightside.setPreferredSize(new Dimension(300, 700));
 		rightside.setVisible(true);
 		
+		
+		//the following examples is just display testing:
+		
+		/*
+		String num = "44";
 		//create imageicons for set card checkboxes
-		ImageIcon set1 = new ImageIcon("resources/imgs/66.gif");
+		ImageIcon set1 = new ImageIcon("resources/imgs/" + num + ".gif"); //that works! :)
 		ImageIcon set2 = new ImageIcon("resources/imgs/53.gif");
 		ImageIcon set3 = new ImageIcon("resources/imgs/21.gif");
 		
 		//create checkboxes from set images
-		JCheckBox setcard1 = new JCheckBox(set1);
-		JCheckBox setcard2 = new JCheckBox(set2);
-		JCheckBox setcard3 = new JCheckBox(set3);
+		JToggleButton setcard1 = new JToggleButton(set1);
+		JToggleButton setcard2 = new JToggleButton(set2);
+		JToggleButton setcard3 = new JToggleButton(set3);
 		
 		//organizes layout
-		//todo: get more rows to shop up on some condition?
-		setcard1.setPreferredSize(new Dimension(100, 100));
-		setcard1.setLocation(0, 0);
-		setcard2.setPreferredSize(new Dimension(100, 100));
-		setcard2.setLocation(125, 0);
-		setcard3.setPreferredSize(new Dimension(100, 100));
-		setcard3.setLocation(250, 0);
+		setcard1.setPreferredSize(new Dimension(100, 85));
+		setcard2.setPreferredSize(new Dimension(100, 85));
+		setcard3.setPreferredSize(new Dimension(100, 85));		
 		
 		//add event handling...for some reason it gave me problems
 		/*
@@ -88,10 +159,24 @@ public class wipGUI extends JFrame {
 		setcard3.addActionListener(this);
 		 */
 		
+		/*
 		//adds to frame
-		leftside.add(setcard1, BorderLayout.EAST);
-		leftside.add(setcard2, BorderLayout.NORTH);
-		leftside.add(setcard3, BorderLayout.WEST);
+		cardPane.add(setcard1);
+		cardPane.add(setcard2);
+		cardPane.add(setcard3);
+		*/
+		
+		//lets try this...
+		
+		
+		JButton submitbutton = new JButton("Submit Set!");
+		submitbutton.addActionListener(new Submitter());
+		bottomLeft.add(submitbutton, BorderLayout.CENTER);
+		
+		
+		
+		leftside.add(cardPane, BorderLayout.NORTH);
+		leftside.add(bottomLeft, BorderLayout.SOUTH);
 		
 		//TABLE STUFF
 		//Table stuff will depend on database setup...I'll work on that
@@ -127,11 +212,12 @@ public class wipGUI extends JFrame {
 		
 		
 		//add the two fields to chatpanel...
-	    chatpanel.add(enteredText, BorderLayout.CENTER);
+	    chatpanel.add(enteredText, BorderLayout.NORTH);
 	    chatpanel.add(typedText, BorderLayout.SOUTH);
 	    
 	    //add chatpanel to rightside
 		rightside.add(chatpanel, BorderLayout.PAGE_END); //I have tried EVERYTHING to put this thing at the bottom, to no avail
+	    
 	    
 		//finalize mainframe
 		mainframe.getContentPane().add(leftside, BorderLayout.WEST);
@@ -147,7 +233,7 @@ public class wipGUI extends JFrame {
 		// This does the work at the end...
 		javax.swing.SwingUtilities.invokeLater(new Runnable() {
             public void run() {
-                createAndShowGUI();
+                wipGUI thegui = new wipGUI();
             }
         });
 
