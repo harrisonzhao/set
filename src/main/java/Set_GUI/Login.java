@@ -30,7 +30,7 @@ public class Login extends JFrame implements ActionListener {
   private final static String LOBBY = "Set Lobby Screen";
   private final static String GAME = "Let's Play Set!";
   
-  // Card Layout for changing the window focus. Needs to be changed within another class
+  // Card Layout for changing the window focus. 
   private CardLayout cl; 
   private Lobby lobby_Panel;
   private Game game_Panel;
@@ -104,7 +104,8 @@ public class Login extends JFrame implements ActionListener {
     */
   public final void createGUI() {
     lobby_Panel.createGUI();
-    game_panel.createAndShowGUI();
+    game_Panel.createAndShowGUI();
+
     makeTop();
     makeBottom();
     makeRight();
@@ -354,9 +355,10 @@ public class Login extends JFrame implements ActionListener {
   public void enterGame() {
     this.getRootPane().setDefaultButton(logButton); // change this to appropriate button
     System.out.println("I just tried to enter the game");
-    setSize(400,400); // figure out appropriate size
-    game_Panel.joinGame();
+    setSize(650,700); // figure out appropriate size
+    //game_Panel.joinGame();
     setTitle(GAME);
     cl.show(master, GAME);
+    pack();
   }
 }

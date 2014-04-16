@@ -13,17 +13,17 @@ import java.util.*;
 //board is good, write display and send functions, 
 //and get the event listeners up and working, as well as the scoreboard!
 
-
+@SuppressWarnings("serial")
 public class Game extends JPanel {
 	
 	static JPanel cardPane, leftside, bottomLeft, rightside;
 	String cardSelection[] = null;
 	HashMap<JToggleButton, String> cards = null;
 	
-	private Lobby lobby_frame;
+	private Lobby lobby_panel;
 
-	Game(Lobby lobby_frame){
-		this.lobby_frame = lobby_frame;
+	Game(Lobby lobby_panel){
+		this.lobby_panel = lobby_panel;
 		//createAndShowGUI();
 	}
 
@@ -109,10 +109,12 @@ public class Game extends JPanel {
 	
 	
 	public void createAndShowGUI() {
-		JFrame mainframe = new JFrame("Let's Play Set!");
-		mainframe.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		mainframe.setPreferredSize(new Dimension(650, 700));
+		//JFrame mainframe = new JFrame("Let's Play Set!");
+		//mainframe.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		//mainframe.setPreferredSize(new Dimension(650, 700));
 		//add two frames to this:
+
+		JPanel mainframe = new JPanel();
 		
 		//leftside shall have craploads of image toggle buttons...(SET game cards)
 		leftside = new JPanel(new BorderLayout());
@@ -223,10 +225,12 @@ public class Game extends JPanel {
 	    
 	    
 		//finalize mainframe
-		mainframe.getContentPane().add(leftside, BorderLayout.WEST);
-		mainframe.getContentPane().add(rightside, BorderLayout.EAST);
+		mainframe.add(leftside, BorderLayout.WEST);
+		mainframe.add(rightside, BorderLayout.EAST);
+		//mainframe.getContentPane().add(leftside, BorderLayout.WEST);
+		//mainframe.getContentPane().add(rightside, BorderLayout.EAST);
 		
-		mainframe.pack();
+		//mainframe.pack();
         mainframe.setVisible(true);	
 		
 	}
