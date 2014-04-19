@@ -411,7 +411,7 @@ public class Lobby extends JPanel {
         String message = messageInput.getText();
         if(!message.equals("")) { 
           // this line is temporary
-          chatLog.append(username + ": " + message + "\n");
+          //chatLog.append(username + ": " + message + "\n");
           
           messageInput.setText("");
           callingObj.sendMessageToServer("C~"+message);

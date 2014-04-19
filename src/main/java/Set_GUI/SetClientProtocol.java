@@ -195,8 +195,8 @@ T~[username]~[message] : sends out message to gameroom from [username]
         case "R":
           if(logRef.isLoggedIn && logRef.myUsername.equals(senderUsername)) {
             logRef.logout();
-            lobRef.updateUserList("R", senderUsername);
           }
+          lobRef.updateUserList("R", senderUsername);
           break;
         default:
           System.err.println("Error with P~ message");
@@ -303,5 +303,16 @@ T~[username]~[message] : sends out message to gameroom from [username]
     this.logRef = log;
     this.lobRef = lob;
     this.gameRef = game;
+  }
+
+  /** 
+  * Deletes the existing interface and creates a new one 
+  */
+  public void refreshInterface() {
+    lobRef = null;
+    logRef = null;
+    gameRef = null;
+
+    showInterface();
   }
 }

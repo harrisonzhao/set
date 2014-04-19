@@ -264,6 +264,7 @@ public class Login extends JFrame implements ActionListener {
     String yourUsername = inputUsername.getText();
     char[] yourPassword = inputPassword.getPassword();
     myUsername = yourUsername;
+    System.out.println("My username is: " + myUsername);
     
     /*
      * Action Listener for Login/Register Button. 
@@ -304,10 +305,18 @@ public class Login extends JFrame implements ActionListener {
   // lacks way to indicate to server to unlog out the dude.!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
   // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
   public void logout() {
+    isLoggedIn = false;
     this.getRootPane().setDefaultButton(logButton);
     callingObj.sendMessageToServer("D");
-    setSize(400,400);
+
+    /*lobby_Panel = new Lobby(this);
+    game_Panel = new Game(lobby_Panel);
+
+    lobby_Panel.createGUI();
+    game_Panel.createAndShowGUI();*/
+
     isLoggedIn = false;
+    setSize(400,400);
     cl.show(master, LOGIN);
   }
   
