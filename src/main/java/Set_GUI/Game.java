@@ -17,6 +17,9 @@ import java.util.*;
 public class Game extends JPanel {
 	
 	static JPanel cardPane, leftside, bottomLeft, rightside;
+
+	JPanel mainframe;
+
 	String cardSelection[] = null;
 	HashMap<JToggleButton, String> cards = null;
 	
@@ -114,8 +117,9 @@ public class Game extends JPanel {
 		//mainframe.setPreferredSize(new Dimension(650, 700));
 		//add two frames to this:
 
-		JPanel mainframe = new JPanel();
-		
+		/*JPanel*/ 
+		mainframe = new JPanel();
+
 		//leftside shall have craploads of image toggle buttons...(SET game cards)
 		leftside = new JPanel(new BorderLayout());
 		leftside.setBackground(new Color(95, 145, 150));
@@ -232,6 +236,8 @@ public class Game extends JPanel {
 		
 		//mainframe.pack();
         mainframe.setVisible(true);	
+        
+        add(mainframe);
 		
 	}
 

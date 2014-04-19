@@ -390,14 +390,17 @@ public class Lobby extends JPanel {
 
   private class JoinGameListener implements ActionListener {
     public void actionPerformed(ActionEvent evt) {
-      // is this the right way to get the room number?
       String roomInfo = gameList.getSelectedValue();
+
       // parse roomInfo to grab room number
       String [] roombits = roomInfo.split(" ");
+
       // removing colon in room number
       int roomNumber = Integer.parseInt
           (roombits[0].substring(0,roombits[0].length()-1));
-      callingObj.sendMessageToServer("J~"+roomNumber);
+
+      callingObj.sendMessageToServer("J~"+roomNumber); // join the game. Server will presumeably send back U~X~[room number]
+      login_Frame.enterGame();
     }
   }
 
