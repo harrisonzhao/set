@@ -242,7 +242,7 @@ public class Game extends JPanel {
 	}
 
 	
-	public static void main(String[] args) {
+	/*public static void main(String[] args) {
 		// This does the work at the end...
 		javax.swing.SwingUtilities.invokeLater(new Runnable() {
             public void run() {
@@ -250,6 +250,6 @@ public class Game extends JPanel {
             }
         });
 
-	}
+	}*/
 
 }
