@@ -236,7 +236,7 @@ public class Game extends JPanel {
 		
 		//mainframe.pack();
         mainframe.setVisible(true);	
-        
+
         add(mainframe);
 		
 	}
@@ -246,7 +246,7 @@ public class Game extends JPanel {
 		// This does the work at the end...
 		javax.swing.SwingUtilities.invokeLater(new Runnable() {
             public void run() {
-                wipGUI thegui = new wipGUI();
+                Game thegui = new Game();
             }
         });
 
