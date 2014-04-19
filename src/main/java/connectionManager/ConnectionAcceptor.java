@@ -66,6 +66,7 @@ public class ConnectionAcceptor extends Thread {
                                     isrunning,
                                     incomingMessages,
                                     incomingStream,
+                                    sockets,
                                     protocol);
         ++numConnections;
         connection.start();

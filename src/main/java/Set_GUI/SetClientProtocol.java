@@ -60,6 +60,7 @@ public class SetClientProtocol extends Protocol {
                                             isrunning,
                                             incomingMessages,
                                             masterStream,
+                                            sockets,
                                             this);
       connection.start();
     } catch (IOException ex) {

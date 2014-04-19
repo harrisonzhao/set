@@ -275,7 +275,6 @@ public class SetServerProtocol extends Protocol {
       System.err.println("Disconnection message length error!");
       return;
     }
-    sockets.remove(clientID);
     User disconnected = users.get(clientID);
     
     //check if disconnected client was in a GameRoom or not
