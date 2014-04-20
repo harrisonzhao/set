@@ -163,13 +163,17 @@ Special flags
         J~F :Game Room is full*/
         break;
       case 'C':
-        //[sender's username] (message)
-        // send to lobby chat
-    //  C~[message] : lobby chat
-    //C~[username]~[message] : chat username messaged lobbying 
-        String username = messagePieces[1];
-        String chatMessage = messagePieces[2];
-        lobRef.updateChat(username, chatMessage);
+        //C~[username]~[message] : chat username messaged lobbying 
+        if(messagePieces.length == 3) {
+          String username = messagePieces[1];
+          String chatMessage = messagePieces[2];
+          lobRef.updateChat(username, chatMessage);
+        }
+        // C~[message] : lobby chat announcement
+        else {
+          String chatMessage = messagePieces[1];
+          lobRef.updateChat("System", chatMessage);
+        }
         break;
       case 'T':
       /*
@@ -184,10 +188,16 @@ T~[username]~[message] : sends out message to gameroom from [username]
         String senderUsername = messagePieces[2];
         switch(mode) {
         case "A":
-          if(!logRef.isLoggedIn && logRef.myUsername.equals(senderUsername)) {
-            logRef.login(senderUsername);
+          System.out.println("Logged in value is " + logRef.isLoggedIn);
+          System.out.println("My username is " + logRef.myUsername + " Login username is " + senderUsername);
+
+          if(logRef.myUsername != null) {
+            if(!logRef.isLoggedIn && logRef.myUsername.equals(senderUsername)) {
+              logRef.login(senderUsername);
+            }
+            lobRef.updateUserList("A", senderUsername);
           }
-          lobRef.updateUserList("A", senderUsername);
+
           // need code to populate userlist for new players
           break;
         case "R":
