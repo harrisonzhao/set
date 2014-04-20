@@ -24,9 +24,11 @@ public class Game extends JPanel {
 	HashMap<JToggleButton, String> cards = null;
 	
 	private Lobby lobby_panel;
-
+	private Login login_panel;
+	
 	Game(Lobby lobby_panel){
 		this.lobby_panel = lobby_panel;
+		this.login_panel = lobby_panel.login_panel;
 		//createAndShowGUI();
 	}
 
