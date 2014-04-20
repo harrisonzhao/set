@@ -352,7 +352,16 @@ public class SetServerProtocol extends Protocol {
     }
     rmCreator.currentGameRoom = numRooms;
     GameRoom newRm = new GameRoom(
+        messagePieces[1], Integer.parseInt(messagePieces[2]));
+    /*
+    GameRoom newRm = null;
+    try {
+      newRm = new GameRoom(
             messagePieces[1], Integer.parseInt(messagePieces[2]));
+    } catch (NumberFormatException e) {
+      sendMessage(clientID, "C~Can't have non-Integer as number of players!");
+      return;
+    }*/
     newRm.addPlayer(clientID, rmCreator.username);
     //update gameroom window
     sendMessage(clientID, newRm.encodeNamesToString());
@@ -362,8 +371,8 @@ public class SetServerProtocol extends Protocol {
             +messagePieces[1]+"~"+newRm.getNumPlayers()
             +"~"+newRm.getMaxNumPlayers()+"~Inactive");
     sendMessage(-1, 
-            "C~"+rmCreator.username+" created a game with number: "
-            +numRooms + " and name:" + newRm.getName());
+            "C~"+rmCreator.username+" created a game with id: "
+            +numRooms + " and name:" + messagePieces[1]);
     gameRooms.put(numRooms, newRm);
     ++numRooms;
   }
