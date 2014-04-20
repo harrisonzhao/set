@@ -75,11 +75,15 @@ public class Lobby extends JPanel {
   
   private JButton submit;
 
+  private JButton cancelButton = new JButton("Cancel");
+  private boolean exitCreate = false;
+
   final JComponent[] createGameInputs = new JComponent[] {
     new JLabel("Enter name:"),
     gameNameField,
-    new JLabel("Enter max # players:"),
-    maxPlayerField
+    new JLabel("Enter max # players (limit 4):"),
+    maxPlayerField,
+    cancelButton
   };
 
   public Lobby(Login login_Frame) {
@@ -296,14 +300,12 @@ public class Lobby extends JPanel {
     center.add(subPanel);
     center.add(Box.createRigidArea(new Dimension(50,0)));
     
-    //namePanel.setLayout(new BoxLayout(namePanel, BoxLayout.X_AXIS));
-    //playerPanel.setLayout(new BoxLayout(playerPanel, BoxLayout.X_AXIS));
-    
-    //namePanel.add(gameName);
-    //namePanel.add(gameNameField);
-    
-    //playerPanel.add(maxPlayers);
-    //playerPanel.add(maxPlayerField);
+    cancelButton.addActionListener(new ActionListener() {
+    public void actionPerformed(ActionEvent evt) {
+      exitCreate = true;
+    }
+  });
+
   }
 
 
@@ -314,9 +316,28 @@ public class Lobby extends JPanel {
    */
   public class CreationListener implements ActionListener {
     public void actionPerformed(ActionEvent evt) {
-      JOptionPane.showMessageDialog(login_Frame, createGameInputs, "Test Dialog", JOptionPane.PLAIN_MESSAGE);          
-      callingObj.sendMessageToServer("N~"+gameNameField.getText()+"~"+maxPlayerField.getText()); 
-      login_Frame.enterGame();
+      int maxPlayers;
+      boolean redo = false;
+      exitCreate = false;
+      do {
+        JOptionPane.showMessageDialog(login_Frame, createGameInputs, "Test Dialog", JOptionPane.PLAIN_MESSAGE);
+        try {
+          maxPlayers = Integer.parseInt(maxPlayerField.getText());
+          redo = maxPlayers>4 || maxPlayers<1;
+        }
+        catch(NumberFormatException ex) {
+          redo = true;
+        }
+        System.out.println("exit create = " + exitCreate);
+        if(exitCreate) {
+          break;
+        }
+      } while(redo);
+      
+      if(!exitCreate) {
+        callingObj.sendMessageToServer("N~"+gameNameField.getText()+"~"+maxPlayerField.getText()); 
+        login_Frame.enterGame();
+      }
     }
   }
 
@@ -501,19 +522,4 @@ public class Lobby extends JPanel {
       System.err.println("Error. That is an invalid userlist update command");
     }
   }
-
-  /*public class CreateGameDialog extends JDialog implements ActionListener, PropertyChangeListener {
-    private String gameData = null;
-    private JPanel namePanel;
-    private JPanel playerPanel;
-
-    private JOptionPane optionPane;
-
-    public String getResults() {
-      return gameData;
-    }
-
-    public CreateGameDialog(Frame aFrame, String aWord, )
-
-  }*/
 }
