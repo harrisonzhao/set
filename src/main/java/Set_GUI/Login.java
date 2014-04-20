@@ -77,7 +77,7 @@ public class Login extends JFrame implements ActionListener {
 
     master = new JPanel(new CardLayout());
     lobby_Panel = new Lobby(this);
-    game_Panel = new Game(lobby_Panel);
+    game_Panel = new Game(this, lobby_Panel);
 
     callingObj.grabPanels(this, lobby_Panel, game_Panel);
     cl = (CardLayout)(master.getLayout());

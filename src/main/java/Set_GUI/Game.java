@@ -26,9 +26,9 @@ public class Game extends JPanel {
 	private Lobby lobby_panel;
 	private Login login_panel;
 	
-	Game(Lobby lobby_panel){
+	Game(Login login_panell, Lobby lobby_panel){
 		this.lobby_panel = lobby_panel;
-		this.login_panel = lobby_panel.login_panel;
+		this.login_panel = login_panel;
 		//createAndShowGUI();
 	}
 
