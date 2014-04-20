@@ -261,18 +261,18 @@ public class Login extends JFrame implements ActionListener {
   public void actionPerformed(ActionEvent e) {
 
     // sets username
-    String yourUsername = inputUsername.getText();
+    // String yourUsername = inputUsername.getText();
+    myUsername = inputUsername.getText();
     char[] yourPassword = inputPassword.getPassword();
-    myUsername = yourUsername;
-    System.out.println("My username is: " + myUsername);
-    
+    //myUsername = yourUsername;
+
     /*
      * Action Listener for Login/Register Button. 
      * Queries the database and determines if username/password combination is correct
      */
     if("Login".equals(e.getActionCommand())) {      
       // send message to server
-      callingObj.sendMessageToServer("L~" + yourUsername + "~" + new String(yourPassword));
+      callingObj.sendMessageToServer("L~" + myUsername + "~" + new String(yourPassword));
     }
     
     /*
@@ -281,7 +281,7 @@ public class Login extends JFrame implements ActionListener {
      */
     else if("Register".equals(e.getActionCommand())) {
       // server connection
-      callingObj.sendMessageToServer("R~" + yourUsername + "~" + new String(yourPassword));
+      callingObj.sendMessageToServer("R~" + myUsername + "~" + new String(yourPassword));
     }
     
     /*

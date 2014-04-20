@@ -50,11 +50,7 @@ public class Lobby extends JPanel {
   // active user list and open game list
   public DefaultListModel<String> currentUsers, currentGames;
   private JList<String> userList, gameList;
-  
-  // challenge other players
-  private JPopupMenu challengeMenu;
-  private JMenuItem menuChallenge;
-  
+    
   // join other games
   private JPopupMenu joinMenu;
   private JMenuItem menuJoin;
@@ -63,7 +59,7 @@ public class Lobby extends JPanel {
   private String emptyGameList = "There are no open games";
   
   // hash table for game rooms
-  private HashMap<Integer,GameRoomData> gameRoomList;
+  private HashMap<Integer,GameRoomData> gameRoomList = new HashMap<Integer,GameRoomData>();
 
   // stuff for creating a game
   private JPopupMenu gameCreate; 
@@ -78,6 +74,13 @@ public class Lobby extends JPanel {
   private JPanel playerPanel;
   
   private JButton submit;
+
+  final JComponent[] createGameInputs = new JComponent[] {
+    new JLabel("Enter name:"),
+    gameNameField,
+    new JLabel("Enter max # players:"),
+    maxPlayerField
+  };
 
   public Lobby(Login login_Frame) {
     this.login_Frame = login_Frame;
@@ -95,12 +98,7 @@ public class Lobby extends JPanel {
   public void enterLobby (String username, SetClientProtocol callingObj) {
     this.username = username;
     this.callingObj = callingObj;
-    
-    // probably won't need this in the end.
-    //currentUsers.addElement(username);
-    
-    // or send the new username to the server to update the list (probably that)
-    
+        
     welcome.setText("Welcome " + username);
     this.getRootPane().setDefaultButton(sendMessage);
   }
@@ -121,13 +119,7 @@ public class Lobby extends JPanel {
     panel.add(left, BorderLayout.WEST);
     panel.add(center, BorderLayout.CENTER);
     panel.add(right, BorderLayout.EAST);
-    
-    // challenge popup menu
-    challengeMenu = new JPopupMenu();
-    menuChallenge = new JMenuItem("Challenge");
-    challengeMenu.add(menuChallenge);
-    menuChallenge.addActionListener(new IssueChallengeListener());
-    
+        
     // join game popup menu
     joinMenu = new JPopupMenu();
     menuJoin = new JMenuItem("Join Game");
@@ -147,30 +139,6 @@ public class Lobby extends JPanel {
     
     namePanel.setLayout(new BoxLayout(namePanel, BoxLayout.X_AXIS));
     playerPanel.setLayout(new BoxLayout(playerPanel, BoxLayout.X_AXIS));
-    
-    namePanel.add(gameName);
-    namePanel.add(gameNameField);
-    
-    playerPanel.add(maxPlayers);
-    playerPanel.add(maxPlayerField);
-    // change this to use JOptionPane & JDialog
-    // popup menu is giving me issues
-    //http://docs.oracle.com/javase/tutorial/uiswing/components/dialog.html#input
-    gameNameField.setEditable(true);
-    maxPlayerField.setEditable(true);
-    
-    submit = new JButton("OK");
-    submit.addActionListener(new ActionListener() {
-      public void actionPerformed(ActionEvent evt) {
-        String newGameName = gameNameField.getText();
-        String newPlayerMax = maxPlayerField.getText();
-        callingObj.sendMessageToServer("N~"+newGameName+"~"+newPlayerMax);
-      }
-    });
-    
-    gameCreate.add(namePanel);
-    gameCreate.add(playerPanel);
-    gameCreate.add(submit);
   }
 
   /**
@@ -246,8 +214,6 @@ public class Lobby extends JPanel {
     JScrollPane userPane = new JScrollPane(userList);
     userPane.setAlignmentX(LEFT_ALIGNMENT);
     
-    //userList.addListSelectionListener(new ChallengeListener2());
-    userList.addMouseListener(new ChallengeListener());
     userList.setPreferredSize(new Dimension(100, 100));
 
     JLabel titlePanel = new JLabel("Users in Lobby");
@@ -304,12 +270,7 @@ public class Lobby extends JPanel {
     game_Request.setVisible(false);
     JButton create_game = new JButton("Create Game");
     
-    create_game.addActionListener(new ActionListener() {
-      public void actionPerformed(ActionEvent evt) {
-        gameCreate.show((Component) gameList, 0,0);
-      }
-    });
-      //new CreationListener());
+    create_game.addActionListener(new CreationListener());
     
     currentGames = new DefaultListModel<String>();
     
@@ -345,38 +306,19 @@ public class Lobby extends JPanel {
     //playerPanel.add(maxPlayerField);
   }
 
-  /* mouse event listener for list
-   * 
-   */
-  private class ChallengeListener extends MouseAdapter {
-   public void mouseClicked(MouseEvent evt) {
-    String challenged = userList.getSelectedValue();
-    String challenger = username;
-    if(challenged != " " && challenged != username) {
-      //int userIndex = userList.getSelectedIndex();
-      challengeMenu.show((Component) userList,0,0);
-    }
-   }
-  }
-  
-  private class IssueChallengeListener implements ActionListener {
-    public void actionPerformed(ActionEvent evt) {
-      // send challenge request to the server which will handle it.
-    }
-  }
 
   /**
    * blahblahblah
    * @author alejandro
    *
    */
-  //public class CreationListener implements ActionListener {
-  //  public void actionPerformed(ActionEvent evt) {
-          
-  //    gameCreate.show((Component) gameList, 0,0);
-      
-  //  }
-  //}
+  public class CreationListener implements ActionListener {
+    public void actionPerformed(ActionEvent evt) {
+      JOptionPane.showMessageDialog(login_Frame, createGameInputs, "Test Dialog", JOptionPane.PLAIN_MESSAGE);          
+      callingObj.sendMessageToServer("N~"+gameNameField.getText()+"~"+maxPlayerField.getText()); 
+      login_Frame.enterGame();
+    }
+  }
 
   private class JoinListener extends MouseAdapter {
     public void mouseClicked(MouseEvent evt) {
@@ -402,17 +344,14 @@ public class Lobby extends JPanel {
       callingObj.sendMessageToServer("J~"+roomNumber); // join the game. Server will presumeably send back U~X~[room number]
       login_Frame.enterGame();
     }
-  }
+  } 
 
   private class ChatButtonListener implements ActionListener {    
     public void actionPerformed(ActionEvent event) {
       if(messageInput.isFocusOwner()) {
         //System.out.println("test button press\n");
         String message = messageInput.getText();
-        if(!message.equals("")) { 
-          // this line is temporary
-          //chatLog.append(username + ": " + message + "\n");
-          
+        if(!message.equals("")) {           
           messageInput.setText("");
           callingObj.sendMessageToServer("C~"+message);
         }
@@ -439,6 +378,9 @@ public class Lobby extends JPanel {
       this.playingStatus = status;
       
       this.full = false;
+
+            System.out.println("room name: " + roomName + " current number players: " + currentNumPlayers 
+                + " Max number Players: " + maxNumPlayers + " Status: " + status);
     }
     
     public void setListString(String gameRoomInfo) {
@@ -559,4 +501,19 @@ public class Lobby extends JPanel {
       System.err.println("Error. That is an invalid userlist update command");
     }
   }
+
+  /*public class CreateGameDialog extends JDialog implements ActionListener, PropertyChangeListener {
+    private String gameData = null;
+    private JPanel namePanel;
+    private JPanel playerPanel;
+
+    private JOptionPane optionPane;
+
+    public String getResults() {
+      return gameData;
+    }
+
+    public CreateGameDialog(Frame aFrame, String aWord, )
+
+  }*/
 }

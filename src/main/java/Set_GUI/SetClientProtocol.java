@@ -184,8 +184,6 @@ T~[username]~[message] : sends out message to gameroom from [username]
         String senderUsername = messagePieces[2];
         switch(mode) {
         case "A":
-          System.out.println("logRef.isLoggedIn = " + logRef.isLoggedIn +
-              "logRef.myUsername = " + logRef.myUsername);
           if(!logRef.isLoggedIn && logRef.myUsername.equals(senderUsername)) {
             logRef.login(senderUsername);
           }
@@ -229,6 +227,7 @@ T~[username]~[message] : sends out message to gameroom from [username]
             statusString = messagePieces[6];
             status = statusString.equals("Playing");
             
+
             lobRef.addGameRoom(roomNum, roomName, curNumPlayers, 
                 maxNumPlayers, status);
             break;
