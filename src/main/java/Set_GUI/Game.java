@@ -21,6 +21,7 @@ public class Game extends JPanel {
 	static JTextArea enteredText;
 
 	JPanel mainframe;
+	SetClientProtocol callingObj;
 
 	String cardSelection[] = null;
 	HashMap<JToggleButton, String> cards = null;
@@ -35,7 +36,9 @@ public class Game extends JPanel {
 		//createAndShowGUI();
 	}
 
-	
+	public void setClient(SetClientProtocol callingObj) {
+		this.callingObj = callingObj;
+	}
 	public void displayBoard(String srvr_string){
 		//----------------------------
 		//CALLED FROM SERVER
