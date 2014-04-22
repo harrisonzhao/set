@@ -1,4 +1,4 @@
-package Set_GUI;
+package gamestuff;
 
 import javax.swing.*;
 
@@ -13,26 +13,18 @@ import java.util.*;
 //board is good, write display and send functions, 
 //and get the event listeners up and working, as well as the scoreboard!
 
-@SuppressWarnings("serial")
-public class Game extends JPanel {
+
+public class wipGUI extends JFrame {
 	
 	static JPanel cardPane, leftside, bottomLeft, rightside;
 	static JTextField typedText;
 	static JTextArea enteredText;
-
-	JPanel mainframe;
-
 	String cardSelection[] = null;
 	HashMap<JToggleButton, String> cards = null;
 	Object[][] playerData = null;
-
-	private Lobby lobby_panel;
-	private Login login_panel;
 	
-	Game(Login login_panell, Lobby lobby_panel){
-		this.lobby_panel = lobby_panel;
-		this.login_panel = login_panel;
-		//createAndShowGUI();
+	wipGUI(){
+		createAndShowGUI();
 	}
 
 	
@@ -63,13 +55,16 @@ public class Game extends JPanel {
 				
 	}
 	
+	
 	class TextSend implements ActionListener{
 		public void actionPerformed(ActionEvent e){
 			String chattext = typedText.getText();
 			//sendMessageToServer(chattext);
 		}
 	}
-
+	
+	
+	
 	class Selector implements ActionListener{
 		public void actionPerformed(ActionEvent e){
 			JToggleButton selectedCard = (JToggleButton) e.getSource(); //return button object that got pressed
@@ -124,19 +119,15 @@ public class Game extends JPanel {
 		//count number of players
 		//
 	}
-
 	
 	
 	
 	public void createAndShowGUI() {
-		//JFrame mainframe = new JFrame("Let's Play Set!");
-		//mainframe.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		//mainframe.setPreferredSize(new Dimension(650, 700));
+		JFrame mainframe = new JFrame("Let's Play Set!");
+		mainframe.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		mainframe.setPreferredSize(new Dimension(650, 700));
 		//add two frames to this:
-
-		/*JPanel*/ 
-		mainframe = new JPanel();
-
+		
 		//leftside shall have craploads of image toggle buttons...(SET game cards)
 		leftside = new JPanel(new BorderLayout());
 		leftside.setBackground(new Color(95, 145, 150));
@@ -206,10 +197,11 @@ public class Game extends JPanel {
 		
 		//TABLE STUFF
 		//Table stuff will depend on database setup...I'll work on that
-		
-		//JTable scores = new JTable(data, {"Players", "Score"});
-		//rightside.add(scores, BorderLayout.NORTH);
-		
+		/*
+		String headers[] = {"Players", "Score"}; 
+		JTable scores = new JTable(playerData, headers);
+		rightside.add(scores, BorderLayout.NORTH);
+		*/
 		
 		
 		//CHAT STUFF
@@ -255,29 +247,26 @@ public class Game extends JPanel {
 	    
 	    //add chatpanel to rightside
 		rightside.add(chatpanel, BorderLayout.PAGE_END); //I have tried EVERYTHING to put this thing at the bottom, to no avail
-	       
+	    
+	    
 		//finalize mainframe
-		mainframe.add(leftside, BorderLayout.WEST);
-		mainframe.add(rightside, BorderLayout.EAST);
-		//mainframe.getContentPane().add(leftside, BorderLayout.WEST);
-		//mainframe.getContentPane().add(rightside, BorderLayout.EAST);
+		mainframe.getContentPane().add(leftside, BorderLayout.WEST);
+		mainframe.getContentPane().add(rightside, BorderLayout.EAST);
 		
-		//mainframe.pack();
+		mainframe.pack();
         mainframe.setVisible(true);	
-
-        add(mainframe);
 		
 	}
 
 	
-	/*public static void main(String[] args) {
+	public static void main(String[] args) {
 		// This does the work at the end...
 		javax.swing.SwingUtilities.invokeLater(new Runnable() {
             public void run() {
-                Game thegui = new Game();
+                wipGUI thegui = new wipGUI();
             }
         });
 
-	}*/
+	}
 
 }
