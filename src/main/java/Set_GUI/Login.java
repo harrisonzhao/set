@@ -28,12 +28,12 @@ public class Login extends JFrame implements ActionListener {
   // String constants to represent the different windows
   private final static String LOGIN = "Set Login Screen";
   private final static String LOBBY = "Set Lobby Screen";
-  private final static String GAME = "Set Game Room";
+  private final static String GAME = "Let's Play Set!";
   
-  // Card Layout for changing the window focus. Needs to be changed within another class
+  // Card Layout for changing the window focus. 
   private CardLayout cl; 
   private Lobby lobby_Panel;
-  //private Set_Game game_Panel;
+  private Game game_Panel;
   
   private SetClientProtocol callingObj;
   
@@ -74,15 +74,16 @@ public class Login extends JFrame implements ActionListener {
    */
   public Login(SetClientProtocol callingObj) {
     this.callingObj = callingObj;
-    //System.out.println("Hello from login");
+
     master = new JPanel(new CardLayout());
     lobby_Panel = new Lobby(this);
-    // need to add game panel to this function call
-    this.callingObj.grabPanels(this, lobby_Panel);
+    game_Panel = new Game(lobby_Panel);
+
+    callingObj.grabPanels(this, lobby_Panel, game_Panel);
     cl = (CardLayout)(master.getLayout());
     master.add(panel, LOGIN);
     master.add(lobby_Panel, LOBBY);
-    //master.add(game_Panel, GAME);
+    master.add(game_Panel, GAME);
     
     isLoggedIn = false;
     
@@ -103,6 +104,8 @@ public class Login extends JFrame implements ActionListener {
     */
   public final void createGUI() {
     lobby_Panel.createGUI();
+    game_Panel.createAndShowGUI();
+
     makeTop();
     makeBottom();
     makeRight();
@@ -258,17 +261,18 @@ public class Login extends JFrame implements ActionListener {
   public void actionPerformed(ActionEvent e) {
 
     // sets username
-    String yourUsername = inputUsername.getText();
+    // String yourUsername = inputUsername.getText();
+    myUsername = inputUsername.getText();
     char[] yourPassword = inputPassword.getPassword();
-    myUsername = yourUsername;
-    
+    //myUsername = yourUsername;
+
     /*
      * Action Listener for Login/Register Button. 
      * Queries the database and determines if username/password combination is correct
      */
     if("Login".equals(e.getActionCommand())) {      
       // send message to server
-      callingObj.sendMessageToServer("L~" + yourUsername + "~" + new String(yourPassword));
+      callingObj.sendMessageToServer("L~" + myUsername + "~" + new String(yourPassword));
     }
     
     /*
@@ -277,7 +281,7 @@ public class Login extends JFrame implements ActionListener {
      */
     else if("Register".equals(e.getActionCommand())) {
       // server connection
-      callingObj.sendMessageToServer("R~" + yourUsername + "~" + new String(yourPassword));
+      callingObj.sendMessageToServer("R~" + myUsername + "~" + new String(yourPassword));
     }
     
     /*
@@ -298,23 +302,24 @@ public class Login extends JFrame implements ActionListener {
    *  <p>
    *  Sets the window size to appropriate dimensions, loads the Game page card, and sets the default button for that window.  
    */
+  // lacks way to indicate to server to unlog out the dude.!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+  // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
   public void logout() {
-    this.getRootPane().setDefaultButton(logButton);
-    setSize(400,400);
     isLoggedIn = false;
+    this.getRootPane().setDefaultButton(logButton);
+    callingObj.sendMessageToServer("D");
+
+    /*lobby_Panel = new Lobby(this);
+    game_Panel = new Game(lobby_Panel);
+
+    lobby_Panel.createGUI();
+    game_Panel.createAndShowGUI();*/
+
+    isLoggedIn = false;
+    setSize(400,400);
     cl.show(master, LOGIN);
   }
   
-  /**
-   * Enters the game room from the Game lobby.
-   * <p>
-   * Sets the window size to appropriate dimensions, loads the Game page card, and sets the default button for that window.
-   */
-  public void enterGame() {
-    this.getRootPane().setDefaultButton(logButton); // change this to appropriate button
-    setSize(400,400); // figure out appropriate size
-    cl.show(master, GAME);
-  }
   /**
    * Exits the user from the game itself.
    * <p>
@@ -335,7 +340,7 @@ public class Login extends JFrame implements ActionListener {
   }  
   
   private void windowClose() {
-    callingObj.sendMessageToServer("D");
+    //callingObj.sendMessageToServer("D");
     dispose();
     System.exit(0);
   }
@@ -346,11 +351,26 @@ public class Login extends JFrame implements ActionListener {
   public void login(String username) {
     isLoggedIn = true;
     myUsername = username;
-    System.out.println("I just tried to login");
+    //System.out.println("I just tried to login");
     setSize(1000,450);
     lobby_Panel.enterLobby(username, callingObj);
     right.setVisible(false);
     setTitle(LOBBY);
     cl.show(master, LOBBY);
+  }
+
+    /**
+   * Enters the game room from the Game lobby.
+   * <p>
+   * Sets the window size to appropriate dimensions, loads the Game page card, and sets the default button for that window.
+   */
+  public void enterGame() {
+    this.getRootPane().setDefaultButton(logButton); // change this to appropriate button
+    System.out.println("I just tried to enter the game");
+    setSize(650,700); // figure out appropriate size
+    //game_Panel.joinGame();
+    setTitle(GAME);
+    cl.show(master, GAME);
+    pack();
   }
 }

@@ -140,9 +140,11 @@ public class GameRoom {
   }
   
   public void removePlayer(int id) {
-    for (int i = 0; i != players.size(); ++i) {
-      if (players.get(i).id == id)
+    for (int i = 0; i != players.size(); i++) {
+      if (players.get(i).id == id) {
         players.remove(i);
+        return;
+      }
     }
   }
   

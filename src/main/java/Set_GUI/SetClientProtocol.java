@@ -27,7 +27,7 @@ public class SetClientProtocol extends Protocol {
    */
   Lobby lobRef;
   Login logRef;
-  // GameRoom gameRef;
+  Game gameRef;
   
   /**
    * Constructor, modify arguments passed to it in SetClientMain
@@ -60,6 +60,7 @@ public class SetClientProtocol extends Protocol {
                                             isrunning,
                                             incomingMessages,
                                             masterStream,
+                                            sockets,
                                             this);
       connection.start();
     } catch (IOException ex) {
@@ -162,13 +163,17 @@ Special flags
         J~F :Game Room is full*/
         break;
       case 'C':
-        //[sender's username] (message)
-        // send to lobby chat
-    //  C~[message] : lobby chat
-    //C~[username]~[message] : chat username messaged lobbying 
-        String username = messagePieces[1];
-        String chatMessage = messagePieces[2];
-        lobRef.updateChat(username, chatMessage);
+        //C~[username]~[message] : chat username messaged lobbying 
+        if(messagePieces.length == 3) {
+          String username = messagePieces[1];
+          String chatMessage = messagePieces[2];
+          lobRef.updateChat(username, chatMessage);
+        }
+        // C~[message] : lobby chat announcement
+        else {
+          String chatMessage = messagePieces[1];
+          lobRef.updateChat("System", chatMessage);
+        }
         break;
       case 'T':
       /*
@@ -183,19 +188,23 @@ T~[username]~[message] : sends out message to gameroom from [username]
         String senderUsername = messagePieces[2];
         switch(mode) {
         case "A":
-          System.out.println("logRef.isLoggedIn = " + logRef.isLoggedIn +
-              "logRef.myUsername = " + logRef.myUsername);
-          if(!logRef.isLoggedIn && logRef.myUsername.equals(senderUsername)) {
-            logRef.login(senderUsername);
+          System.out.println("Logged in value is " + logRef.isLoggedIn);
+          System.out.println("My username is " + logRef.myUsername + " Login username is " + senderUsername);
+
+          if(logRef.myUsername != null) {
+            if(!logRef.isLoggedIn && logRef.myUsername.equals(senderUsername)) {
+              logRef.login(senderUsername);
+            }
+            lobRef.updateUserList("A", senderUsername);
           }
-          lobRef.updateUserList("A", senderUsername);
+
           // need code to populate userlist for new players
           break;
         case "R":
           if(logRef.isLoggedIn && logRef.myUsername.equals(senderUsername)) {
             logRef.logout();
-            lobRef.updateUserList("R", senderUsername);
           }
+          lobRef.updateUserList("R", senderUsername);
           break;
         default:
           System.err.println("Error with P~ message");
@@ -228,6 +237,7 @@ T~[username]~[message] : sends out message to gameroom from [username]
             statusString = messagePieces[6];
             status = statusString.equals("Playing");
             
+
             lobRef.addGameRoom(roomNum, roomName, curNumPlayers, 
                 maxNumPlayers, status);
             break;
@@ -298,9 +308,20 @@ T~[username]~[message] : sends out message to gameroom from [username]
     sendMessageToServer(message);
     System.out.println("success, sent:" + message);    
   }
-  public void grabPanels(Login log, Lobby lob/*, gameRoom game */) {
+  public void grabPanels(Login log, Lobby lob, Game game) {
     this.logRef = log;
     this.lobRef = lob;
-    //this.gameRef = game;
+    this.gameRef = game;
+  }
+
+  /** 
+  * Deletes the existing interface and creates a new one 
+  */
+  public void refreshInterface() {
+    lobRef = null;
+    logRef = null;
+    gameRef = null;
+
+    showInterface();
   }
 }

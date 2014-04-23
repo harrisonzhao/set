@@ -51,6 +51,7 @@ S~card1~card2~card3          :Set request
 E                            :Exit Game
 C~Message                    :Lobby Chat
 T~Message                    :Game Chat
+D                            :Logout
 
 ===================================================
 Server to client

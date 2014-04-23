@@ -275,7 +275,6 @@ public class SetServerProtocol extends Protocol {
       System.err.println("Disconnection message length error!");
       return;
     }
-    sockets.remove(clientID);
     User disconnected = users.get(clientID);
     
     //check if disconnected client was in a GameRoom or not
@@ -353,7 +352,7 @@ public class SetServerProtocol extends Protocol {
     }
     rmCreator.currentGameRoom = numRooms;
     GameRoom newRm = new GameRoom(
-            messagePieces[1], Integer.parseInt(messagePieces[2]));
+        messagePieces[1], Integer.parseInt(messagePieces[2]));
     newRm.addPlayer(clientID, rmCreator.username);
     //update gameroom window
     sendMessage(clientID, newRm.encodeNamesToString());
@@ -363,8 +362,8 @@ public class SetServerProtocol extends Protocol {
             +messagePieces[1]+"~"+newRm.getNumPlayers()
             +"~"+newRm.getMaxNumPlayers()+"~Inactive");
     sendMessage(-1, 
-            "C~"+rmCreator.username+" created a game with number: "
-            +numRooms + " and name:" + newRm.getName());
+            "C~"+rmCreator.username+" created a game with id: "
+            +numRooms + " and name:" + messagePieces[1]);
     gameRooms.put(numRooms, newRm);
     ++numRooms;
   }
