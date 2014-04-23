@@ -77,7 +77,7 @@ public class Login extends JFrame implements ActionListener {
 
     master = new JPanel(new CardLayout());
     lobby_Panel = new Lobby(this);
-    game_Panel = new Game(lobby_Panel);
+    game_Panel = new Game(this, lobby_Panel);
 
     callingObj.grabPanels(this, lobby_Panel, game_Panel);
     cl = (CardLayout)(master.getLayout());
@@ -369,6 +369,7 @@ public class Login extends JFrame implements ActionListener {
     System.out.println("I just tried to enter the game");
     setSize(650,700); // figure out appropriate size
     //game_Panel.joinGame();
+    game_Panel.setClient(callingObj);
     setTitle(GAME);
     cl.show(master, GAME);
     pack();
