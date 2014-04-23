@@ -12,12 +12,12 @@ import java.util.*;
 
 
 // We'll see how this works:
-//board is good, write display and send functions, 
+//board is good, write display and send functions,
 //and get the event listeners up and working, as well as the scoreboard!
 
 @SuppressWarnings("serial")
 public class Game extends JPanel {
-	
+
 	static JPanel cardPane, leftside, bottomLeft, rightside;
 	static JTextField typedText;
 	static JTextArea enteredText;
@@ -30,11 +30,12 @@ public class Game extends JPanel {
 
 	ArrayList<String> cardSelection = new ArrayList<String>();
 	HashMap<JToggleButton, String> cards = null;
-	Object[][] playerData = null;
+	String[] playerScores = null;
+	String[] playerNames = null;
 
 	private Lobby lobby_panel;
 	private Login login_panel;
-	
+
 	Game(Login login_panell, Lobby lobby_panel){
 		this.lobby_panel = lobby_panel;
 		this.login_panel = login_panel;
@@ -45,19 +46,66 @@ public class Game extends JPanel {
 		this.callingObj = callingObj;
 		this.myUsername = username;
 	}
-	public void displayBoard(String srvr_string){
-		//----------------------------
-		//CALLED FROM SERVER
-		//----------------------------
+
+	public void displayBoard(String[] srvr_string){
+
+		///so now we need to handle all the things:
+		switch (srvr_string[1].charAt(0)){
+			case 'F':
+				System.out.println("Game ovah!");
+				//end game
+				break;
+			default:
+				//either board(B), new scored (Y or N), or start(s)
+				//so board...and then if you need to worry about scores...
+				System.out.println("Board received:");
+				cards.clear(); //clears held list of cards
+				cardPane.removeAll(); //clears board
+
+				// parse the card list from the server and display the cards
+				String cardString = srvr_string[2]; // get card list
+
+				String cardsToShow[] = cardString.split(" "); // break down string of cards
+				//then serve all the cards up:
+				System.out.println("Received " + cardsToShow.length + " cards:");
+				for (int i = 0; i < cardsToShow.length; i++){
+
+					System.out.println("Creating card for " + cardsToShow[i]);
+
+					JToggleButton setCard = new JToggleButton(new ImageIcon("resources/imgs/" + cardsToShow[i] + ".gif"));
+
+					setCard.setPreferredSize(new Dimension(100, 85));
+					setCard.setBackground(new Color(255, 255, 255));
+					setCard.addItemListener(new Selector());
+
+					cards.put(setCard, cardsToShow[i]); //add to hashmap to get back later...
+					cardPane.add(setCard); //display the card obviously
+
+				}
+
+				if ((srvr_string[1].charAt(0) == 'Y') || (srvr_string[1].charAt(0) == 'N')){ //if scores need to be updated
+					System.out.println("updating scores:");
+					String scoreStr = srvr_string[3]; // parse score segments
+					String scores[] = scoreStr.split(" "); //get individual scores
+					for (int j = 0; j < scores.length; j++){
+						playerScores[j] = scores[j]; //build score list
+					}
+				}
+				break;
+
+
+		}
+		System.out.println("Done showing cards");
+		/*
 		cards.clear(); //clears board
-		//JToggleButton setCards[] = null;
-		// parse the message from the server and display the cards
-		String cardString = srvr_string.substring(4); // get rid of teh first 4 characters
+
+		// parse the card list from the server and display the cards
+		String cardString = srvr_string[2]; // get card list
 		String cardsToShow[] = cardString.split(" "); // break down string of cards
 		//then serve all the cards up:
 		for (int i = 0; i < cardsToShow.length; i++){
-			//String cardname = "card" + cardsToShow[i]; 
-			
+			//String cardname = "card" + cardsToShow[i];
+
 			JToggleButton setCard = new JToggleButton(new ImageIcon("resources/imgs/" + cardsToShow[i] + ".gif"));
 
 			setCard.setPreferredSize(new Dimension(100, 85));
@@ -66,23 +114,24 @@ public class Game extends JPanel {
 			//setCards[i] = setCard; //idk
 			cards.put(setCard, cardsToShow[i]); //add to hashmap to get back later...
 			cardPane.add(setCard);
-				
-		}	
+		}
+
+		*/
 	}
-	
+
 	// adds to my enteredText window...or, chatUpdate from server needs to send to it
-	//Chat message button listener 
+	//Chat message button listener
 	class TextSend implements ActionListener{
 		public void actionPerformed(ActionEvent e){
 			String chattext = typedText.getText();
-			callingObj.sendMessageToServer("T~" + myUsername 
+			callingObj.sendMessageToServer("T~" + myUsername
 				+ "~" + chattext);
-			enteredText.append(myUsername + ": " + chattext + "\n"); 
+			//enteredText.append(myUsername + ": " + chattext + "\n");
 			typedText.setText("");
 		}
 	}
 
-	//Exit game button listener 
+	//Exit game button listener
 	class GameExit implements ActionListener{
 		public void actionPerformed(ActionEvent e){
 			callingObj.sendMessageToServer("E");  // self explanatory
@@ -90,7 +139,7 @@ public class Game extends JPanel {
 	}
 
 
-	// item listener, so it's undoable...
+	// item listener, so selections are undoable...
 	// and the cardSelection list is an array list to make things easier overall
 	class Selector implements ItemListener{
 		public void itemStateChanged(ItemEvent i){
@@ -102,15 +151,8 @@ public class Game extends JPanel {
 			}
 		}
 	}
-	
-	/*
-	public void actionPerformed(ActionEvent e){
-		JToggleButton selectedCard = (JToggleButton) e.getSource(); //return button object that got pressed
-		cardSelection[cardSelection.length] = cards.get(selectedCard); // return matching card number and add to array
-		
-	}
-	*/
-	
+
+
 	class Submitter implements ActionListener{
 		public void actionPerformed(ActionEvent e){
 			if (!gameOn) { //if first press to start game;
@@ -122,13 +164,13 @@ public class Game extends JPanel {
 				//System.out.println("reading cards...");
 				if (cardSelection.size() != 3){
 					System.out.println("Invalid set submission!");
-				} 
+				}
 				else {
 					String setSubmission = "S~";
 					for (int i = 0; i < 3; i++){
 						if (i != 2) {
 							setSubmission = setSubmission + cardSelection.get(i) + " ";
-						} 
+						}
 						else {
 							setSubmission = setSubmission + cardSelection.get(i);
 						}
@@ -137,22 +179,19 @@ public class Game extends JPanel {
 				}
 			}
 		}
-	}	
+	}
+
 	public void updateScores(String srvr_message){
 		//count number of players
 		//
 	}
 
-	
-	
-	
-	public void createAndShowGUI() {
-		//JFrame mainframe = new JFrame("Let's Play Set!");
-		//mainframe.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		//mainframe.setPreferredSize(new Dimension(650, 700));
-		//add two frames to this:
 
-		/*JPanel*/ 
+
+
+	public void createAndShowGUI() {
+
+		/*JPanel*/
 		mainframe = new JPanel();
 
 		//leftside shall have craploads of image toggle buttons...(SET game cards)
@@ -160,96 +199,91 @@ public class Game extends JPanel {
 		leftside.setBackground(new Color(95, 145, 150));
 		leftside.setPreferredSize(new Dimension(350, 700));
 		leftside.setVisible(true);
-		
+
 		cardPane = new JPanel(new FlowLayout());
 		cardPane.setBackground(new Color(95, 145, 150));
 		cardPane.setPreferredSize(new Dimension(350, 600));
-		
+
 		//holds button underneath cards
 		bottomLeft = new JPanel();
 		bottomLeft.setBackground(new Color(95, 145, 150));
 		bottomLeft.setPreferredSize(new Dimension(350, 50));
-		
+
 		//Right side will hold scorechart and chat
 		rightside = new JPanel(new BorderLayout());
 		rightside.setBackground(new Color(150, 200, 200));
 		rightside.setPreferredSize(new Dimension(300, 700));
 		rightside.setVisible(true);
-		
-		
-		
-		
-		JButton submitbutton = new JButton("Submit Set!");
+
+
+		JButton submitbutton = new JButton("Ready To Play!");
 		submitbutton.addActionListener(new Submitter());
 		bottomLeft.add(submitbutton, BorderLayout.CENTER);
-		
+
 		leftside.add(cardPane, BorderLayout.NORTH);
 		leftside.add(bottomLeft, BorderLayout.SOUTH);
-		
+
 		//TABLE STUFF
 		//Table stuff will depend on database setup...I'll work on that
-		
+
 		//JTable scores = new JTable(data, {"Players", "Score"});
 		//rightside.add(scores, BorderLayout.NORTH);
-		
-		
-		
+
+
+
 		//CHAT STUFF
 		//This panel will be at the bottom of the right side, holding the "Player Chat" label, and the input and log windows
-		
+
 		//panel and label setup
 		JPanel chatpanel = new JPanel();
 		chatpanel.setPreferredSize(new Dimension(275, 230));
 		chatpanel.setBackground(new Color(100, 250, 150));
 		JLabel chatlabel = new JLabel("Player Chat");
 		chatpanel.add(chatlabel);
-		
+
 		//bar to hold textField and send button
 		JPanel chatbar = new JPanel();
 		chatbar.setPreferredSize(new Dimension(275, 26));
 		chatpanel.setBackground(new Color(100, 250, 220));
-		
+
 		//setup for fields
 		enteredText = new JTextArea(10, 24);
 	    typedText   = new JTextField(15);
+
 	    //setup button
 	    JButton chatbutton = new JButton("Send");
 	    chatbutton.setPreferredSize(new Dimension(70, 20));
 	    chatbutton.addActionListener(new TextSend());
-	    
+
 		enteredText.setVisible(true);
 		enteredText.setEditable(false);
 		//enteredText.setBackground(new Color(100, 240, 200)); //set random colors for testing
 		typedText.setVisible(true);
 		typedText.setEditable(true);
-		//typedText.setBackground(new Color(200, 20, 50)); //set random colors for testing
-		
-		//add event handling to send text to server
-		//typedText.addActionListener(this);
-		
+
 		//ExitButton
 		JButton exitbutton = new JButton("Exit Game");
 		exitbutton.setPreferredSize(new Dimension(120, 25));
 		exitbutton.addActionListener(new GameExit());
 		rightside.add(exitbutton, BorderLayout.PAGE_START);
-		
+
 		//add the two fields to chatpanel...
 	    chatpanel.add(enteredText, BorderLayout.NORTH);
 	    chatbar.add(typedText, BorderLayout.WEST);
 	    chatbar.add(chatbutton, BorderLayout.EAST);
 	    chatpanel.add(chatbar, BorderLayout.SOUTH);
-	    
+
 	    //add chatpanel to rightside
-		rightside.add(chatpanel, BorderLayout.PAGE_END); //I have tried EVERYTHING to put this thing at the bottom, to no avail
-	       
+		rightside.add(chatpanel, BorderLayout.SOUTH); //I have tried EVERYTHING to put this thing at the bottom, to no avail
+
 		//finalize mainframe
 		mainframe.add(leftside, BorderLayout.WEST);
 		mainframe.add(rightside, BorderLayout.EAST);
 		//mainframe.getContentPane().add(leftside, BorderLayout.WEST);
 		//mainframe.getContentPane().add(rightside, BorderLayout.EAST);
-		
+
 		//mainframe.pack();
-        mainframe.setVisible(true);	
+        mainframe.setVisible(true);
 
         add(mainframe);
 	}

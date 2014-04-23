@@ -127,6 +127,8 @@ public class SetClientProtocol extends Protocol {
         logRef.setErrorText(errorText);
         break;
       case 'G':
+    	  gameRef.displayBoard(messagePieces);
+
 /*        G~S start?
             G~Y yes set made
             G~F game over
@@ -153,7 +155,7 @@ Special flags
   U: will be G~U~[user1]~[user1score]~... where ... means possibly multiple lists users+scores
   R: resets room and ready button
   */
-
+    	  
         break;
       case 'E':
         // exited GameRoom
@@ -176,6 +178,14 @@ Special flags
         }
         break;
       case 'T':
+    	  if (messagePieces.length == 3){
+    		  System.out.println("Chat message contains username:");
+    		  gameRef.enteredText.append(messagePieces[1] + ": " + messagePieces[2]);
+    	  } else {
+    		  System.out.println("Chat message does not contain username:");
+    		  gameRef.enteredText.append(messagePieces[1]);
+    	  }
+    	  
       /*
 T~[message] : send message to game room
 T~[username]~[message] : sends out message to gameroom from [username]
