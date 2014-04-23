@@ -365,11 +365,11 @@ public class Login extends JFrame implements ActionListener {
    * Sets the window size to appropriate dimensions, loads the Game page card, and sets the default button for that window.
    */
   public void enterGame() {
-    this.getRootPane().setDefaultButton(logButton); // change this to appropriate button
+    this.getRootPane().setDefaultButton(game_Panel.submitbutton); // change this to appropriate button
     System.out.println("I just tried to enter the game");
     setSize(650,700); // figure out appropriate size
     //game_Panel.joinGame();
-    game_Panel.setClient(callingObj);
+    game_Panel.setClient(callingObj, myUsername);
     setTitle(GAME);
     cl.show(master, GAME);
     pack();

@@ -6,6 +6,8 @@ import java.net.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.util.*;
 
 
@@ -20,13 +22,13 @@ public class Game extends JPanel {
 	static JTextField typedText;
 	static JTextArea enteredText;
 	boolean gameOn = false; // flag to signal start of game
-	JButton submitbutton = null; // changed to local declaration, to change text on the fly
-
+	public JButton submitbutton = null; // changed to local declaration, to change text on the fly
+	private String myUsername;
 
 	JPanel mainframe;
 	SetClientProtocol callingObj;
 
-	String cardSelection[] = null;
+	ArrayList<String> cardSelection = new ArrayList<String>();
 	HashMap<JToggleButton, String> cards = null;
 	Object[][] playerData = null;
 
@@ -39,8 +41,9 @@ public class Game extends JPanel {
 		//createAndShowGUI();
 	}
 
-	public void setClient(SetClientProtocol callingObj) {
+	public void setClient(SetClientProtocol callingObj, String username) {
 		this.callingObj = callingObj;
+		this.myUsername = username;
 	}
 	public void displayBoard(String srvr_string){
 		//----------------------------
@@ -59,7 +62,7 @@ public class Game extends JPanel {
 
 			setCard.setPreferredSize(new Dimension(100, 85));
 			setCard.setBackground(new Color(255, 255, 255));
-			setCard.addActionListener(new Selector());
+			setCard.addItemListener(new Selector());
 			//setCards[i] = setCard; //idk
 			cards.put(setCard, cardsToShow[i]); //add to hashmap to get back later...
 			cardPane.add(setCard);
@@ -68,20 +71,21 @@ public class Game extends JPanel {
 	}
 	
 	// adds to my enteredText window...or, chatUpdate from server needs to send to it
-	//Chat message button listener !!! AddSendMessage!!!
+	//Chat message button listener 
 	class TextSend implements ActionListener{
 		public void actionPerformed(ActionEvent e){
 			String chattext = typedText.getText();
-			//sendMessageToServer(chattext);
-			enteredText.append("I said: " + chattext + "\n"); // need way to get username
+			callingObj.sendMessageToServer("T~" + myUsername 
+				+ "~" + chattext);
+			enteredText.append(myUsername + ": " + chattext + "\n"); 
 			typedText.setText("");
 		}
 	}
 
-	//Exit game button listener !!! AddSendMessage!!!
+	//Exit game button listener 
 	class GameExit implements ActionListener{
 		public void actionPerformed(ActionEvent e){
-			//sendMessageToServer("E");  // self explanatory
+			callingObj.sendMessageToServer("E");  // self explanatory
 		}
 	}
 
@@ -109,37 +113,31 @@ public class Game extends JPanel {
 	
 	class Submitter implements ActionListener{
 		public void actionPerformed(ActionEvent e){
-			if (cardSelection.length != 3){
-				//tell the user they done fucked up
-			} else {
-				String setSubmission = "S~";
-				for (int i = 0; i < 3; i++){
-					if (i != 2) {
-						setSubmission = setSubmission + cardSelection[i] + " ";
-					} else {
-						setSubmission = setSubmission + cardSelection[i];
+			if (!gameOn) { //if first press to start game;
+				gameOn = true;
+				//System.out.println("the game has begun");
+				submitbutton.setText("Submit Set!"); //change text
+				//sendMessageToServer("G"); //self explanatory
+			} else{
+				//System.out.println("reading cards...");
+				if (cardSelection.size() != 3){
+					System.out.println("Invalid set submission!");
+				} 
+				else {
+					String setSubmission = "S~";
+					for (int i = 0; i < 3; i++){
+						if (i != 2) {
+							setSubmission = setSubmission + cardSelection.get(i) + " ";
+						} 
+						else {
+							setSubmission = setSubmission + cardSelection.get(i);
+						}
 					}
+					callingObj.sendMessageToServer(setSubmission);
 				}
-				//sendMessageToServer(setSubmission);
-				
 			}
 		}
-	}
-	
-	public static void submitSet(String selectedCards[]) {
-		if (selectedCards.length != 3){
-			//tell the user they done fucked up
-		} else {
-			String setSubmission = "S~";
-			for (int i = 0; i < 3; i++){
-				setSubmission = setSubmission + selectedCards[i] + " ";
-			}
-			//sendMessageToServer(setSubmission);
-			
-		}	
-		
-	}
-	
+	}	
 	public void updateScores(String srvr_message){
 		//count number of players
 		//
@@ -255,16 +253,4 @@ public class Game extends JPanel {
 
         add(mainframe);
 	}
-
-	
-	/*public static void main(String[] args) {
-		// This does the work at the end...
-		javax.swing.SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                Game thegui = new Game();
-            }
-        });
-
-	}*/
-
 }
