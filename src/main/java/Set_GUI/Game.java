@@ -6,6 +6,8 @@ import java.net.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.util.*;
 
 
@@ -19,11 +21,14 @@ public class Game extends JPanel {
 	static JPanel cardPane, leftside, bottomLeft, rightside;
 	static JTextField typedText;
 	static JTextArea enteredText;
+	boolean gameOn = false; // flag to signal start of game
+	public JButton submitbutton = null; // changed to local declaration, to change text on the fly
+	private String myUsername;
 
 	JPanel mainframe;
 	SetClientProtocol callingObj;
 
-	String cardSelection[] = null;
+	ArrayList<String> cardSelection = new ArrayList<String>();
 	HashMap<JToggleButton, String> cards = null;
 	Object[][] playerData = null;
 
@@ -36,8 +41,9 @@ public class Game extends JPanel {
 		//createAndShowGUI();
 	}
 
-	public void setClient(SetClientProtocol callingObj) {
+	public void setClient(SetClientProtocol callingObj, String username) {
 		this.callingObj = callingObj;
+		this.myUsername = username;
 	}
 	public void displayBoard(String srvr_string){
 		//----------------------------
@@ -56,30 +62,45 @@ public class Game extends JPanel {
 
 			setCard.setPreferredSize(new Dimension(100, 85));
 			setCard.setBackground(new Color(255, 255, 255));
-			setCard.addActionListener(new Selector());
+			setCard.addItemListener(new Selector());
 			//setCards[i] = setCard; //idk
 			cards.put(setCard, cardsToShow[i]); //add to hashmap to get back later...
 			cardPane.add(setCard);
 				
-		}
-		
-				
+		}	
 	}
 	
+	// adds to my enteredText window...or, chatUpdate from server needs to send to it
+	//Chat message button listener 
 	class TextSend implements ActionListener{
 		public void actionPerformed(ActionEvent e){
 			String chattext = typedText.getText();
-			//sendMessageToServer(chattext);
+			callingObj.sendMessageToServer("T~" + myUsername 
+				+ "~" + chattext);
+			enteredText.append(myUsername + ": " + chattext + "\n"); 
+			typedText.setText("");
 		}
 	}
 
-	class Selector implements ActionListener{
+	//Exit game button listener 
+	class GameExit implements ActionListener{
 		public void actionPerformed(ActionEvent e){
-			JToggleButton selectedCard = (JToggleButton) e.getSource(); //return button object that got pressed
-			cardSelection[cardSelection.length] = cards.get(selectedCard); // return matching card number and add to array
-			
+			callingObj.sendMessageToServer("E");  // self explanatory
 		}
-		
+	}
+
+
+	// item listener, so it's undoable...
+	// and the cardSelection list is an array list to make things easier overall
+	class Selector implements ItemListener{
+		public void itemStateChanged(ItemEvent i){
+			JToggleButton selectedCard = (JToggleButton) i.getSource(); //return button object that got pressed
+			if(i.getStateChange()==ItemEvent.SELECTED){ //if the card was actually selected
+				cardSelection.add(cards.get(selectedCard)); // return matching card number and add to array
+			} else { //remove the card
+				cardSelection.remove(cards.get(selectedCard));
+			}
+		}
 	}
 	
 	/*
@@ -92,37 +113,31 @@ public class Game extends JPanel {
 	
 	class Submitter implements ActionListener{
 		public void actionPerformed(ActionEvent e){
-			if (cardSelection.length != 3){
-				//tell the user they done fucked up
-			} else {
-				String setSubmission = "S~";
-				for (int i = 0; i < 3; i++){
-					if (i != 2) {
-						setSubmission = setSubmission + cardSelection[i] + " ";
-					} else {
-						setSubmission = setSubmission + cardSelection[i];
+			if (!gameOn) { //if first press to start game;
+				gameOn = true;
+				//System.out.println("the game has begun");
+				submitbutton.setText("Submit Set!"); //change text
+				//sendMessageToServer("G"); //self explanatory
+			} else{
+				//System.out.println("reading cards...");
+				if (cardSelection.size() != 3){
+					System.out.println("Invalid set submission!");
+				} 
+				else {
+					String setSubmission = "S~";
+					for (int i = 0; i < 3; i++){
+						if (i != 2) {
+							setSubmission = setSubmission + cardSelection.get(i) + " ";
+						} 
+						else {
+							setSubmission = setSubmission + cardSelection.get(i);
+						}
 					}
+					callingObj.sendMessageToServer(setSubmission);
 				}
-				//sendMessageToServer(setSubmission);
-				
 			}
 		}
-	}
-	
-	public static void submitSet(String selectedCards[]) {
-		if (selectedCards.length != 3){
-			//tell the user they done fucked up
-		} else {
-			String setSubmission = "S~";
-			for (int i = 0; i < 3; i++){
-				setSubmission = setSubmission + selectedCards[i] + " ";
-			}
-			//sendMessageToServer(setSubmission);
-			
-		}	
-		
-	}
-	
+	}	
 	public void updateScores(String srvr_message){
 		//count number of players
 		//
@@ -162,47 +177,11 @@ public class Game extends JPanel {
 		rightside.setVisible(true);
 		
 		
-		//the following examples is just display testing:
-		
-		/*
-		String num = "44";
-		//create imageicons for set card checkboxes
-		ImageIcon set1 = new ImageIcon("resources/imgs/" + num + ".gif"); //that works! :)
-		ImageIcon set2 = new ImageIcon("resources/imgs/53.gif");
-		ImageIcon set3 = new ImageIcon("resources/imgs/21.gif");
-		
-		//create checkboxes from set images
-		JToggleButton setcard1 = new JToggleButton(set1);
-		JToggleButton setcard2 = new JToggleButton(set2);
-		JToggleButton setcard3 = new JToggleButton(set3);
-		
-		//organizes layout
-		setcard1.setPreferredSize(new Dimension(100, 85));
-		setcard2.setPreferredSize(new Dimension(100, 85));
-		setcard3.setPreferredSize(new Dimension(100, 85));		
-		
-		//add event handling...for some reason it gave me problems
-		/*
-		setcard1.addActionListener(this);
-		setcard2.addActionListener(this);
-		setcard3.addActionListener(this);
-		 */
-		
-		/*
-		//adds to frame
-		cardPane.add(setcard1);
-		cardPane.add(setcard2);
-		cardPane.add(setcard3);
-		*/
-		
-		//lets try this...
 		
 		
 		JButton submitbutton = new JButton("Submit Set!");
 		submitbutton.addActionListener(new Submitter());
 		bottomLeft.add(submitbutton, BorderLayout.CENTER);
-		
-		
 		
 		leftside.add(cardPane, BorderLayout.NORTH);
 		leftside.add(bottomLeft, BorderLayout.SOUTH);
@@ -248,7 +227,11 @@ public class Game extends JPanel {
 		//add event handling to send text to server
 		//typedText.addActionListener(this);
 		
-		
+		//ExitButton
+		JButton exitbutton = new JButton("Exit Game");
+		exitbutton.setPreferredSize(new Dimension(120, 25));
+		exitbutton.addActionListener(new GameExit());
+		rightside.add(exitbutton, BorderLayout.PAGE_START);
 		
 		//add the two fields to chatpanel...
 	    chatpanel.add(enteredText, BorderLayout.NORTH);
@@ -269,18 +252,5 @@ public class Game extends JPanel {
         mainframe.setVisible(true);	
 
         add(mainframe);
-		
 	}
-
-	
-	/*public static void main(String[] args) {
-		// This does the work at the end...
-		javax.swing.SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                Game thegui = new Game();
-            }
-        });
-
-	}*/
-
 }
