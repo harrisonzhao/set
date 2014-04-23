@@ -19,6 +19,9 @@ public class Game extends JPanel {
 	static JPanel cardPane, leftside, bottomLeft, rightside;
 	static JTextField typedText;
 	static JTextArea enteredText;
+	boolean gameOn = false; // flag to signal start of game
+	JButton submitbutton = null; // changed to local declaration, to change text on the fly
+
 
 	JPanel mainframe;
 	SetClientProtocol callingObj;
@@ -61,25 +64,39 @@ public class Game extends JPanel {
 			cards.put(setCard, cardsToShow[i]); //add to hashmap to get back later...
 			cardPane.add(setCard);
 				
-		}
-		
-				
+		}	
 	}
 	
+	// adds to my enteredText window...or, chatUpdate from server needs to send to it
+	//Chat message button listener !!! AddSendMessage!!!
 	class TextSend implements ActionListener{
 		public void actionPerformed(ActionEvent e){
 			String chattext = typedText.getText();
 			//sendMessageToServer(chattext);
+			enteredText.append("I said: " + chattext + "\n"); // need way to get username
+			typedText.setText("");
 		}
 	}
 
-	class Selector implements ActionListener{
+	//Exit game button listener !!! AddSendMessage!!!
+	class GameExit implements ActionListener{
 		public void actionPerformed(ActionEvent e){
-			JToggleButton selectedCard = (JToggleButton) e.getSource(); //return button object that got pressed
-			cardSelection[cardSelection.length] = cards.get(selectedCard); // return matching card number and add to array
-			
+			//sendMessageToServer("E");  // self explanatory
 		}
-		
+	}
+
+
+	// item listener, so it's undoable...
+	// and the cardSelection list is an array list to make things easier overall
+	class Selector implements ItemListener{
+		public void itemStateChanged(ItemEvent i){
+			JToggleButton selectedCard = (JToggleButton) i.getSource(); //return button object that got pressed
+			if(i.getStateChange()==ItemEvent.SELECTED){ //if the card was actually selected
+				cardSelection.add(cards.get(selectedCard)); // return matching card number and add to array
+			} else { //remove the card
+				cardSelection.remove(cards.get(selectedCard));
+			}
+		}
 	}
 	
 	/*
@@ -162,47 +179,11 @@ public class Game extends JPanel {
 		rightside.setVisible(true);
 		
 		
-		//the following examples is just display testing:
-		
-		/*
-		String num = "44";
-		//create imageicons for set card checkboxes
-		ImageIcon set1 = new ImageIcon("resources/imgs/" + num + ".gif"); //that works! :)
-		ImageIcon set2 = new ImageIcon("resources/imgs/53.gif");
-		ImageIcon set3 = new ImageIcon("resources/imgs/21.gif");
-		
-		//create checkboxes from set images
-		JToggleButton setcard1 = new JToggleButton(set1);
-		JToggleButton setcard2 = new JToggleButton(set2);
-		JToggleButton setcard3 = new JToggleButton(set3);
-		
-		//organizes layout
-		setcard1.setPreferredSize(new Dimension(100, 85));
-		setcard2.setPreferredSize(new Dimension(100, 85));
-		setcard3.setPreferredSize(new Dimension(100, 85));		
-		
-		//add event handling...for some reason it gave me problems
-		/*
-		setcard1.addActionListener(this);
-		setcard2.addActionListener(this);
-		setcard3.addActionListener(this);
-		 */
-		
-		/*
-		//adds to frame
-		cardPane.add(setcard1);
-		cardPane.add(setcard2);
-		cardPane.add(setcard3);
-		*/
-		
-		//lets try this...
 		
 		
 		JButton submitbutton = new JButton("Submit Set!");
 		submitbutton.addActionListener(new Submitter());
 		bottomLeft.add(submitbutton, BorderLayout.CENTER);
-		
-		
 		
 		leftside.add(cardPane, BorderLayout.NORTH);
 		leftside.add(bottomLeft, BorderLayout.SOUTH);
@@ -248,7 +229,11 @@ public class Game extends JPanel {
 		//add event handling to send text to server
 		//typedText.addActionListener(this);
 		
-		
+		//ExitButton
+		JButton exitbutton = new JButton("Exit Game");
+		exitbutton.setPreferredSize(new Dimension(120, 25));
+		exitbutton.addActionListener(new GameExit());
+		rightside.add(exitbutton, BorderLayout.PAGE_START);
 		
 		//add the two fields to chatpanel...
 	    chatpanel.add(enteredText, BorderLayout.NORTH);
@@ -269,7 +254,6 @@ public class Game extends JPanel {
         mainframe.setVisible(true);	
 
         add(mainframe);
-		
 	}
 
 	
