@@ -346,6 +346,7 @@ public class SetServerProtocol extends Protocol {
   //sends out C~[username] created a game: [new room name]
   void pCreateGame(int clientID, String [] messagePieces) {
     if (messagePieces.length != 3) {
+      sendMessage(clientID, "X~invalid game name");
       System.err.println("Create game message length error!");
       return;
     }

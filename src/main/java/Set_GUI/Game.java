@@ -105,11 +105,11 @@ public class Game extends JPanel {
 					System.out.println("We have only " + scores.length + " score");
 					if (srvr_string[1].charAt(0) == 'Y') {
 						System.out.println(myUsername + "earned 3 points");
-						callingObj.sendMessageToServer("M~" + myUsername +  " earned 3 points!" + "\n");
+						callingObj.sendMessageToServer("M~" + myUsername +  " earned 3 points!");
 						//enteredText.append("<font color=#0000FF>Awesome! You've earned 3 points!</font>");
 					} else {
 						System.out.println(myUsername + "lost 1 point");
-						callingObj.sendMessageToServer("M~" + myUsername +  " lost 1 point!" + "\n");
+						callingObj.sendMessageToServer("M~" + myUsername +  " lost 1 point!");
 						//enteredText.append("<font color=#FF0000>Bro, do you even set?</font>");
 					}	
 					//for (int j = 0; j < scores.length; j++){
