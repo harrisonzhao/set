@@ -63,9 +63,9 @@ public class GameRoom {
   }
   
   public Set decodeSetFromString(String c1, String c2, String c3) {
-    return new Set(new Card(Integer.parseInt(c1)),
-            new Card(Integer.parseInt(c2)),
-            new Card(Integer.parseInt(c3)));
+    return new Set(new Card(Integer.parseInt(c1)-1),
+            new Card(Integer.parseInt(c2)-1),
+            new Card(Integer.parseInt(c3)-1));
   }
   
   public String CheckSetAndUpdate(int pid, String c1, String c2, String c3) {

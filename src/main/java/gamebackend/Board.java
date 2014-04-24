@@ -62,7 +62,7 @@ public class Board{
         String outp = "";
         for(int i=0; i<active.size(); i++){
             Card c = active.get(i);
-            outp += c.GetSingleDigit();
+            outp += c.GetSingleDigit()+1;
             outp += " ";
         }
         return outp.trim();
