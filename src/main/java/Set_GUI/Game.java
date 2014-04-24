@@ -22,14 +22,14 @@ public class Game extends JPanel {
 	static JTextField typedText;
 	static JTextArea enteredText;
 	boolean gameOn = false; // flag to signal start of game
-	public JButton submitbutton = null; // changed to local declaration, to change text on the fly
+	public JButton submitbutton; // changed to local declaration, to change text on the fly
 	private String myUsername;
 
 	JPanel mainframe;
 	SetClientProtocol callingObj;
 
 	ArrayList<String> cardSelection = new ArrayList<String>();
-	HashMap<JToggleButton, String> cards = null;
+	HashMap<JToggleButton, String> cards = new HashMap<JToggleButton, String>();
 	String[] playerScores = null;
 	String[] playerNames = null;
 
@@ -48,9 +48,16 @@ public class Game extends JPanel {
 	}
 
 	public void displayBoard(String[] srvr_string){
+		for (int i = 1; i < srvr_string.length; i++){
+			System.out.println(srvr_string[i]);
+		}
 
 		///so now we need to handle all the things:
 		switch (srvr_string[1].charAt(0)){
+			case 'U':
+				System.out.println("so i got a score msg...i'll deal with that later");
+				break;
+
 			case 'F':
 				System.out.println("Game ovah!");
 				//end game
@@ -59,8 +66,15 @@ public class Game extends JPanel {
 				//either board(B), new scored (Y or N), or start(s)
 				//so board...and then if you need to worry about scores...
 				System.out.println("Board received:");
-				cards.clear(); //clears held list of cards
-				cardPane.removeAll(); //clears board
+				System.out.println(srvr_string[2]);
+				
+				if (srvr_string[1].charAt(0) == 'S'){
+				} else {
+					System.out.println("clearing board:");
+					cards.clear(); //clears held list of cards
+					cardPane.removeAll(); //clears board
+				}
+				
 
 				// parse the card list from the server and display the cards
 				String cardString = srvr_string[2]; // get card list
@@ -72,7 +86,7 @@ public class Game extends JPanel {
 
 					System.out.println("Creating card for " + cardsToShow[i]);
 
-					JToggleButton setCard = new JToggleButton(new ImageIcon("resources/imgs/" + cardsToShow[i] + ".gif"));
+					JToggleButton setCard = new JToggleButton(new ImageIcon("src/main/resources/set images/" + cardsToShow[i] + ".gif"));
 
 					setCard.setPreferredSize(new Dimension(100, 85));
 					setCard.setBackground(new Color(255, 255, 255));
@@ -87,14 +101,16 @@ public class Game extends JPanel {
 					System.out.println("updating scores:");
 					String scoreStr = srvr_string[3]; // parse score segments
 					String scores[] = scoreStr.split(" "); //get individual scores
-					for (int j = 0; j < scores.length; j++){
-						playerScores[j] = scores[j]; //build score list
-					}
+					System.out.println("We have only " + scores.length + " score");
+					//for (int j = 0; j < scores.length; j++){
+					//	playerScores[j] = scores[j]; //build score list
+					//}
 				}
 				break;
 
 
 		}
+		cardPane.updateUI();
 		System.out.println("Done showing cards");
 		/*
 		cards.clear(); //clears board
@@ -124,8 +140,7 @@ public class Game extends JPanel {
 	class TextSend implements ActionListener{
 		public void actionPerformed(ActionEvent e){
 			String chattext = typedText.getText();
-			callingObj.sendMessageToServer("T~" + myUsername
-				+ "~" + chattext);
+			callingObj.sendMessageToServer("T~" + chattext);
 			//enteredText.append(myUsername + ": " + chattext + "\n");
 			typedText.setText("");
 		}
@@ -146,8 +161,10 @@ public class Game extends JPanel {
 			JToggleButton selectedCard = (JToggleButton) i.getSource(); //return button object that got pressed
 			if(i.getStateChange()==ItemEvent.SELECTED){ //if the card was actually selected
 				cardSelection.add(cards.get(selectedCard)); // return matching card number and add to array
+				System.out.println("Selected card " + cards.get(selectedCard));
 			} else { //remove the card
 				cardSelection.remove(cards.get(selectedCard));
+				System.out.println("Un-selected card " + cards.get(selectedCard));
 			}
 		}
 	}
@@ -155,13 +172,15 @@ public class Game extends JPanel {
 
 	class Submitter implements ActionListener{
 		public void actionPerformed(ActionEvent e){
-			if (!gameOn) { //if first press to start game;
+			if (gameOn == false) { //if first press to start game;
 				gameOn = true;
-				//System.out.println("the game has begun");
+				System.out.println("the game has begun");
 				submitbutton.setText("Submit Set!"); //change text
-				//sendMessageToServer("G"); //self explanatory
+				System.out.println("button text changed");
+				callingObj.sendMessageToServer("G"); //self explanatory
+				System.out.println("told the server to start game:");
 			} else{
-				//System.out.println("reading cards...");
+				System.out.println("there are this many cards seen as selected: " + cardSelection.size());
 				if (cardSelection.size() != 3){
 					System.out.println("Invalid set submission!");
 				}
@@ -169,13 +188,14 @@ public class Game extends JPanel {
 					String setSubmission = "S~";
 					for (int i = 0; i < 3; i++){
 						if (i != 2) {
-							setSubmission = setSubmission + cardSelection.get(i) + " ";
+							setSubmission = setSubmission + cardSelection.get(i) + "~";
 						}
 						else {
 							setSubmission = setSubmission + cardSelection.get(i);
 						}
 					}
 					callingObj.sendMessageToServer(setSubmission);
+					cardSelection.clear();
 				}
 			}
 		}
@@ -216,7 +236,7 @@ public class Game extends JPanel {
 		rightside.setVisible(true);
 
 
-		JButton submitbutton = new JButton("Ready To Play!");
+		submitbutton = new JButton("Ready To Play!");
 		submitbutton.addActionListener(new Submitter());
 		bottomLeft.add(submitbutton, BorderLayout.CENTER);
 
@@ -248,12 +268,12 @@ public class Game extends JPanel {
 
 		//setup for fields
 		enteredText = new JTextArea(10, 24);
-	    typedText   = new JTextField(15);
+	    	typedText   = new JTextField(15);
 
-	    //setup button
-	    JButton chatbutton = new JButton("Send");
-	    chatbutton.setPreferredSize(new Dimension(70, 20));
-	    chatbutton.addActionListener(new TextSend());
+	    	//setup button
+	    	JButton chatbutton = new JButton("Send");
+	    	chatbutton.setPreferredSize(new Dimension(70, 20));
+	    	chatbutton.addActionListener(new TextSend());
 
 		enteredText.setVisible(true);
 		enteredText.setEditable(false);
@@ -268,10 +288,10 @@ public class Game extends JPanel {
 		rightside.add(exitbutton, BorderLayout.PAGE_START);
 
 		//add the two fields to chatpanel...
-	    chatpanel.add(enteredText, BorderLayout.NORTH);
-	    chatbar.add(typedText, BorderLayout.WEST);
-	    chatbar.add(chatbutton, BorderLayout.EAST);
-	    chatpanel.add(chatbar, BorderLayout.SOUTH);
+	    	chatpanel.add(enteredText, BorderLayout.NORTH);
+	    	chatbar.add(typedText, BorderLayout.WEST);
+	    	chatbar.add(chatbutton, BorderLayout.EAST);
+	    	chatpanel.add(chatbar, BorderLayout.SOUTH);
 
 	    //add chatpanel to rightside
 		rightside.add(chatpanel, BorderLayout.SOUTH); //I have tried EVERYTHING to put this thing at the bottom, to no avail

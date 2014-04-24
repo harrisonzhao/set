@@ -467,12 +467,14 @@ public class SetServerProtocol extends Protocol {
     }
     User user = users.get(clientID);
     if (user.currentGameRoom < 0) {
+      System.out.println("error1");
       System.err.println("leave room bug!!!");
       return;
     }
     GameRoom room = gameRooms.get(user.currentGameRoom);
     sendMessage(clientID, "E");
     if (room == null) {
+      System.out.println("error2");
       System.err.println("leave room bug!!!");
     } else {
       room.removePlayer(clientID);

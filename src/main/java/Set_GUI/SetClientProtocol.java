@@ -178,13 +178,12 @@ Special flags
         }
         break;
       case 'T':
-    	  if (messagePieces.length == 3){
-    		  System.out.println("Chat message contains username:");
-    		  gameRef.enteredText.append(messagePieces[1] + ": " + messagePieces[2]);
-    	  } else {
-    		  System.out.println("Chat message does not contain username:");
-    		  gameRef.enteredText.append(messagePieces[1]);
-    	  }
+	  System.out.println("Got a chat message:");
+	  if (messagePieces.length == 2) {
+		gameRef.enteredText.append(messagePieces[1] + "\n");
+	  } else {
+	  	gameRef.enteredText.append(messagePieces[1] + ": " + messagePieces[2] + "\n");
+	  }
     	  
       /*
 T~[message] : send message to game room
