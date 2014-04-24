@@ -317,6 +317,7 @@ T~[username]~[message] : sends out message to gameroom from [username]
     sendMessageToServer(message);
     System.out.println("success, sent:" + message);    
   }
+  
   public void grabPanels(Login log, Lobby lob, Game game) {
     this.logRef = log;
     this.lobRef = lob;

@@ -359,6 +359,7 @@ public class Lobby extends JPanel {
       String [] roombits = roomInfo.split(" ");
 
       // removing colon in room number
+      System.out.println(roombits[0] + "is the integer I'm trying to parse for game room");
       int roomNumber = Integer.parseInt
           (roombits[0].substring(0,roombits[0].length()-1));
 
@@ -458,7 +459,7 @@ public class Lobby extends JPanel {
         maxNumPlayer, status);
     gameRoomList.put(roomNumber, newRoom);
     String statusWord = status == true ? "Playing" : "Open";
-    String gameRoomInfo = roomName + " " + roomNumber + " " + 
+    String gameRoomInfo = roomNumber + ": " + roomName + " " + 
         curNumPlayer + "/" + maxNumPlayer + " " + statusWord;
     currentGames.addElement(gameRoomInfo);
     newRoom.setListString(gameRoomInfo);

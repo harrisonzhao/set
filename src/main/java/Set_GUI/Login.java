@@ -302,8 +302,6 @@ public class Login extends JFrame implements ActionListener {
    *  <p>
    *  Sets the window size to appropriate dimensions, loads the Game page card, and sets the default button for that window.  
    */
-  // lacks way to indicate to server to unlog out the dude.!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-  // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
   public void logout() {
     isLoggedIn = false;
     this.getRootPane().setDefaultButton(logButton);
