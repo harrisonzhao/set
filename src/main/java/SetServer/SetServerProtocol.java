@@ -562,8 +562,11 @@ public class SetServerProtocol extends Protocol {
     List<Integer> winners = new ArrayList<>();
     List<Integer> losers = new ArrayList<>();
     room.getWinners(winners, losers);
+    int loserSz = losers.size();
+    if (loserSz == 0)
+      ++loserSz;
     int addedScore=((room.getNumPlayers()-winners.size())*10)/winners.size();
-    int subtractedScore=((room.getNumPlayers()-losers.size())*10)/losers.size();
+    int subtractedScore=((room.getNumPlayers()-losers.size())*10)/loserSz;
     double updatedScore;
     for (int i = 0; i != winners.size(); ++i) {
       User current = users.get(winners.get(i));
