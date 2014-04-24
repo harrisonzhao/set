@@ -30,6 +30,7 @@ public class Game extends JPanel {
 
 	ArrayList<String> cardSelection = new ArrayList<String>();
 	HashMap<JToggleButton, String> cards = new HashMap<JToggleButton, String>();
+	Deque<JToggleButton> selectedCards = new ArrayDeque<>();
 	String[] playerScores = null;
 	String[] playerNames = null;
 
@@ -161,9 +162,15 @@ public class Game extends JPanel {
 			JToggleButton selectedCard = (JToggleButton) i.getSource(); //return button object that got pressed
 			if(i.getStateChange()==ItemEvent.SELECTED){ //if the card was actually selected
 				cardSelection.add(cards.get(selectedCard)); // return matching card number and add to array
+				selectedCards.offer(selectedCard);
+				if(selectedCards.size() == 4){
+				  JToggleButton removedCard = selectedCards.removeFirst();
+				  removedCard.doClick();
+				}
 				System.out.println("Selected card " + cards.get(selectedCard));
 			} else { //remove the card
 				cardSelection.remove(cards.get(selectedCard));
+				selectedCards.remove(selectedCard);
 				System.out.println("Un-selected card " + cards.get(selectedCard));
 			}
 		}

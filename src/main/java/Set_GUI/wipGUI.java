@@ -21,6 +21,7 @@ public class wipGUI extends JFrame {
 	static JTextArea enteredText;
 	String cardSelection[] = null;
 	HashMap<JToggleButton, String> cards = null;
+	Deque<JToggleButton> selectedCards = new ArrayDeque<>();
 	Object[][] playerData = null;
 	
 	wipGUI(){
@@ -68,6 +69,11 @@ public class wipGUI extends JFrame {
 	class Selector implements ActionListener{
 		public void actionPerformed(ActionEvent e){
 			JToggleButton selectedCard = (JToggleButton) e.getSource(); //return button object that got pressed
+			if(selectedCards.size() == 3){
+			  selectedCards.offer(selectedCard);
+			  JToggleButton removedCard = selectedCards.removeFirst();
+			  removedCard.setSelected(false);
+			}
 			cardSelection[cardSelection.length] = cards.get(selectedCard); // return matching card number and add to array
 			
 		}
