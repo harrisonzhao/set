@@ -52,6 +52,8 @@ public class GameRoom {
   }
   
   public String encodeBoardToString(Board b, Scoring s, String flags) {
+    b.PrintSet();
+
     String request = "G";
     request += "~";
     request += flags;

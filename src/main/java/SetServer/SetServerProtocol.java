@@ -161,6 +161,10 @@ public class SetServerProtocol extends Protocol {
         pGameChat(message.connectedID, messagePieces);
         System.out.println("processing GameChat: complete");
         break;
+      case 'M':
+        pGameMessage(message.connectedID, messagePieces);
+        System.out.println("processing GameChat: complete");
+        break;
       default:
         System.out.println("Invalid Message!: " + message.message);
     }
@@ -525,6 +529,16 @@ public class SetServerProtocol extends Protocol {
     User sender = users.get(clientID);
     GameRoom current = gameRooms.get(sender.currentGameRoom);
     messageGameRoom(current, "T~" + sender.username + '~' + messagePieces[1]);
+  }
+
+  void pGameMessage(int clientID, String [] messagePieces){
+    if (messagePieces.length != 2) {
+      System.err.println("Game chat message length error!");
+      return;
+    }
+    User sender = users.get(clientID);
+    GameRoom current = gameRooms.get(sender.currentGameRoom);
+    messageGameRoom(current, "T~" + messagePieces[1]);
   }
   
   void messageGameRoom(GameRoom room, String message) {

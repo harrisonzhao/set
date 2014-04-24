@@ -73,6 +73,15 @@ public class Board{
         System.out.println(c.toString());
       }
     }
+
+    public void PrintSet(){
+      int i = 0;
+      for(Card c : active){
+        i++;
+        System.out.println(i + "\t" + c.toString());
+      }
+      System.out.println(ValidSet);
+    }
     
     private int FindCardAddr(Card c){
         for(int i=0; i<active.size(); i++){
