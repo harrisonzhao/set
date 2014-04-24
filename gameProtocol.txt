@@ -11,6 +11,7 @@ FLAG:
 	N: Someone failed a set scores need updating
 	F: Game is over, do game over behavior
 	B: Board state, no changes to scores
+	M: Message to be broadcasted to all users
   S: start game
 
 Special flags
@@ -52,6 +53,7 @@ E                            :Exit Game
 C~Message                    :Lobby Chat
 T~Message                    :Game Chat
 D                            :Logout
+M			     :Message to be broadcasted to all users
 
 ===================================================
 Server to client

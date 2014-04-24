@@ -103,6 +103,15 @@ public class Game extends JPanel {
 					String scoreStr = srvr_string[3]; // parse score segments
 					String scores[] = scoreStr.split(" "); //get individual scores
 					System.out.println("We have only " + scores.length + " score");
+					if (srvr_string[1].charAt(0) == 'Y') {
+						System.out.println(myUsername + "earned 3 points");
+						callingObj.sendMessageToServer("M~" + myUsername +  " earned 3 points!" + "\n");
+						//enteredText.append("<font color=#0000FF>Awesome! You've earned 3 points!</font>");
+					} else {
+						System.out.println(myUsername + "lost 1 point");
+						callingObj.sendMessageToServer("M~" + myUsername +  " lost 1 point!" + "\n");
+						//enteredText.append("<font color=#FF0000>Bro, do you even set?</font>");
+					}	
 					//for (int j = 0; j < scores.length; j++){
 					//	playerScores[j] = scores[j]; //build score list
 					//}
@@ -113,27 +122,7 @@ public class Game extends JPanel {
 		}
 		cardPane.updateUI();
 		System.out.println("Done showing cards");
-		/*
-		cards.clear(); //clears board
-
-		// parse the card list from the server and display the cards
-		String cardString = srvr_string[2]; // get card list
-		String cardsToShow[] = cardString.split(" "); // break down string of cards
-		//then serve all the cards up:
-		for (int i = 0; i < cardsToShow.length; i++){
-			//String cardname = "card" + cardsToShow[i];
-
-			JToggleButton setCard = new JToggleButton(new ImageIcon("resources/imgs/" + cardsToShow[i] + ".gif"));
-
-			setCard.setPreferredSize(new Dimension(100, 85));
-			setCard.setBackground(new Color(255, 255, 255));
-			setCard.addItemListener(new Selector());
-			//setCards[i] = setCard; //idk
-			cards.put(setCard, cardsToShow[i]); //add to hashmap to get back later...
-			cardPane.add(setCard);
-		}
-
-		*/
+		
 	}
 
 	// adds to my enteredText window...or, chatUpdate from server needs to send to it
