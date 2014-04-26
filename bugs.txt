@@ -8,8 +8,7 @@ Medium priority (Need to be fixed or added):
  - this is being implemented, but it doesn't change color...working on reformatting text area
 -Gameroom exit doesn't return to lobby
  - I need to coordinate with Alejandro on this
- - Should not allow create game if name contains "~"
-z
+
 Low priority (We should probably fix or add):
 -When players enter the room chat only displays (FIRSTPLAYER) has entered
 -Cancel button on create game doesn't actually cancel. Just triggers ok to do nothing.
