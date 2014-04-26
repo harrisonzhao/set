@@ -1,13 +1,15 @@
 High priority (Necessary or prevent us from testing other features):
 -Implement scoring
+-at game over there is an InvocationTargetException
 
 Medium priority (Need to be fixed or added):
 -When chat fills up, it makes the box bigger and chat becomes unusable. Need it to scroll 
 	- I just fixed it for lobby
 -Implement some kind of game status reports with each board/score change
  - this is being implemented, but it doesn't change color...working on reformatting text area
--Gameroom exit doesn't return to lobby
+-Gameroom exit doesn't return to lobby ### SEMI-FIXED
  - I need to coordinate with Alejandro on this
+ - I made it go back to the lobby but it's not clearing the state of the game yet.
 
 Low priority (We should probably fix or add):
 -When players enter the room chat only displays (FIRSTPLAYER) has entered

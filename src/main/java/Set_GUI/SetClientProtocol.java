@@ -167,6 +167,7 @@ Special flags
         break;
       case 'C':
         //C~[username]~[message] : chat username messaged lobbying 
+        System.out.println("Received message:" + message.message);
         if(messagePieces.length == 3) {
           String username = messagePieces[1];
           String chatMessage = messagePieces[2];
