@@ -5,6 +5,9 @@ import java.util.HashMap;
 import java.awt.*;
 import java.awt.image.*;
 import java.awt.event.*;
+import java.awt.event.KeyEvent.*;
+import java.awt.Color.*;
+import java.awt.Robot.*;
 import javax.imageio.*;
 import javax.swing.*;
 import javax.swing.event.*;
@@ -78,8 +81,10 @@ public class Lobby extends JPanel {
 
   private JButton cancelButton = new JButton("Cancel");
   private boolean exitCreate = false;
+  private JLabel createErrorText = new JLabel("");
 
   final JComponent[] createGameInputs = new JComponent[] {
+    createErrorText,
     new JLabel("Enter name:"),
     gameNameField,
     new JLabel("Enter max # players (limit 4):"),
@@ -314,6 +319,7 @@ public class Lobby extends JPanel {
       exitCreate = true;
     }
   });
+    createErrorText.setForeground(Color.red);
 
   }
 
@@ -330,19 +336,28 @@ public class Lobby extends JPanel {
       exitCreate = false;
       do {
         JOptionPane.showMessageDialog(login_Frame, createGameInputs, "Test Dialog", JOptionPane.PLAIN_MESSAGE);
-        
+        createErrorText.setText("");
         // checking that max player field contains an integer
         try {
           maxPlayers = Integer.parseInt(maxPlayerField.getText());
           redo = maxPlayers>4 || maxPlayers<1;
+          if(redo) {
+            createErrorText.setText("The max player field value must be between 1 and 4.");
+          }
         }
         catch(NumberFormatException ex) {
           redo = true;
+          createErrorText.setText("The max player field must contain a valid number.");
         }
 
         // checking that game name field is of proper format
         if(gameNameField.getText().contains("~")) {
           redo = true;
+          createErrorText.setText("The game field must not contain a '~'.");
+        }
+        if(gameNameField.getText().equals("")) {
+          redo = true;
+          createErrorText.setText("Please enter a name for your game room.");
         }
 
         System.out.println("exit create = " + exitCreate);
