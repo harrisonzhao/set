@@ -105,6 +105,10 @@ public class Lobby extends JPanel {
     this.callingObj = callingObj;
         
     welcome.setText("Welcome " + username);
+    setEnterButton();
+  }
+
+  public void setEnterButton() {
     this.getRootPane().setDefaultButton(sendMessage);
   }
 
@@ -535,5 +539,14 @@ public class Lobby extends JPanel {
       // shouldn't run
       System.err.println("Error. That is an invalid userlist update command");
     }
+  }
+
+  /**
+  *  Will clear the contents of the text fields in the lobby so that the user can start 
+  *  from a clean slate when logging back in after logging out.
+  */
+  public void clearContents() {
+    chatLog.setText("");
+    currentUsers.clear();
   }
 }

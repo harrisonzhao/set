@@ -307,11 +307,7 @@ public class Login extends JFrame implements ActionListener {
     this.getRootPane().setDefaultButton(logButton);
     callingObj.sendMessageToServer("D");
 
-    /*lobby_Panel = new Lobby(this);
-    game_Panel = new Game(lobby_Panel);
-
-    lobby_Panel.createGUI();
-    game_Panel.createAndShowGUI();*/
+    lobby_Panel.clearContents();
 
     isLoggedIn = false;
     setSize(400,400);
@@ -324,8 +320,8 @@ public class Login extends JFrame implements ActionListener {
    * Sets the window size to the lobby dimensions and shows the Lobby page card.
    */
   public void exitGame() {
-    this.getRootPane().setDefaultButton(logButton);
-    setSize(400,400);
+    lobby_Panel.setEnterButton();
+    setSize(1000, 450);
     cl.show(master, LOBBY);
   }
   

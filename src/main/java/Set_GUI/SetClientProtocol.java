@@ -159,6 +159,7 @@ Special flags
         break;
       case 'E':
         // exited GameRoom
+        logRef.exitGame();
         break;
       case 'J':
         /* J~I :Could not join, game in progress
