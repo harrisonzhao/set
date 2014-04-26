@@ -2,7 +2,8 @@ High priority (Necessary or prevent us from testing other features):
 -Implement scoring
 
 Medium priority (Need to be fixed or added):
--When chat fills up, it makes the box bigger and chat becomes unusable. Need it to scroll
+-When chat fills up, it makes the box bigger and chat becomes unusable. Need it to scroll 
+	- I just fixed it for lobby
 -Implement some kind of game status reports with each board/score change
  - this is being implemented, but it doesn't change color...working on reformatting text area
 -Gameroom exit doesn't return to lobby

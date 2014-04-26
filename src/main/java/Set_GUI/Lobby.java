@@ -43,6 +43,7 @@ public class Lobby extends JPanel {
   // chat box
   private String CHAT_HEADER = "Lobby Group Chat";
   private JLabel chatHeader;
+  private JScrollPane chatScroll;
   private JTextArea chatLog;
   private JTextField messageInput;
   private JButton sendMessage;
@@ -240,9 +241,13 @@ public class Lobby extends JPanel {
     chatHeader.setAlignmentX(CENTER_ALIGNMENT);
     
     // creating and organizing the component that stores the chatlog
-    chatLog = new JTextArea(15,30);
+    //chatScroll = new JScrollPane();
+    chatLog = new JTextArea("", 15,30);
+    chatScroll = new JScrollPane(chatLog);
+    //, ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
     chatLog.setEditable(false);
     chatLog.setLineWrap(true);
+    //chatScroll.add(chatLog);
     
     // the field where you type your messages to the chat
     messageInput = new JTextField(15);
@@ -254,7 +259,7 @@ public class Lobby extends JPanel {
     
     // Adding all the components to the right side of the screen
     right.add(chatHeader);
-    right.add(chatLog);
+    right.add(chatScroll);
     right.add(messageInput);
     right.add(sendMessage);
   }
@@ -321,6 +326,8 @@ public class Lobby extends JPanel {
       exitCreate = false;
       do {
         JOptionPane.showMessageDialog(login_Frame, createGameInputs, "Test Dialog", JOptionPane.PLAIN_MESSAGE);
+        
+        // checking that max player field contains an integer
         try {
           maxPlayers = Integer.parseInt(maxPlayerField.getText());
           redo = maxPlayers>4 || maxPlayers<1;
@@ -328,6 +335,12 @@ public class Lobby extends JPanel {
         catch(NumberFormatException ex) {
           redo = true;
         }
+
+        // checking that game name field is of proper format
+        if(gameNameField.getText().contains("~")) {
+          redo = true;
+        }
+
         System.out.println("exit create = " + exitCreate);
         if(exitCreate) {
           break;
