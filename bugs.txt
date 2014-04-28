@@ -22,6 +22,8 @@ Caused by: java.lang.ArrayIndexOutOfBoundsException: 1
 ^Cmake: *** [runClient] Error 130
 "
 
+-Game room name showing as null if game created before next user logs in
+
 Medium priority (Need to be fixed or added):
 -When chat fills up, it makes the box bigger and chat becomes unusable. Need it to scroll 
 	- I just fixed it for lobby
