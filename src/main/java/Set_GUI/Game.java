@@ -31,8 +31,8 @@ public class Game extends JPanel {
 	ArrayList<String> cardSelection = new ArrayList<String>();
 	HashMap<JToggleButton, String> cards = new HashMap<JToggleButton, String>();
 	Deque<JToggleButton> selectedCards = new ArrayDeque<>();
-	String[] playerScores = null;
-	String[] playerNames = null;
+	int[] playerScores = new int[4];
+	String[] playerNames = new String[4];
 
 	private Lobby lobby_panel;
 	private Login login_panel;
@@ -101,20 +101,34 @@ public class Game extends JPanel {
 				if ((srvr_string[1].charAt(0) == 'Y') || (srvr_string[1].charAt(0) == 'N')){ //if scores need to be updated
 					System.out.println("updating scores:");
 					String scoreStr = srvr_string[3]; // parse score segments
-					String scores[] = scoreStr.split(" "); //get individual scores
-					System.out.println("We have only " + scores.length + " score");
-					if (srvr_string[1].charAt(0) == 'Y') {
-						System.out.println(myUsername + "earned 3 points");
-						callingObj.sendMessageToServer("M~" + myUsername +  " earned 3 points!");
-						//enteredText.append("<font color=#0000FF>Awesome! You've earned 3 points!</font>");
-					} else {
-						System.out.println(myUsername + "lost 1 point");
-						callingObj.sendMessageToServer("M~" + myUsername +  " lost 1 point!");
-						//enteredText.append("<font color=#FF0000>Bro, do you even set?</font>");
-					}	
+					String[] scores = scoreStr.split(" "); //get individual scores
+					for(int i=0; i<scores.length; i++){
+						String[] sp = scores[i].split("_");
+						String user = sp[0];
+						int score = Integer.parseInt(sp[1]);
+						if(score != playerScores[i]){
+							if(myUsername.equals(user)){
+								if (srvr_string[1].charAt(0) == 'Y') {
+									System.out.println(myUsername + "earned 3 points");
+									callingObj.sendMessageToServer("M~" + myUsername +  " earned 3 points!");
+									//enteredText.append("<font color=#0000FF>Awesome! You've earned 3 points!</font>");
+								} else {
+									System.out.println(myUsername + "lost 1 point");
+									callingObj.sendMessageToServer("M~" + myUsername +  " lost 1 point!");
+									//enteredText.append("<font color=#FF0000>Bro, do you even set?</font>");
+								}
+							}
+						}
+						playerScores[i] = score;
+						playerNames[i] = user;
+						System.out.println(playerNames[i] + " " + playerScores[i]);
+					}
 					//for (int j = 0; j < scores.length; j++){
 					//	playerScores[j] = scores[j]; //build score list
 					//}
+
+					//DISPLAY SCORES HERE
+					//Usernames+Scores stored in playerScores and playerNames
 				}
 				break;
 

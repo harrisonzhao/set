@@ -45,13 +45,12 @@ public class Scoring {
     
     // Returns the scores of the players in the order of the list
     public String ScoresToString(){
-        String s = "";
-        for(int i=0; i<players.size(); i++){
-            s += (players.get(i)).score;
-            s += " ";
-        }
-        s.trim();
-        return s;
+      String s = "";
+      for(int i=0; i<players.size(); i++){
+        s += (players.get(i)).username + "_" + (players.get(i)).score + " ";
+      }
+      s.trim();
+      return s;
     }
     
 }

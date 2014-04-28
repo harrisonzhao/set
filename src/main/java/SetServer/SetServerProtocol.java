@@ -453,7 +453,8 @@ public class SetServerProtocol extends Protocol {
     GameRoom room = gameRooms.get(sender.currentGameRoom);
     String updateMessage = room.CheckSetAndUpdate(clientID,
             messagePieces[1], messagePieces[2], messagePieces[3]);
-    messageGameRoom(room, updateMessage);
+    if(updateMessage != null)
+      messageGameRoom(room, updateMessage);
     
     //check if game's over
     if (room.isCompleted())

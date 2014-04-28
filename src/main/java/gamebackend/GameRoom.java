@@ -90,7 +90,7 @@ public class GameRoom {
     else{
       //The board state changed after this request was sent
       //Shouldn't penailize user not sure how to handle this
-      return encodeBoardToString(board, score, "Y");
+      return null;
     }
   }
   public String getName() {
