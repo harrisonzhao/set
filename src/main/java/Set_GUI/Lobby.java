@@ -406,7 +406,6 @@ public class Lobby extends JPanel {
 
       callingObj.sendMessageToServer("J~"+roomNumber); // join the game. Server will presumeably send back U~X~[room number]
       // this line cannot be here in the end
-      login_Frame.enterGame();
     }
   } 
 
@@ -580,11 +579,18 @@ public class Lobby extends JPanel {
   *  Handle the joining of a game
   */
   public void handleJoin(char mode) {
-    if(mode == 'I') {
+
+    if(mode == 'J') {
+      login_Frame.enterGame();      
+      errorText.setVisible(false);
+    }
+    else if(mode == 'I') {
       errorText.setText(gameInProgressError);
+      errorText.setVisible(true);
     }
     else if (mode == 'F') {
       errorText.setText(gameFullError);
+      errorText.setVisible(true);
     }
     else {
       // this shouldn't ever run

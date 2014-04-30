@@ -163,7 +163,9 @@ Special flags
         break;
       case 'J':
         /* J~I :Could not join, game in progress
-        J~F :Game Room is full*/
+        J~F :Game Room is full
+        J~J :Join is successful */
+          lobRef.handleJoin(messagePieces[1].charAt(0));
         break;
       case 'C':
         //C~[username]~[message] : chat username messaged lobbying 
