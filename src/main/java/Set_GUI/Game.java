@@ -18,7 +18,7 @@ import java.util.*;
 @SuppressWarnings("serial")
 public class Game extends JPanel {
 
-	static JPanel cardPane, leftside, bottomLeft, rightside;
+	static JPanel cardPane, leftside, bottomLeft, rightside, upperRight;
 	static JTextField typedText;
 	static JTextArea enteredText;
 	boolean gameOn = false; // flag to signal start of game
@@ -33,6 +33,8 @@ public class Game extends JPanel {
 	Deque<JToggleButton> selectedCards = new ArrayDeque<>();
 	int[] playerScores = new int[4];
 	String[] playerNames = new String[4];
+	static Object[][] scoreBoard = new Object[4][2];
+	static JTable scoreTable;
 
 	private Lobby lobby_panel;
 	private Login login_panel;
@@ -121,15 +123,20 @@ public class Game extends JPanel {
 						}
 						playerScores[i] = score;
 						playerNames[i] = user;
+						scoreBoard[i][0] = user;
+						scoreBoard[i][1] = score;
 						System.out.println(playerNames[i] + " " + playerScores[i]);
 					}
+					
 					//for (int j = 0; j < scores.length; j++){
 					//	playerScores[j] = scores[j]; //build score list
 					//}
 
 					//DISPLAY SCORES HERE
 					//Usernames+Scores stored in playerScores and playerNames
+				upperRight.updateUI();
 				}
+				
 				break;
 
 
@@ -277,8 +284,8 @@ public class Game extends JPanel {
 		chatpanel.setBackground(new Color(100, 250, 220));
 
 		//setup for fields
-		enteredText = new JTextArea(10, 24);
-	    	typedText   = new JTextField(15);
+		enteredText = new JTextArea(10, 26);
+	    	typedText   = new JTextField(17);
 
 	    	//setup button
 	    	JButton chatbutton = new JButton("Send");
@@ -292,10 +299,26 @@ public class Game extends JPanel {
 		typedText.setEditable(true);
 
 		//ExitButton
+		upperRight = new JPanel(new BorderLayout());
+		upperRight.setPreferredSize(new Dimension(275, 230));
+		upperRight.setBackground(new Color(120, 160, 200));
+
 		JButton exitbutton = new JButton("Exit Game");
 		exitbutton.setPreferredSize(new Dimension(120, 25));
 		exitbutton.addActionListener(new GameExit());
-		rightside.add(exitbutton, BorderLayout.PAGE_START);
+		
+		String[] titles = {"Players", "Scores"};
+		for (int i = 0; i < 4; i++) {
+			for (int j = 0; j < 1; j++) {
+				scoreBoard[i][j] = "";
+			}
+		}
+		scoreTable = new JTable(scoreBoard, titles);
+
+		//rightside.add(exitbutton, BorderLayout.PAGE_START);
+		upperRight.add(exitbutton, BorderLayout.NORTH);
+		upperRight.add(scoreTable.getTableHeader(), BorderLayout.CENTER);
+		upperRight.add(scoreTable, BorderLayout.SOUTH);
 
 		//add the two fields to chatpanel...
 	    	chatpanel.add(enteredText, BorderLayout.NORTH);
@@ -303,9 +326,11 @@ public class Game extends JPanel {
 	    	chatbar.add(chatbutton, BorderLayout.EAST);
 	    	chatpanel.add(chatbar, BorderLayout.SOUTH);
 
-	    //add chatpanel to rightside
-		rightside.add(chatpanel, BorderLayout.SOUTH); //I have tried EVERYTHING to put this thing at the bottom, to no avail
-
+	    	//add chatpanel to rightside
+		rightside.add(chatpanel, BorderLayout.SOUTH); 
+		//add upperright to the right...
+		rightside.add(upperRight, BorderLayout.NORTH);		
+	
 		//finalize mainframe
 		mainframe.add(leftside, BorderLayout.WEST);
 		mainframe.add(rightside, BorderLayout.EAST);
