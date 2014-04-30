@@ -38,7 +38,7 @@ Cards:
 	3 card numbers separated by " "
 
 Request type 2: Start game.
-G (ASK WING XHAO THE SPECIFICS OF THIS SHIT)
+G (ASK WING XHAO THE SPECIFICS OF THISsendMessageToServer("J SHIT)
 
 ==================================================
 Client to server
@@ -63,6 +63,7 @@ LOBBY STUFF
 C~[message] : lobby chat
 C~[username]~[message] : chat username messaged lobby
 E : exit gameroom
+J~J :Join game successful
 J~I :Could not join, game in progress
 J~F :Game Room is full
 P~R~[username] :remove client from lobby table of users

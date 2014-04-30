@@ -320,6 +320,7 @@ public class Login extends JFrame implements ActionListener {
    * Sets the window size to the lobby dimensions and shows the Lobby page card.
    */
   public void exitGame() {
+    game_Panel.leave();
     lobby_Panel.setEnterButton();
     setSize(1000, 450);
     cl.show(master, LOBBY);

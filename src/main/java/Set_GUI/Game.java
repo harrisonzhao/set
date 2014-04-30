@@ -39,15 +39,27 @@ public class Game extends JPanel {
 	private Lobby lobby_panel;
 	private Login login_panel;
 
-	Game(Login login_panell, Lobby lobby_panel){
+	Game(Login login_panel, Lobby lobby_panel){
 		this.lobby_panel = lobby_panel;
 		this.login_panel = login_panel;
 		//createAndShowGUI();
 	}
 
+	// sets up the references that the game lobby needs for a particular instance
 	public void setClient(SetClientProtocol callingObj, String username) {
 		this.callingObj = callingObj;
 		this.myUsername = username;
+	}
+
+	// cleans up when the game leaves
+	public void leave() {
+		// clear out board and selected cards
+		cards.clear();
+		cardPane.removeAll();
+		gameOn = false;
+		//playerNames = new String[4];
+		//playerScores = new int[4];
+		submitbutton.setText("Ready To Play!");
 	}
 
 	public void displayBoard(String[] srvr_string){
