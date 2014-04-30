@@ -400,6 +400,7 @@ public class SetServerProtocol extends Protocol {
           sendMessage(clientID, "J~I");
         } else {
           room.addPlayer(clientID, joining.username);
+          sendMessage(clientID, "J~J");
           messageGameRoom(room, room.encodeNamesToString());
           sendMessage(-1, 
                   "C~"+joining.username
