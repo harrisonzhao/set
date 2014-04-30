@@ -164,7 +164,7 @@ public class Login extends JFrame implements ActionListener {
   
     // Create the header text
     // We can come up with a better name later
-    String headerText = "The Trembling Triumvirate's Terrific Set";
+    String headerText = "The Trembling Tetraumvirate's Terrific Set";
     JLabel jHeaderText = new JLabel(headerText);
     
     top.add(Box.createRigidArea(new Dimension(0, 5)));

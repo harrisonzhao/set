@@ -28,6 +28,11 @@ public class Lobby extends JPanel {
   private JPanel right = new JPanel();
   private JPanel center = new JPanel();
   
+  // Error text
+  private JLabel errorText = new JLabel();
+  private String gameFullError = "Error: The game you tried to join is full.";
+  private String gameInProgressError = "Error: The game you tried to enter is in progress.";
+
   // subcomponents of the above
   //private JPanel headertext = new JPanel();
   
@@ -206,12 +211,17 @@ public class Lobby extends JPanel {
     headerText.add(Logout);
     headerText.setVisible(true);
     
+    // setting error text font color to be red
+    errorText.setForeground(new Color(0xff0000));
+
     top.setLayout(new BoxLayout(top, BoxLayout.Y_AXIS));
     
     //top.setAlignmentY(Component.CENTER_ALIGNMENT);
     top.add(headerLabel);
     //top.add(Box.createRigidArea(new Dimension(0,10)));
     top.add(headerText);
+    top.add(errorText);
+    errorText.setVisible(false);
     headerText.setVisible(true);
     //top.add(welcome);
     //top.add(Box.createRigidArea(new Dimension(200,0)));
@@ -297,9 +307,6 @@ public class Lobby extends JPanel {
     JScrollPane gamePane = new JScrollPane(gameList);
     gamePane.setAlignmentX(CENTER_ALIGNMENT);
     
-    // temporary game room for testing
-    currentGames.addElement("1024: Artificial_Game 1/4 open");
-    
     gameList.addMouseListener(new JoinListener());
     gameList.setPreferredSize(new Dimension(200, 300));
     
@@ -331,6 +338,7 @@ public class Lobby extends JPanel {
    */
   public class CreationListener implements ActionListener {
     public void actionPerformed(ActionEvent evt) {
+      errorText.setVisible(false);
       int maxPlayers;
       boolean redo = false;
       exitCreate = false;
@@ -385,6 +393,7 @@ public class Lobby extends JPanel {
 
   private class JoinGameListener implements ActionListener {
     public void actionPerformed(ActionEvent evt) {
+      errorText.setVisible(false);
       String roomInfo = gameList.getSelectedValue();
 
       // parse roomInfo to grab room number
@@ -396,12 +405,14 @@ public class Lobby extends JPanel {
           (roombits[0].substring(0,roombits[0].length()-1));
 
       callingObj.sendMessageToServer("J~"+roomNumber); // join the game. Server will presumeably send back U~X~[room number]
+      // this line cannot be here in the end
       login_Frame.enterGame();
     }
   } 
 
   private class ChatButtonListener implements ActionListener {    
     public void actionPerformed(ActionEvent event) {
+      errorText.setVisible(false);
       if(messageInput.isFocusOwner()) {
         //System.out.println("test button press\n");
         String message = messageInput.getText();
@@ -563,5 +574,21 @@ public class Lobby extends JPanel {
   public void clearContents() {
     chatLog.setText("");
     currentUsers.clear();
+  }
+
+  /**
+  *  Handle the joining of a game
+  */
+  public void handleJoin(char mode) {
+    if(mode == 'I') {
+      errorText.setText(gameInProgressError);
+    }
+    else if (mode == 'F') {
+      errorText.setText(gameFullError);
+    }
+    else {
+      // this shouldn't ever run
+      System.err.println("There is a mode error in Lobby.handleJoin()");
+    }
   }
 }
