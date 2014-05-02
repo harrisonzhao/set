@@ -9,6 +9,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.awt.event.*;
 import java.util.*;
 
 
@@ -31,6 +32,7 @@ public class Game extends JPanel {
 	boolean gameOn = false; // flag to signal start of game
 	public JButton submitbutton; // changed to local declaration, to change text on the fly
 	private String myUsername;
+	public JButton chatbutton;
 
 	JPanel mainframe;
 	SetClientProtocol callingObj;
@@ -170,10 +172,12 @@ public class Game extends JPanel {
 	//Chat message button listener
 	class TextSend implements ActionListener{
 		public void actionPerformed(ActionEvent e){
-			String chattext = typedText.getText();
-			callingObj.sendMessageToServer("T~" + chattext);
-			//enteredText.append(myUsername + ": " + chattext + "\n");
-			typedText.setText("");
+			if (typedText.isFocusOwner()) {
+				String chattext = typedText.getText();
+				callingObj.sendMessageToServer("T~" + chattext);
+				//enteredText.append(myUsername + ": " + chattext + "\n");
+				typedText.setText("");
+			}
 		}
 	}
 
@@ -317,16 +321,29 @@ public class Game extends JPanel {
 		scrollPane.setPreferredSize(new Dimension(250, 230));
 		scrollPane.setVisible(true);
 
-	    	typedText   = new JTextField(17);
 
-		typedText.setVisible(true);
-		typedText.setEditable(true);
-
-	    	//setup button
-	    	JButton chatbutton = new JButton("Send");
+		//setup button
+	    	chatbutton = new JButton("Send");
 	    	chatbutton.setPreferredSize(new Dimension(70, 20));
 	    	chatbutton.addActionListener(new TextSend());
 
+
+	    	typedText   = new JTextField(17);
+		//this crazy set of lines sets the chatbutton to be pressed by [enter] when the textfield is on focus...hacky but functional
+		//else, [enter] trigger set submission
+		typedText.addKeyListener(
+  			new KeyAdapter() {
+     				public void keyPressed(KeyEvent e) {
+       					if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+          					chatbutton.doClick();
+       					}
+     				}
+  			});
+
+
+
+		typedText.setVisible(true);
+		typedText.setEditable(true);
 
 
 		//Upper Right setup:
