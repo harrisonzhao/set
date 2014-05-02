@@ -4,6 +4,7 @@ import javax.swing.*;
 
 import java.net.*;
 import java.awt.*;
+import javax.swing.text.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
@@ -20,7 +21,13 @@ public class Game extends JPanel {
 
 	static JPanel cardPane, leftside, bottomLeft, rightside, upperRight;
 	static JTextField typedText;
-	static JTextArea enteredText;
+	static JScrollPane scrollPane;
+	static JTextPane enteredText = new JTextPane();
+	static StyledDocument textDoc = enteredText.getStyledDocument();
+	Style good = textDoc.addStyle("good style", null);
+	Style bad = textDoc.addStyle("bad style", null);
+	Style normal = textDoc.addStyle("default style", null);
+
 	boolean gameOn = false; // flag to signal start of game
 	public JButton submitbutton; // changed to local declaration, to change text on the fly
 	private String myUsername;
@@ -75,7 +82,8 @@ public class Game extends JPanel {
 
 			case 'F':
 				System.out.println("Game ovah!");
-				//end game
+				//DO STUFF
+				
 				break;
 			default:
 				//either board(B), new scored (Y or N), or start(s)
@@ -285,7 +293,7 @@ public class Game extends JPanel {
 
 		//panel and label setup
 		JPanel chatpanel = new JPanel();
-		chatpanel.setPreferredSize(new Dimension(275, 230));
+		chatpanel.setPreferredSize(new Dimension(275, 400));
 		chatpanel.setBackground(new Color(100, 250, 150));
 		JLabel chatlabel = new JLabel("Player Chat");
 		chatpanel.add(chatlabel);
@@ -295,21 +303,33 @@ public class Game extends JPanel {
 		chatbar.setPreferredSize(new Dimension(275, 26));
 		chatpanel.setBackground(new Color(100, 250, 220));
 
-		//setup for fields
-		enteredText = new JTextArea(10, 26);
+		//setup for colored text field
+		StyleConstants.setForeground(good, Color.BLUE);
+		StyleConstants.setForeground(bad, Color.RED);
+		StyleConstants.setForeground(normal, Color.BLACK);
+
+		enteredText.setPreferredSize(new Dimension(250, 230));
+		enteredText.setVisible(true);
+		enteredText.setEditable(false);
+
+
+		scrollPane = new JScrollPane(enteredText);
+		scrollPane.setPreferredSize(new Dimension(250, 230));
+		scrollPane.setVisible(true);
+
 	    	typedText   = new JTextField(17);
+
+		typedText.setVisible(true);
+		typedText.setEditable(true);
 
 	    	//setup button
 	    	JButton chatbutton = new JButton("Send");
 	    	chatbutton.setPreferredSize(new Dimension(70, 20));
 	    	chatbutton.addActionListener(new TextSend());
 
-		enteredText.setVisible(true);
-		enteredText.setEditable(false);
-		//enteredText.setBackground(new Color(100, 240, 200)); //set random colors for testing
-		typedText.setVisible(true);
-		typedText.setEditable(true);
 
+
+		//Upper Right setup:
 		//ExitButton
 		upperRight = new JPanel(new BorderLayout());
 		upperRight.setPreferredSize(new Dimension(275, 230));
@@ -333,7 +353,7 @@ public class Game extends JPanel {
 		upperRight.add(scoreTable, BorderLayout.SOUTH);
 
 		//add the two fields to chatpanel...
-	    	chatpanel.add(enteredText, BorderLayout.NORTH);
+	    	chatpanel.add(scrollPane, BorderLayout.NORTH);
 	    	chatbar.add(typedText, BorderLayout.WEST);
 	    	chatbar.add(chatbutton, BorderLayout.EAST);
 	    	chatpanel.add(chatbar, BorderLayout.SOUTH);

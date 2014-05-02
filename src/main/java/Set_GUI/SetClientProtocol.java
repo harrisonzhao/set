@@ -13,6 +13,9 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.Socket;
+import javax.swing.text.*;
+import java.awt.color.*;
+import java.awt.*;
 
 import javax.swing.SwingUtilities;
 
@@ -28,6 +31,10 @@ public class SetClientProtocol extends Protocol {
   Lobby lobRef;
   Login logRef;
   Game gameRef;
+
+  Style good = gameRef.textDoc.addStyle("good style", null);
+  Style bad = gameRef.textDoc.addStyle("bad style", null);
+  Style normal = gameRef.textDoc.addStyle("default style", null);
   
   /**
    * Constructor, modify arguments passed to it in SetClientMain
@@ -118,6 +125,10 @@ public class SetClientProtocol extends Protocol {
    */
   @Override
   public void processManagerMessages(Message message) {
+
+    StyleConstants.setForeground(good, Color.BLUE);
+    StyleConstants.setForeground(bad, Color.RED);
+    StyleConstants.setForeground(normal, Color.BLACK);
     System.out.println("Received message: " + message.message);
     String [] messagePieces = message.message.split("~");
     switch(messagePieces[0].charAt(0)) {
@@ -184,9 +195,20 @@ Special flags
       case 'T':
 	  System.out.println("Got a chat message:");
 	  if (messagePieces.length == 2) {
-		gameRef.enteredText.append(messagePieces[1] + "\n");
+		String[] content =  messagePieces[1].split(" ");
+		if (content.length == 4) {
+			try{
+				gameRef.textDoc.insertString(gameRef.textDoc.getLength() + 1, messagePieces[1] + "\n", good);
+			} catch(BadLocationException ble){System.out.println("Text didn't work for some reason");}
+		} else {
+			try{
+				gameRef.textDoc.insertString(gameRef.textDoc.getLength() + 1, messagePieces[1] + "\n", bad);
+			} catch(BadLocationException ble){System.out.println("Text didn't work for some reason");}
+		}
 	  } else {
-	  	gameRef.enteredText.append(messagePieces[1] + ": " + messagePieces[2] + "\n");
+		try{
+			gameRef.textDoc.insertString(gameRef.textDoc.getLength() + 1, messagePieces[1] + ": " + messagePieces[2] + "\n", normal);
+		} catch(BadLocationException ble){System.out.println("Text didn't work for some reason");}
 	  }
     	  
       /*
