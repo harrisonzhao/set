@@ -16,6 +16,7 @@ import java.net.Socket;
 import javax.swing.text.*;
 import java.awt.color.*;
 import java.awt.*;
+import javax.swing.*;
 
 import javax.swing.SwingUtilities;
 
@@ -198,16 +199,22 @@ Special flags
 		String[] content =  messagePieces[1].split(" ");
 		if (content.length == 4) {
 			try{
-				gameRef.textDoc.insertString(gameRef.textDoc.getLength() + 1, messagePieces[1] + "\n", good);
+				gameRef.textDoc.insertString(gameRef.textDoc.getLength(), messagePieces[1] + "\n", good);
+        JScrollBar vertical = gameRef.scrollPane.getVerticalScrollBar();
+        vertical.setValue(vertical.getMaximum());
 			} catch(BadLocationException ble){System.out.println("Text didn't work for some reason");}
 		} else {
 			try{
-				gameRef.textDoc.insertString(gameRef.textDoc.getLength() + 1, messagePieces[1] + "\n", bad);
+				gameRef.textDoc.insertString(gameRef.textDoc.getLength(), messagePieces[1] + "\n", bad);
+        JScrollBar vertical = gameRef.scrollPane.getVerticalScrollBar();
+        vertical.setValue(vertical.getMaximum());
 			} catch(BadLocationException ble){System.out.println("Text didn't work for some reason");}
 		}
 	  } else {
 		try{
-			gameRef.textDoc.insertString(gameRef.textDoc.getLength() + 1, messagePieces[1] + ": " + messagePieces[2] + "\n", normal);
+			gameRef.textDoc.insertString(gameRef.textDoc.getLength(), messagePieces[1] + ": " + messagePieces[2] + "\n", normal);
+      JScrollBar vertical = gameRef.scrollPane.getVerticalScrollBar();
+      vertical.setValue(vertical.getMaximum());
 		} catch(BadLocationException ble){System.out.println("Text didn't work for some reason");}
 	  }
     	  

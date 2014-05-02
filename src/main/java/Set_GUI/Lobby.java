@@ -545,6 +545,8 @@ public class Lobby extends JPanel {
    */
   public void updateChat(String username, String message) {
     chatLog.append(username + ": " + message + "\n");
+    JScrollBar vertical = chatScroll.getVerticalScrollBar();
+    vertical.setValue(vertical.getMaximum());
   }
 
   /**
