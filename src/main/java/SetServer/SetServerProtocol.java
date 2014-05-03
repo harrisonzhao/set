@@ -74,6 +74,7 @@ public class SetServerProtocol extends Protocol {
   //need to be able to send message to all
   @Override
   public void sendMessage(int connectedID, String message) {
+    System.out.println("sending message: " + message);
     if (connectedID == -1) {
       Set<Integer> userIds = sockets.keySet();
       for (Integer userId : userIds) {
@@ -458,8 +459,10 @@ public class SetServerProtocol extends Protocol {
       messageGameRoom(room, updateMessage);
     
     //check if game's over
-    if (room.isCompleted())
+    if (room.isCompleted()) {
+      sendMessage(-1, "U~I~"+sender.currentGameRoom);
       handleGameOver(room);
+    }
   }
   
   //Accepts "E"
@@ -473,12 +476,13 @@ public class SetServerProtocol extends Protocol {
       return;
     }
     User user = users.get(clientID);
-    if (user.currentGameRoom < 0) {
+    int currentRoom = user.currentGameRoom;
+    if (currentRoom < 0) {
       System.out.println("error1");
       System.err.println("leave room bug!!!");
       return;
     }
-    GameRoom room = gameRooms.get(user.currentGameRoom);
+    GameRoom room = gameRooms.get(currentRoom);
     sendMessage(clientID, "E");
     if (room == null) {
       System.out.println("error2");
@@ -486,12 +490,12 @@ public class SetServerProtocol extends Protocol {
     } else {
       room.removePlayer(clientID);
       if (room.isRoomEmpty()) {
-        gameRooms.remove(user.currentGameRoom);
-        sendMessage(-1, "U~R~"+user.currentGameRoom);
+        gameRooms.remove(currentRoom);
+        sendMessage(-1, "U~R~"+currentRoom);
       } else {
         messageGameRoom(room, "T~" + user.username + "left the game");
         messageGameRoom(room, room.encodeNamesToString());
-        sendMessage(-1, "U~Y~" + user.currentGameRoom);
+        sendMessage(-1, "U~Y~" + currentRoom);
         if (room.isPlaying()) {
           //lower the score of the player who forfeited
           user.rating -= 10;
@@ -502,6 +506,7 @@ public class SetServerProtocol extends Protocol {
           //handle game over if there's only 1 player left
           if (room.getNumPlayers() == 1) {
             room.setCompleted();
+            sendMessage(-1, "U~I~"+currentRoom);
             handleGameOver(room);
           }
         }
@@ -561,7 +566,7 @@ public class SetServerProtocol extends Protocol {
     System.out.println("handling GameOver");
     if (room.isCompleted() == false)
       System.err.println("Bug!");
-    messageGameRoom(room, "The game is over. Ratings updating...");
+    messageGameRoom(room, "T~The game is over. Ratings updating...");
     List<Integer> winners = new ArrayList<>();
     List<Integer> losers = new ArrayList<>();
     room.getWinners(winners, losers);
@@ -569,6 +574,9 @@ public class SetServerProtocol extends Protocol {
     if (loserSz == 0)
       ++loserSz;
     int addedScore=((room.getNumPlayers()-winners.size())*10)/winners.size();
+    //for if only 1 player and everyone disconnected
+    if (room.getNumPlayers() == winners.size())
+      addedScore = 10;
     int subtractedScore=((room.getNumPlayers()-losers.size())*10)/loserSz;
     double updatedScore;
     for (int i = 0; i != winners.size(); ++i) {

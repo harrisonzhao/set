@@ -24,6 +24,7 @@ public class GameRoom {
   String name;
     
   public GameRoom(String name, int maxNumPlayers){
+    this.name = name;
     players = new ArrayList<>();
     state = 0;
     numReady = 0;
