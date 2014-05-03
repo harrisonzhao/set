@@ -1,0 +1,9 @@
+Game room names not showing when someone logs in late
+	I believe Harrison is fixing server side
+
+U~X~NUMBER
+	Needs to increment number of players displayed on room in lobby
+
+Joining active games
+	Should not be possible to join a game once it has become active
+

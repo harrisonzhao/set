@@ -82,6 +82,10 @@ public class Game extends JPanel {
 				System.out.println("so i got a score msg...i'll deal with that later");
 				break;
 
+			case 'R':
+				System.out.println("Game reset goes here");
+				break;
+
 			case 'F':
 				System.out.println("Game ovah!");
 				//DO STUFF

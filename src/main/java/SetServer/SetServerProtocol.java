@@ -584,6 +584,7 @@ public class SetServerProtocol extends Protocol {
       updatedScore = current.rating + addedScore;
       messageGameRoom(room, "T~" + current.username + "'s rating: " +
               current.rating + " -> " + updatedScore);
+      messageGameRoom(room, "T~Press Exit Game to return to lobby");
       current.rating = updatedScore;
       if(!sql.updateUser(current)){
         System.err.println("Error: user not in database");
