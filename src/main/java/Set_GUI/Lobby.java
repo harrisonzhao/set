@@ -465,6 +465,7 @@ public class Lobby extends JPanel {
       int index = currentGames.indexOf(this.getListString());
       this.setListString(roomNum);
       String newString = this.getListString();
+      //System.out.println("the current index is" + index);
       currentGames.set(index, newString);
     }
     
@@ -473,6 +474,7 @@ public class Lobby extends JPanel {
       if(statusWord.equals("Open") && full) {
         statusWord = "Full";
       }
+      //statusWord = "testing";
       this.gameRoomInfo = roomNumber + ": " + roomName + " " + 
         currentNumPlayers + "/" + maxNumPlayers + " " + statusWord;
     }
@@ -483,12 +485,7 @@ public class Lobby extends JPanel {
   
     public boolean testFull() {
       //full = currentNumPlayers == maxNumPlayers ? true : false;
-      if (currentNumPlayers == maxNumPlayers) {
-        full = true;
-      }
-      else {
-        full = false;
-      }
+      full = currentNumPlayers == maxNumPlayers;
       return full;
     }
     
@@ -526,11 +523,13 @@ public class Lobby extends JPanel {
     GameRoomData newRoom = new GameRoomData(roomName, curNumPlayer, 
         maxNumPlayer, status);
     gameRoomList.put(roomNumber, newRoom);
-    String statusWord = status == true ? "Playing" : "Open";
-    String gameRoomInfo = roomNumber + ": " + roomName + " " + 
-        curNumPlayer + "/" + maxNumPlayer + " " + statusWord;
-    currentGames.addElement(gameRoomInfo);
     newRoom.setListString(roomNumber);
+    String gameRoomInfo = newRoom.getListString();
+    //String statusWord = status == true ? "Playing" : "Open";
+    //String gameRoomInfo = roomNumber + ": " + roomName + " " + 
+    //    curNumPlayer + "/" + maxNumPlayer + " " + statusWord;
+    currentGames.addElement(gameRoomInfo);
+    
   }
   
   /**
@@ -559,12 +558,14 @@ public class Lobby extends JPanel {
   public void increasePlayers(int roomNum) {
     GameRoomData gameRoom = gameRoomList.get(roomNum);
     gameRoom.addPlayer();
+    gameRoom.testFull();
     gameRoom.updateGameListing(roomNum);
   }
   
   public void decreasePlayers(int roomNum) {
     GameRoomData gameRoom = gameRoomList.get(roomNum);
     gameRoom.removePlayer();
+    gameRoom.testFull();
     gameRoom.updateGameListing(roomNum);
   }
   

@@ -1,9 +1,10 @@
 Game room names not showing when someone logs in late
 	I believe Harrison is fixing server side
+FIXED
 
+Join game button doesn't always highlight on mouse over. Sometimes shows up in weird location.
 
-Join game button doesn't always highlight on mouse over. 
-
+can't 
 
 U~X~NUMBER
 	Needs to increment number of players displayed on room in lobby
