@@ -194,34 +194,36 @@ Special flags
         }
         break;
       case 'T':
-	  System.out.println("Got a chat message:");
-	  if (messagePieces.length == 2) {
-		String[] content =  messagePieces[1].split(" ");
-		if (content.length == 4) {
-			try{
-				gameRef.textDoc.insertString(gameRef.textDoc.getLength(), messagePieces[1] + "\n", good);
-        JScrollBar vertical = gameRef.scrollPane.getVerticalScrollBar();
-        vertical.setValue(vertical.getMaximum());
-			} catch(BadLocationException ble){System.out.println("Text didn't work for some reason");}
-		} else {
-			try{
-				gameRef.textDoc.insertString(gameRef.textDoc.getLength(), messagePieces[1] + "\n", bad);
-        JScrollBar vertical = gameRef.scrollPane.getVerticalScrollBar();
-        vertical.setValue(vertical.getMaximum());
-			} catch(BadLocationException ble){System.out.println("Text didn't work for some reason");}
-		}
-	  } else {
-		try{
-			gameRef.textDoc.insertString(gameRef.textDoc.getLength(), messagePieces[1] + ": " + messagePieces[2] + "\n", normal);
-      JScrollBar vertical = gameRef.scrollPane.getVerticalScrollBar();
-      vertical.setValue(vertical.getMaximum());
-		} catch(BadLocationException ble){System.out.println("Text didn't work for some reason");}
-	  }
-    	  
-      /*
-T~[message] : send message to game room
-T~[username]~[message] : sends out message to gameroom from [username]
-         */
+    	  System.out.println("Got a chat message:");
+    	  if (messagePieces.length == 2) {
+      		String[] content =  messagePieces[1].split(" ");
+      		if (content.length == 4) {
+      			try{
+      				gameRef.textDoc.insertString(gameRef.textDoc.getLength(), messagePieces[1] + "\n", good);
+              JScrollBar vertical = gameRef.scrollPane.getVerticalScrollBar();
+              vertical.setValue(vertical.getMaximum());
+      			} catch(BadLocationException ble){System.out.println("Text didn't work for some reason");}
+      		} else {
+      			try{
+      				gameRef.textDoc.insertString(gameRef.textDoc.getLength(), messagePieces[1] + "\n", bad);
+              JScrollBar vertical = gameRef.scrollPane.getVerticalScrollBar();
+              vertical.setValue(vertical.getMaximum());
+      			} catch(BadLocationException ble){System.out.println("Text didn't work for some reason");}
+      		}
+    	  } else {
+    		try{
+    			gameRef.textDoc.insertString(gameRef.textDoc.getLength(), messagePieces[1] + ": " + messagePieces[2] + "\n", normal);
+          JScrollBar vertical = gameRef.scrollPane.getVerticalScrollBar();
+          vertical.setValue(vertical.getMaximum());
+    		} catch(BadLocationException ble){
+            System.out.println("Text didn't work for some reason");
+          }
+    	  }
+        	  
+          /*
+    T~[message] : send message to game room
+    T~[username]~[message] : sends out message to gameroom from [username]
+             */
         break;
       case 'P':
         /* P~A~name :update players in lobby table of users

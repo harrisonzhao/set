@@ -143,7 +143,8 @@ public class Login extends JFrame implements ActionListener {
     try {
       String dirtest = System.getProperty("user.dir");
       System.out.println("Current working directory = " + dirtest);
-      header = ImageIO.read(new File("src/main/resources/set_card.png"));
+      //header = ImageIO.read(new File("src/main/resources/set_card.png"));
+      header = ImageIO.read(new File("src/main/resources/doge.jpeg"));
     }
     catch (IOException ex) {
       // handle exception
@@ -164,7 +165,8 @@ public class Login extends JFrame implements ActionListener {
   
     // Create the header text
     // We can come up with a better name later
-    String headerText = "The Trembling Tetraumvirate's Terrific Set";
+    //String headerText = "The Trembling Tetraumvirate's Terrific Set";
+    String headerText = "So Match; Such Set";
     JLabel jHeaderText = new JLabel(headerText);
     
     top.add(Box.createRigidArea(new Dimension(0, 5)));
