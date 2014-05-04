@@ -25,8 +25,7 @@ Caused by: java.lang.ArrayIndexOutOfBoundsException: 1
 -Game room name showing as null if game created before next user logs in
 
 Medium priority (Need to be fixed or added):
--When chat fills up, it makes the box bigger and chat becomes unusable. Need it to scroll 
-	- I just fixed it for lobby
+-NEW!!! server seemed to stop handling logins correctly about 20 users in (not at once, once i'd gotten to ~25 it stopped working)
 -Implement some kind of game status reports with each board/score change
  - this is being implemented, but it doesn't change color...working on reformatting text area
 -Gameroom exit doesn't return to lobby ### SEMI-FIXED

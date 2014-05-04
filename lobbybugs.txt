@@ -1,9 +1,15 @@
 Game room names not showing when someone logs in late
 	I believe Harrison is fixing server side
 
+
+Join game button doesn't always highlight on mouse over. 
+
+
 U~X~NUMBER
 	Needs to increment number of players displayed on room in lobby
+FIXED
 
 Joining active games
 	Should not be possible to join a game once it has become active
-
+	This is implemented client-side. the problem is that the game status isn't getting updated.
+FIXED

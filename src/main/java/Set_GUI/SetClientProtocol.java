@@ -278,7 +278,6 @@ T~[username]~[message] : sends out message to gameroom from [username]
             maxNumPlayers = Integer.parseInt(messagePieces[5]);
             statusString = messagePieces[6];
             status = statusString.equals("Playing");
-            
 
             lobRef.addGameRoom(roomNum, roomName, curNumPlayers, 
                 maxNumPlayers, status);

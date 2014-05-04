@@ -211,8 +211,6 @@ public class Lobby extends JPanel {
     headerText.add(Logout);
     headerText.setVisible(true);
     
-    // setting error text font color to be red
-    errorText.setForeground(new Color(0xff0000));
 
     top.setLayout(new BoxLayout(top, BoxLayout.Y_AXIS));
     
@@ -221,7 +219,7 @@ public class Lobby extends JPanel {
     //top.add(Box.createRigidArea(new Dimension(0,10)));
     top.add(headerText);
     top.add(errorText);
-    errorText.setVisible(false);
+
     headerText.setVisible(true);
     //top.add(welcome);
     //top.add(Box.createRigidArea(new Dimension(200,0)));
@@ -310,8 +308,13 @@ public class Lobby extends JPanel {
     gameList.addMouseListener(new JoinListener());
     gameList.setPreferredSize(new Dimension(200, 300));
     
+    // setting error text font color to be red
+    errorText.setForeground(new Color(0xff0000));
+    errorText.setVisible(false);
+
     JPanel subPanel = new JPanel();
     subPanel.setLayout(new BoxLayout(subPanel, BoxLayout.Y_AXIS));
+    subPanel.add(errorText);
     subPanel.add(create_game);
     subPanel.add(Box.createRigidArea(new Dimension(0,5)));
     subPanel.add(gamePane);
@@ -441,14 +444,37 @@ public class Lobby extends JPanel {
       this.currentNumPlayers = currentNumPlayers;
       this.playingStatus = status;
       
-      this.full = false;
+      //this.full = currentNumPlayers == maxNumPlayers;
+      if(maxNumPlayers == 1){
+        this.full = true;
+      } else { 
+        this.full = false;
+      }
 
-            System.out.println("room name: " + roomName + " current number players: " + currentNumPlayers 
-                + " Max number Players: " + maxNumPlayers + " Status: " + status);
+      // debugging statement
+      System.out.println("room name: " + roomName + " current number players: " + currentNumPlayers 
+          + " Max number Players: " + maxNumPlayers + " Status: " + status);
+    }
+
+    // gets the reference to the game room being updated
+    // gets the index of that element in the game list by searching for the game info screen
+    // sets the new updated string
+    // updates the current game list
+    public void updateGameListing(int roomNum) {
+      //GameRoomData gameRoom = GameRoomList.get(roomNum);
+      int index = currentGames.indexOf(this.getListString());
+      this.setListString(roomNum);
+      String newString = this.getListString();
+      currentGames.set(index, newString);
     }
     
-    public void setListString(String gameRoomInfo) {
-      this.gameRoomInfo = gameRoomInfo;
+    public void setListString(int roomNumber) {
+      String statusWord = playingStatus == true ? "Playing" : "Open";
+      if(statusWord.equals("Open") && full) {
+        statusWord = "Full";
+      }
+      this.gameRoomInfo = roomNumber + ": " + roomName + " " + 
+        currentNumPlayers + "/" + maxNumPlayers + " " + statusWord;
     }
     
     public String getListString() {
@@ -504,7 +530,7 @@ public class Lobby extends JPanel {
     String gameRoomInfo = roomNumber + ": " + roomName + " " + 
         curNumPlayer + "/" + maxNumPlayer + " " + statusWord;
     currentGames.addElement(gameRoomInfo);
-    newRoom.setListString(gameRoomInfo);
+    newRoom.setListString(roomNumber);
   }
   
   /**
@@ -521,21 +547,25 @@ public class Lobby extends JPanel {
   public void setInactive(int roomNum) {
     GameRoomData gameRoom = gameRoomList.get(roomNum);
     gameRoom.setInactive();
+    gameRoom.updateGameListing(roomNum);
   }
 
   public void setPlaying(int roomNum) {
     GameRoomData gameRoom = gameRoomList.get(roomNum);
     gameRoom.setPlaying();
+    gameRoom.updateGameListing(roomNum);
   }
   
   public void increasePlayers(int roomNum) {
     GameRoomData gameRoom = gameRoomList.get(roomNum);
     gameRoom.addPlayer();
+    gameRoom.updateGameListing(roomNum);
   }
   
   public void decreasePlayers(int roomNum) {
     GameRoomData gameRoom = gameRoomList.get(roomNum);
     gameRoom.removePlayer();
+    gameRoom.updateGameListing(roomNum);
   }
   
   /**
