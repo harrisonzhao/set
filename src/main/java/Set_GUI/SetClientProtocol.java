@@ -215,9 +215,7 @@ Special flags
     			gameRef.textDoc.insertString(gameRef.textDoc.getLength(), messagePieces[1] + ": " + messagePieces[2] + "\n", normal);
           JScrollBar vertical = gameRef.scrollPane.getVerticalScrollBar();
           vertical.setValue(vertical.getMaximum());
-    		} catch(BadLocationException ble){
-            System.out.println("Text didn't work for some reason");
-          }
+    		} catch(BadLocationException ble){System.out.println("Text didn't work for some reason");}
     	  }
         	  
           /*

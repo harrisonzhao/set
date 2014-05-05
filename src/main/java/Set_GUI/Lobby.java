@@ -316,6 +316,8 @@ public class Lobby extends JPanel {
     subPanel.setLayout(new BoxLayout(subPanel, BoxLayout.Y_AXIS));
     subPanel.add(errorText);
     subPanel.add(create_game);
+    subPanel.add(Box.createRigidArea(new Dimension(0,10)));
+    subPanel.add(new JLabel("Game Rooms")); 
     subPanel.add(Box.createRigidArea(new Dimension(0,5)));
     subPanel.add(gamePane);
     
