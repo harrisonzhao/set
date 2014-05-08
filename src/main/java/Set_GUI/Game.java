@@ -66,9 +66,14 @@ public class Game extends JPanel {
 		cards.clear();
 		cardPane.removeAll();
 		gameOn = false;
-		//playerNames = new String[4];
-		//playerScores = new int[4];
+		enteredText.setText("");
 		submitbutton.setText("Ready To Play!");
+		//callingObj.sendMessageToServer("G~");
+		for (int i = 0; i < 4; i++) {
+			for (int j = 0; j < 2; j++) {
+				scoreBoard[i][j] = ""; // resets scores
+			}
+		}
 	}
 
 	public void displayBoard(String[] srvr_string){
@@ -151,10 +156,11 @@ public class Game extends JPanel {
 									System.out.println(myUsername + "earned 3 points");
 									callingObj.sendMessageToServer("M~" + myUsername +  " earned 3 points!");
 									//enteredText.append("<font color=#0000FF>Awesome! You've earned 3 points!</font>");
-								} else {
+								} else if (srvr_string[1].charAt(0) == 'Y') {
 									System.out.println(myUsername + "lost 1 point");
 									callingObj.sendMessageToServer("M~" + myUsername +  " lost 1 point!");
 									//enteredText.append("<font color=#FF0000>Bro, do you even set?</font>");
+								} else {
 								}
 							}
 						}
@@ -276,7 +282,8 @@ public class Game extends JPanel {
 
 		cardPane = new JPanel(new FlowLayout());
 		cardPane.setBackground(new Color(95, 145, 150));
-		cardPane.setPreferredSize(new Dimension(350, 600));
+		cardPane.setPreferredSize(new Dimension(350, 600));	
+		cardPane.removeAll();
 
 		//holds button underneath cards
 		bottomLeft = new JPanel();
@@ -296,13 +303,6 @@ public class Game extends JPanel {
 
 		leftside.add(cardPane, BorderLayout.NORTH);
 		leftside.add(bottomLeft, BorderLayout.SOUTH);
-
-		//TABLE STUFF
-		//Table stuff will depend on database setup...I'll work on that
-
-		//JTable scores = new JTable(data, {"Players", "Score"});
-		//rightside.add(scores, BorderLayout.NORTH);
-
 
 
 		//CHAT STUFF
@@ -328,6 +328,7 @@ public class Game extends JPanel {
 		enteredText.setPreferredSize(new Dimension(250, 230));
 		enteredText.setVisible(true);
 		enteredText.setEditable(false);
+		enteredText.setText("");
 
 
 		scrollPane = new JScrollPane(enteredText);
@@ -342,12 +343,13 @@ public class Game extends JPanel {
 
 
 	    	typedText   = new JTextField(17);
+		typedText.setText("");
 		//this crazy set of lines sets the chatbutton to be pressed by [enter] when the textfield is on focus...hacky but functional
 		//else, [enter] trigger set submission
 		typedText.addKeyListener(
   			new KeyAdapter() {
      				public void keyPressed(KeyEvent e) {
-       					if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+       					if ((e.getKeyCode() == KeyEvent.VK_ENTER) && (typedText.isFocusOwner())) {
           					chatbutton.doClick();
        					}
      				}
@@ -371,7 +373,7 @@ public class Game extends JPanel {
 		
 		String[] titles = {"Players", "Scores"};
 		for (int i = 0; i < 4; i++) {
-			for (int j = 0; j < 1; j++) {
+			for (int j = 0; j < 2; j++) {
 				scoreBoard[i][j] = "";
 			}
 		}
