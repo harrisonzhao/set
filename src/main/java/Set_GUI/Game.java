@@ -88,8 +88,19 @@ public class Game extends JPanel {
 
 			case 'F':
 				System.out.println("Game ovah!");
-				//DO STUFF
-				
+				cards.clear();
+				cardPane.removeAll(); // clear board
+				enteredText.setText(""); // clear chat wondow
+				gameOn = false; // resets game state flag
+				submitbutton.setText("Ready To Play!"); // resets button text
+
+				for (int i = 0; i < 4; i++) {
+					for (int j = 0; j < 1; j++) {
+						scoreBoard[i][j] = ""; // resets scores
+					}
+				}
+			
+
 				break;
 			default:
 				//either board(B), new scored (Y or N), or start(s)
@@ -176,12 +187,10 @@ public class Game extends JPanel {
 	//Chat message button listener
 	class TextSend implements ActionListener{
 		public void actionPerformed(ActionEvent e){
-			if (typedText.isFocusOwner()) {
 				String chattext = typedText.getText();
 				callingObj.sendMessageToServer("T~" + chattext);
 				//enteredText.append(myUsername + ": " + chattext + "\n");
 				typedText.setText("");
-			}
 		}
 	}
 
@@ -217,7 +226,7 @@ public class Game extends JPanel {
 
 	class Submitter implements ActionListener{
 		public void actionPerformed(ActionEvent e){
-			if (gameOn == false) { //if first press to start game;
+			if ((gameOn == false) && (typedText.isFocusOwner() == false)) { //if first press to start game;
 				gameOn = true;
 				System.out.println("the game has begun");
 				submitbutton.setText("Submit Set!"); //change text
@@ -226,7 +235,7 @@ public class Game extends JPanel {
 				System.out.println("told the server to start game:");
 			} else{
 				System.out.println("there are this many cards seen as selected: " + cardSelection.size());
-				if (cardSelection.size() != 3){
+				if ((cardSelection.size() != 3) || (typedText.isFocusOwner() == true)){
 					System.out.println("Invalid set submission!");
 				}
 				else {
