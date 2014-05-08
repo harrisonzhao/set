@@ -190,7 +190,7 @@ Special flags
         // C~[message] : lobby chat announcement
         else {
           String chatMessage = messagePieces[1];
-          lobRef.updateChat("System", chatMessage);
+          lobRef.updateChat("", chatMessage);
         }
         break;
       case 'T':

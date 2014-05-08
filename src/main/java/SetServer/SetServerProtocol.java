@@ -368,8 +368,11 @@ public class SetServerProtocol extends Protocol {
             +messagePieces[1]+"~"+newRm.getNumPlayers()
             +"~"+newRm.getMaxNumPlayers()+"~Inactive");
     sendMessage(-1, 
-            "C~"+rmCreator.username+" created a game with id \""
-            +numRooms + "\" and name \"" + messagePieces[1] + "\"");
+            "C~System: "+rmCreator.username+" created a game with");
+    sendMessage(-1,
+            "C~\t id: "+numRooms);
+    sendMessage(-1,
+            "C~\t name:" + messagePieces[1]);
     gameRooms.put(numRooms, newRm);
     ++numRooms;
   }
