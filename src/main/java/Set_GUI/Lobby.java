@@ -608,6 +608,8 @@ public class Lobby extends JPanel {
   public void clearContents() {
     chatLog.setText("");
     currentUsers.clear();
+    currentGames.clear();
+    gameRoomList.clear();
   }
 
   /**
