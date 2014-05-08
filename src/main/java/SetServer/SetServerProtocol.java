@@ -496,7 +496,7 @@ public class SetServerProtocol extends Protocol {
         gameRooms.remove(currentRoom);
         sendMessage(-1, "U~R~"+currentRoom);
       } else {
-        messageGameRoom(room, "T~" + user.username + "left the game");
+        messageGameRoom(room, "T~" + user.username + " left the game");
         messageGameRoom(room, room.encodeNamesToString());
         sendMessage(-1, "U~Y~" + currentRoom);
         if (room.isPlaying()) {
