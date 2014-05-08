@@ -7,6 +7,7 @@ import java.awt.event.*;
 import javax.swing.*;
 import javax.imageio.*;
 import java.util.*;
+import javax.sound.sampled.*;
 
 /* Written by Alejandro Acosta
  * 
@@ -73,6 +74,17 @@ public class Login extends JFrame implements ActionListener {
    * Client.
    */
   public Login(SetClientProtocol callingObj) {
+    try
+    {
+        Clip clip = AudioSystem.getClip();
+        clip.open(AudioSystem.getAudioInputStream(new File("src/main/resources/hey.wav")));
+        clip.start();
+    }
+    catch (Exception exc)
+    {
+        exc.printStackTrace(System.out);
+    }
+
     this.callingObj = callingObj;
 
     master = new JPanel(new CardLayout());
