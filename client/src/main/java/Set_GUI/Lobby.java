@@ -11,8 +11,6 @@ import java.awt.Robot.*;
 import javax.imageio.*;
 import javax.swing.*;
 import javax.swing.event.*;
-import SetServer.*;
-import gamebackend.*;
 
 // NEED TO MAKE SURE LOGGING OUT AND THEN BACK IN AGAIN DOESN'T CAUSE DUPLICATION OF THE PAGE!
 
