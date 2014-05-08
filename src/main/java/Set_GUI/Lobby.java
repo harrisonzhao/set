@@ -577,7 +577,12 @@ public class Lobby extends JPanel {
    * @param message: the message sent
    */
   public void updateChat(String username, String message) {
-    chatLog.append(username + ": " + message + "\n");
+    if(username.equals("")) {
+      chatLog.append(message + "\n");
+    }
+    else {
+      chatLog.append(username + ": " + message + "\n");
+    }
     JScrollBar vertical = chatScroll.getVerticalScrollBar();
     vertical.setValue(vertical.getMaximum());
   }
@@ -608,6 +613,8 @@ public class Lobby extends JPanel {
   public void clearContents() {
     chatLog.setText("");
     currentUsers.clear();
+    currentGames.clear();
+    gameRoomList.clear();
   }
 
   /**

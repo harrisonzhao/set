@@ -368,8 +368,11 @@ public class SetServerProtocol extends Protocol {
             +messagePieces[1]+"~"+newRm.getNumPlayers()
             +"~"+newRm.getMaxNumPlayers()+"~Inactive");
     sendMessage(-1, 
-            "C~"+rmCreator.username+" created a game with id \""
-            +numRooms + "\" and name \"" + messagePieces[1] + "\"");
+            "C~"+rmCreator.username+" created a game with");
+    sendMessage(-1,
+            "C~\t id: "+numRooms);
+    sendMessage(-1,
+            "C~\t name:" + messagePieces[1]);
     gameRooms.put(numRooms, newRm);
     ++numRooms;
   }
@@ -405,7 +408,7 @@ public class SetServerProtocol extends Protocol {
           messageGameRoom(room, room.encodeNamesToString());
           sendMessage(-1, 
                   "C~"+joining.username
-                  +"joined game room: "+ messagePieces[1] 
+                  +" joined game room: "+ messagePieces[1] 
                   +" " + room.getName());
           //sends out message to update tables in lobby
           sendMessage(-1, "U~X~" + joining.currentGameRoom);
@@ -493,7 +496,7 @@ public class SetServerProtocol extends Protocol {
         gameRooms.remove(currentRoom);
         sendMessage(-1, "U~R~"+currentRoom);
       } else {
-        messageGameRoom(room, "T~" + user.username + "left the game");
+        messageGameRoom(room, "T~" + user.username + " left the game");
         messageGameRoom(room, room.encodeNamesToString());
         sendMessage(-1, "U~Y~" + currentRoom);
         if (room.isPlaying()) {
