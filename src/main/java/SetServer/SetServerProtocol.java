@@ -368,7 +368,7 @@ public class SetServerProtocol extends Protocol {
             +messagePieces[1]+"~"+newRm.getNumPlayers()
             +"~"+newRm.getMaxNumPlayers()+"~Inactive");
     sendMessage(-1, 
-            "C~System: "+rmCreator.username+" created a game with");
+            "C~"+rmCreator.username+" created a game with");
     sendMessage(-1,
             "C~\t id: "+numRooms);
     sendMessage(-1,
@@ -408,7 +408,7 @@ public class SetServerProtocol extends Protocol {
           messageGameRoom(room, room.encodeNamesToString());
           sendMessage(-1, 
                   "C~"+joining.username
-                  +"joined game room: "+ messagePieces[1] 
+                  +" joined game room: "+ messagePieces[1] 
                   +" " + room.getName());
           //sends out message to update tables in lobby
           sendMessage(-1, "U~X~" + joining.currentGameRoom);
