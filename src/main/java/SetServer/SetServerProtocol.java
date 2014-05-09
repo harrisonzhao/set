@@ -384,7 +384,7 @@ public class SetServerProtocol extends Protocol {
     sendMessage(-1,
             "C~\t id: "+numRooms);
     sendMessage(-1,
-            "C~\t name:" + messagePieces[1]);
+            "C~\t name: " + messagePieces[1]);
     gameRooms.put(numRooms, newRm);
     ++numRooms;
   }
