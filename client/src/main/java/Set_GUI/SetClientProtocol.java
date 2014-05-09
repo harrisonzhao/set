@@ -300,9 +300,9 @@ Special flags
           /* U~P~[room number] : 
            * currently playing
            */
-          case 'P':
-            lobRef.setPlaying(roomNum);
-            break;
+          //case 'P':
+            //lobRef.setPlaying(roomNum);
+            //break;
             
           /* U~X~[room number] : 
            * increase current number players display for gameroom

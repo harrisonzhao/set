@@ -11,7 +11,7 @@ public class SetClientMain {
    */
   
   public static void main(String[] args) {
-    String serverIp = "127.0.0.1";
+    String serverIp = "199.98.20.118";
     int serverPort = 20000;
     SetClientProtocol protocol = new SetClientProtocol(serverIp, serverPort);
     ConnectionManager setClientManager = new ConnectionManager(protocol);

@@ -81,6 +81,9 @@ public class Game extends JPanel {
 			System.out.println(srvr_string[i]);
 		}
 
+		cardSelection.clear();
+		selectedCards.clear();
+
 		///so now we need to handle all the things:
 		switch (srvr_string[1].charAt(0)){
 			case 'U':

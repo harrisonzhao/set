@@ -293,10 +293,11 @@ public class SetServerProtocol extends Protocol {
         
         if (currentRm != null) {
           currentRm.removePlayer(clientID);
-          sendMessage(-1, "U~Y~" + disconnected.currentGameRoom);
+          if (currentRm.isInactive())
+            sendMessage(-1, "U~Y~" + disconnected.currentGameRoom);
           if (currentRm.getNumPlayers() > 0) {
             messageGameRoom(currentRm, "T~" + disconnected.username 
-                    + "disconnected");
+                    + " disconnected");
             //update users in game room + their scores
             messageGameRoom(currentRm, currentRm.encodeNamesToString());
             
@@ -312,7 +313,7 @@ public class SetServerProtocol extends Protocol {
               if (currentRm.getNumPlayers() == 1) {
                 currentRm.setCompleted();
                 handleGameOver(currentRm);
-                sendMessage(-1, "U~I~"+disconnected.currentGameRoom);
+                //sendMessage(-1, "U~I~"+disconnected.currentGameRoom);
               }
             } else {
               //the game has not started yet
@@ -324,8 +325,9 @@ public class SetServerProtocol extends Protocol {
             }
             
           } else {
+            if (currentRm.isInactive())
+              sendMessage(-1, "U~R~"+disconnected.currentGameRoom);
             gameRooms.remove(disconnected.currentGameRoom);
-            sendMessage(-1, "U~R~"+disconnected.currentGameRoom);
           }
           
         } else {
@@ -442,7 +444,8 @@ public class SetServerProtocol extends Protocol {
         room.setPlaying();
         messageGameRoom(room, "T~All users are ready. Game start!");
         messageGameRoom(room, room.InitializeGame());
-        sendMessage(-1, "U~P~" + starter.currentGameRoom);
+        sendMessage(-1, "U~R~" + starter.currentGameRoom);
+        //sendMessage(-1, "U~P~" + starter.currentGameRoom);
       }
     }
   }
@@ -463,7 +466,7 @@ public class SetServerProtocol extends Protocol {
     
     //check if game's over
     if (room.isCompleted()) {
-      sendMessage(-1, "U~I~"+sender.currentGameRoom);
+      //sendMessage(-1, "U~I~"+sender.currentGameRoom);
       handleGameOver(room);
     }
   }
@@ -494,11 +497,16 @@ public class SetServerProtocol extends Protocol {
       room.removePlayer(clientID);
       if (room.isRoomEmpty()) {
         gameRooms.remove(currentRoom);
-        sendMessage(-1, "U~R~"+currentRoom);
+        if (room.isInactive()) {
+          sendMessage(-1, "U~R~"+currentRoom);
+        }
+        // already handled in pStartGame
+        //sendMessage(-1, "U~R~"+currentRoom);
       } else {
         messageGameRoom(room, "T~" + user.username + " left the game");
         messageGameRoom(room, room.encodeNamesToString());
-        sendMessage(-1, "U~Y~" + currentRoom);
+        if (room.isInactive())
+          sendMessage(-1, "U~Y~" + currentRoom);
         if (room.isPlaying()) {
           //lower the score of the player who forfeited
           user.rating -= 10;
@@ -509,10 +517,11 @@ public class SetServerProtocol extends Protocol {
           //handle game over if there's only 1 player left
           if (room.getNumPlayers() == 1) {
             room.setCompleted();
-            sendMessage(-1, "U~I~"+currentRoom);
+            //sendMessage(-1, "U~I~"+currentRoom);
             handleGameOver(room);
           }
         }
+
       }
     }
     user.currentGameRoom = -1;
