@@ -1,1 +1,0 @@
-INDEX VERSION 1.126+/home/alejandro/Dropbox/Software Eng/Set git/set/.metadata/.plugins/org.eclipse.jdt.core
