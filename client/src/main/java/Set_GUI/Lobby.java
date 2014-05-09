@@ -542,7 +542,9 @@ public class Lobby extends JPanel {
     //String statusWord = status == true ? "Playing" : "Open";
     //String gameRoomInfo = roomNumber + ": " + roomName + " " + 
     //    curNumPlayer + "/" + maxNumPlayer + " " + statusWord;
-    currentGames.addElement(gameRoomInfo);
+    if(!currentGames.contains(gameRoomInfo)) {
+      currentGames.addElement(gameRoomInfo);
+    }
     
   }
   
@@ -612,7 +614,9 @@ public class Lobby extends JPanel {
    */
   public void updateUserList(String mode, String username) {
     if (mode.equals("A")) {
-      currentUsers.addElement(username);
+      if(!currentUsers.contains(username)){
+        currentUsers.addElement(username);
+      }
     }
     else if (mode.equals("R")) {
       currentUsers.removeElement(username);
