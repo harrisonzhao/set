@@ -496,10 +496,10 @@ public class SetServerProtocol extends Protocol {
     } else {
       room.removePlayer(clientID);
       if (room.isRoomEmpty()) {
-        gameRooms.remove(currentRoom);
         if (room.isInactive()) {
           sendMessage(-1, "U~R~"+currentRoom);
         }
+        gameRooms.remove(currentRoom);
         // already handled in pStartGame
         //sendMessage(-1, "U~R~"+currentRoom);
       } else {
@@ -612,8 +612,6 @@ public class SetServerProtocol extends Protocol {
         System.err.println("Error: user not in database");
       }
     }
-    room.resetRoom();
-    messageGameRoom(room, "G~R");
     System.out.println("handling GameOver: complete");  
   }
 
