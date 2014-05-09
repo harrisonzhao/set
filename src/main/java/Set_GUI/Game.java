@@ -81,9 +81,6 @@ public class Game extends JPanel {
 			System.out.println(srvr_string[i]);
 		}
 
-		cardSelection.clear();
-		selectedCards.clear();
-
 		///so now we need to handle all the things:
 		switch (srvr_string[1].charAt(0)){
 			case 'U':
@@ -116,34 +113,39 @@ public class Game extends JPanel {
 				System.out.println("Board received:");
 				System.out.println(srvr_string[2]);
 				
-				if (srvr_string[1].charAt(0) == 'S'){
+				if (srvr_string[1].charAt(0) == 'S' || srvr_string[1].charAt(0) == 'N'){
 				} else {
 					System.out.println("clearing board:");
+
+					cardSelection.clear();
+					selectedCards.clear();
 					cards.clear(); //clears held list of cards
 					cardPane.removeAll(); //clears board
 				}
-				
 
-				// parse the card list from the server and display the cards
-				String cardString = srvr_string[2]; // get card list
+				if(!(srvr_string[1].charAt(0) == 'N')){
+					// parse the card list from the server and display the cards
+					String cardString = srvr_string[2]; // get card list
 
-				String cardsToShow[] = cardString.split(" "); // break down string of cards
-				//then serve all the cards up:
-				System.out.println("Received " + cardsToShow.length + " cards:");
-				for (int i = 0; i < cardsToShow.length; i++){
+					String cardsToShow[] = cardString.split(" "); // break down string of cards
+					//then serve all the cards up:
+					System.out.println("Received " + cardsToShow.length + " cards:");
+					for (int i = 0; i < cardsToShow.length; i++){
 
-					System.out.println("Creating card for " + cardsToShow[i]);
+						System.out.println("Creating card for " + cardsToShow[i]);
 
-					JToggleButton setCard = new JToggleButton(new ImageIcon("src/main/resources/set images/" + cardsToShow[i] + ".gif"));
+						JToggleButton setCard = new JToggleButton(new ImageIcon("src/main/resources/set images/" + cardsToShow[i] + ".gif"));
 
-					setCard.setPreferredSize(new Dimension(100, 85));
-					setCard.setBackground(new Color(255, 255, 255));
-					setCard.addItemListener(new Selector());
+						setCard.setPreferredSize(new Dimension(100, 85));
+						setCard.setBackground(new Color(255, 255, 255));
+						setCard.addItemListener(new Selector());
 
-					cards.put(setCard, cardsToShow[i]); //add to hashmap to get back later...
-					cardPane.add(setCard); //display the card obviously
-
+						cards.put(setCard, cardsToShow[i]); //add to hashmap to get back later...
+						cardPane.add(setCard); //display the card obviously
+					}
 				}
+
+
 
 				if ((srvr_string[1].charAt(0) == 'Y')||(srvr_string[1].charAt(0) == 'N')||(srvr_string[1].charAt(0) == 'S')){ //if scores need to be updated
 					System.out.println("updating scores:");
@@ -159,9 +161,14 @@ public class Game extends JPanel {
 									System.out.println(myUsername + "earned 3 points");
 									callingObj.sendMessageToServer("M~" + myUsername +  " earned 3 points!");
 									//enteredText.append("<font color=#0000FF>Awesome! You've earned 3 points!</font>");
-								} else if (srvr_string[1].charAt(0) == 'Y') {
+								} else if (srvr_string[1].charAt(0) == 'N') {
 									System.out.println(myUsername + "lost 1 point");
 									callingObj.sendMessageToServer("M~" + myUsername +  " lost 1 point!");
+									cardSelection.clear();
+									selectedCards.clear();
+									for (JToggleButton key : cards.keySet()) {
+										key.setSelected(false);
+									}
 									//enteredText.append("<font color=#FF0000>Bro, do you even set?</font>");
 								} else {
 								}
