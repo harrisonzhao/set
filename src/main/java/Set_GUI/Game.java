@@ -126,6 +126,13 @@ public class Game extends JPanel {
 				if(srvr_string[1].charAt(0) == 'S'){
 					cardSelection.clear();
 					selectedCards.clear();
+					for (int i = 0; i < 4; i++) {
+						playerScores[i] = 0;
+						playerNames[i] = "";
+						for (int j = 0; j < 2; j++) {
+							scoreBoard[i][j] = ""; // resets scores
+						}
+					}
 				}
 
 				if(!(srvr_string[1].charAt(0) == 'N')){
@@ -150,9 +157,7 @@ public class Game extends JPanel {
 					}
 				}
 
-
-
-				if ((srvr_string[1].charAt(0) == 'Y')||(srvr_string[1].charAt(0) == 'N')||(srvr_string[1].charAt(0) == 'S')){ //if scores need to be updated
+				if ((srvr_string[1].charAt(0) == 'Y')||(srvr_string[1].charAt(0) == 'N')){ //if scores need to be updated
 					System.out.println("updating scores:");
 					String scoreStr = srvr_string[3]; // parse score segments
 					String[] scores = scoreStr.split(" "); //get individual scores
