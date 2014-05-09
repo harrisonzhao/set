@@ -23,6 +23,7 @@ public class GameRoom {
   int state; // 0 inactive, 1 active, 2 complete
   final int maxNumPlayers;
   String name;
+  boolean blockSets;
     
   public GameRoom(String name, int maxNumPlayers){
     this.name = name;
@@ -31,6 +32,15 @@ public class GameRoom {
     numReady = 0;
     this.maxNumPlayers = maxNumPlayers;
     isRemoved = false;
+    blockSets = false;
+  }
+
+  public void blockSets() {
+    blockSets = true;
+  }
+
+  public boolean isBlockSets() {
+    return blockSets;
   }
 
   public void setRemoved() {

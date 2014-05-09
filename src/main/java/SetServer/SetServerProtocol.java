@@ -476,8 +476,9 @@ public class SetServerProtocol extends Protocol {
       messageGameRoom(room, updateMessage);
     
     //check if game's over
-    if (room.isCompleted()) {
+    if (room.isCompleted() && !room.isBlockSets()) {
       //sendMessage(-1, "U~I~"+sender.currentGameRoom);
+      room.blockSets();
       handleGameOver(room);
     }
   }
