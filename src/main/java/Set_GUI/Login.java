@@ -379,6 +379,7 @@ public class Login extends JFrame implements ActionListener {
     setSize(650,700); // figure out appropriate size
     //game_Panel.joinGame();
     game_Panel.setClient(callingObj, myUsername);
+    game_Panel.resetGameOver();
     setTitle(GAME);
     cl.show(master, GAME);
     pack();
