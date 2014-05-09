@@ -126,13 +126,6 @@ public class Game extends JPanel {
 				if(srvr_string[1].charAt(0) == 'S'){
 					cardSelection.clear();
 					selectedCards.clear();
-					for (int i = 0; i < 4; i++) {
-						playerScores[i] = 0;
-						playerNames[i] = "";
-						for (int j = 0; j < 2; j++) {
-							scoreBoard[i][j] = ""; // resets scores
-						}
-					}
 				}
 
 				if(!(srvr_string[1].charAt(0) == 'N')){
@@ -173,6 +166,7 @@ public class Game extends JPanel {
 						String[] sp = scores[i].split("_");
 						String user = sp[0];
 						int score = Integer.parseInt(sp[1]);
+						System.out.println(sp[0] + " " + sp[1]);
 						if(score != playerScores[i]){
 							if(myUsername.equals(user)){
 								if (srvr_string[1].charAt(0) == 'Y') {
