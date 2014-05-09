@@ -48,6 +48,8 @@ public class Game extends JPanel {
 	private Lobby lobby_panel;
 	private Login login_panel;
 
+	boolean GameOver;
+
 	Game(Login login_panel, Lobby lobby_panel){
 		this.lobby_panel = lobby_panel;
 		this.login_panel = login_panel;
@@ -58,6 +60,10 @@ public class Game extends JPanel {
 	public void setClient(SetClientProtocol callingObj, String username) {
 		this.callingObj = callingObj;
 		this.myUsername = username;
+	}
+
+	public void resetGameOver(){
+		GameOver = false;
 	}
 
 	// cleans up when the game leaves
@@ -93,6 +99,7 @@ public class Game extends JPanel {
 
 			case 'F':
 				System.out.println("Game ovah!");
+				GameOver = true;
 				cards.clear();
 				cardPane.removeAll(); // clear board
 				enteredText.setText(""); // clear chat wondow
@@ -251,30 +258,32 @@ public class Game extends JPanel {
 
 	class Submitter implements ActionListener{
 		public void actionPerformed(ActionEvent e){
-			if ((gameOn == false) && (typedText.isFocusOwner() == false)) { //if first press to start game;
-				gameOn = true;
-				System.out.println("the game has begun");
-				submitbutton.setText("Submit Set!"); //change text
-				System.out.println("button text changed");
-				callingObj.sendMessageToServer("G"); //self explanatory
-				System.out.println("told the server to start game:");
-			} else{
-				System.out.println("there are this many cards seen as selected: " + cardSelection.size());
-				if ((cardSelection.size() != 3) || (typedText.isFocusOwner() == true)){
-					System.out.println("Invalid set submission!");
-				}
-				else {
-					String setSubmission = "S~";
-					for (int i = 0; i < 3; i++){
-						if (i != 2) {
-							setSubmission = setSubmission + cardSelection.get(i) + "~";
-						}
-						else {
-							setSubmission = setSubmission + cardSelection.get(i);
-						}
+			if(!GameOver){
+				if ((gameOn == false) && (typedText.isFocusOwner() == false)) { //if first press to start game;
+					gameOn = true;
+					System.out.println("the game has begun");
+					submitbutton.setText("Submit Set!"); //change text
+					System.out.println("button text changed");
+					callingObj.sendMessageToServer("G"); //self explanatory
+					System.out.println("told the server to start game:");
+				} else{
+					System.out.println("there are this many cards seen as selected: " + cardSelection.size());
+					if ((cardSelection.size() != 3) || (typedText.isFocusOwner() == true)){
+						System.out.println("Invalid set submission!");
 					}
-					callingObj.sendMessageToServer(setSubmission);
-					cardSelection.clear();
+					else {
+						String setSubmission = "S~";
+						for (int i = 0; i < 3; i++){
+							if (i != 2) {
+								setSubmission = setSubmission + cardSelection.get(i) + "~";
+							}
+							else {
+								setSubmission = setSubmission + cardSelection.get(i);
+							}
+						}
+						callingObj.sendMessageToServer(setSubmission);
+						cardSelection.clear();
+					}
 				}
 			}
 		}
