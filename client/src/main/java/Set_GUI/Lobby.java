@@ -541,10 +541,15 @@ public class Lobby extends JPanel {
    * hash table of games.
    */
   public void removeGameRoom(int roomNumber) {
-    GameRoomData deadRoom = gameRoomList.get(roomNumber);
-    String gameRoomInfo = deadRoom.getListString();
-    currentGames.removeElement(gameRoomInfo);
-    gameRoomList.remove(roomNumber);
+    try {
+      GameRoomData deadRoom = gameRoomList.get(roomNumber);
+      String gameRoomInfo = deadRoom.getListString();
+      currentGames.removeElement(gameRoomInfo);
+      gameRoomList.remove(roomNumber);
+    }
+    catch(NullPointerException exc) {
+      ;
+    }
   }
   
   public void setInactive(int roomNum) {

@@ -165,9 +165,9 @@ public class Lobby extends JPanel {
     
     //image for header
     //BufferedImage header = null;
-	BufferedImage header;
-	Boolean image_succeed = true;
-	JLabel headerLabel;
+  BufferedImage header;
+  Boolean image_succeed = true;
+  JLabel headerLabel;
     try {
       // Here's code for getting the current working directory, but i'm not sure
       // if we need that. the hard coded one works fine for now. It may be an issue
@@ -541,10 +541,15 @@ public class Lobby extends JPanel {
    * hash table of games.
    */
   public void removeGameRoom(int roomNumber) {
-    GameRoomData deadRoom = gameRoomList.get(roomNumber);
-    String gameRoomInfo = deadRoom.getListString();
-    currentGames.removeElement(gameRoomInfo);
-    gameRoomList.remove(roomNumber);
+    try {
+      GameRoomData deadRoom = gameRoomList.get(roomNumber);
+      String gameRoomInfo = deadRoom.getListString();
+      currentGames.removeElement(gameRoomInfo);
+      gameRoomList.remove(roomNumber);
+    }
+    catch(NullPointerException exc) {
+      ;
+    }
   }
   
   public void setInactive(int roomNum) {
