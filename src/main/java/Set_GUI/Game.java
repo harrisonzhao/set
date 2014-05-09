@@ -151,6 +151,11 @@ public class Game extends JPanel {
 					System.out.println("updating scores:");
 					String scoreStr = srvr_string[3]; // parse score segments
 					String[] scores = scoreStr.split(" "); //get individual scores
+					for (int i = 0; i < 4; i++) {
+						for (int j = 0; j < 2; j++) {
+							scoreBoard[i][j] = ""; // resets scores
+						}
+					}
 					for(int i=0; i<scores.length; i++){
 						String[] sp = scores[i].split("_");
 						String user = sp[0];
