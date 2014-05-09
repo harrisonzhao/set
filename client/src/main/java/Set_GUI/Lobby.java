@@ -28,8 +28,8 @@ public class Lobby extends JPanel {
   
   // Error text
   private JLabel errorText = new JLabel();
-  private String gameFullError = "Error: The game you tried to join is full.";
-  private String gameInProgressError = "Error: The game you tried to enter is in progress.";
+  private String gameFullError = "Error: Game Room full.";
+  private String gameInProgressError = "Error: Game in Progress.";
 
   // subcomponents of the above
   //private JPanel headertext = new JPanel();
@@ -345,6 +345,7 @@ public class Lobby extends JPanel {
       int maxPlayers;
       boolean redo = false;
       exitCreate = false;
+      createErrorText.setText("");
       do {
         JOptionPane.showMessageDialog(login_Frame, createGameInputs, "Test Dialog", JOptionPane.PLAIN_MESSAGE);
         createErrorText.setText("");
@@ -373,10 +374,13 @@ public class Lobby extends JPanel {
 
         System.out.println("exit create = " + exitCreate);
         if(exitCreate) {
+          maxPlayerField.setText("");
+          gameNameField.setText("");
           break;
         }
       } while(redo);
-      
+      maxPlayerField.setText("");
+      gameNameField.setText("");      
       if(!exitCreate) {
         callingObj.sendMessageToServer("N~"+gameNameField.getText()+"~"+maxPlayerField.getText()); 
         login_Frame.enterGame();
