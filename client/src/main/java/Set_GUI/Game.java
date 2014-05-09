@@ -123,6 +123,11 @@ public class Game extends JPanel {
 					cardPane.removeAll(); //clears board
 				}
 
+				if(srvr_string[1].charAt(0) == 'S'){
+					cardSelection.clear();
+					selectedCards.clear();
+				}
+
 				if(!(srvr_string[1].charAt(0) == 'N')){
 					// parse the card list from the server and display the cards
 					String cardString = srvr_string[2]; // get card list
