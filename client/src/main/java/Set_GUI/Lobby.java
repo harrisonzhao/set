@@ -390,10 +390,15 @@ public class Lobby extends JPanel {
 
   private class JoinListener extends MouseAdapter {
     public void mouseClicked(MouseEvent evt) {
-      String joined = gameList.getSelectedValue();
-      if(!joined.equals(emptyGameList)) {
-        // set up the code for what to do
-        joinMenu.show((Component) gameList,0,0);
+      try{
+        String joined = gameList.getSelectedValue();
+        if(!joined.equals(emptyGameList)) {
+          // set up the code for what to do
+          joinMenu.show((Component) gameList,0,0);
+        }
+      }
+      catch (NullPointerException exc) {
+        System.err.println("Tried to select game when none in list");
       }
     }
   }
@@ -465,12 +470,17 @@ public class Lobby extends JPanel {
     // sets the new updated string
     // updates the current game list
     public void updateGameListing(int roomNum) {
-      //GameRoomData gameRoom = GameRoomList.get(roomNum);
-      int index = currentGames.indexOf(this.getListString());
-      this.setListString(roomNum);
-      String newString = this.getListString();
-      //System.out.println("the current index is" + index);
-      currentGames.set(index, newString);
+      try{
+        //GameRoomData gameRoom = GameRoomList.get(roomNum);
+        int index = currentGames.indexOf(this.getListString());
+        this.setListString(roomNum);
+        String newString = this.getListString();
+        //System.out.println("the current index is" + index);
+        currentGames.set(index, newString);
+      }
+      catch(NullPointerException exp) {
+        System.err.println("Update Game Listing error");
+      }
     }
     
     public void setListString(int roomNumber) {

@@ -470,12 +470,17 @@ public class Lobby extends JPanel {
     // sets the new updated string
     // updates the current game list
     public void updateGameListing(int roomNum) {
-      //GameRoomData gameRoom = GameRoomList.get(roomNum);
-      int index = currentGames.indexOf(this.getListString());
-      this.setListString(roomNum);
-      String newString = this.getListString();
-      //System.out.println("the current index is" + index);
-      currentGames.set(index, newString);
+      try{
+        //GameRoomData gameRoom = GameRoomList.get(roomNum);
+        int index = currentGames.indexOf(this.getListString());
+        this.setListString(roomNum);
+        String newString = this.getListString();
+        //System.out.println("the current index is" + index);
+        currentGames.set(index, newString);
+      }
+      catch(NullPointerException exp) {
+        System.err.println("Update Game Listing error");
+      }
     }
     
     public void setListString(int roomNumber) {
