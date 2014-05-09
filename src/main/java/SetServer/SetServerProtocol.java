@@ -183,13 +183,15 @@ public class SetServerProtocol extends Protocol {
     String status;
     for (Integer gameRoomId : gameRoomIds) {
       room = gameRooms.get(gameRoomId);
-      if (room.isPlaying())
-        status = "Playing";
-      else
-        status = "Inactive";
-      sendMessage(clientID, "U~A~"+gameRoomId+"~"
+      if (!room.isRemoved()) {
+        if (room.isPlaying())
+          status = "Playing";
+        else
+          status = "Inactive";
+        sendMessage(clientID, "U~A~"+gameRoomId+"~"
             +room.getName()+"~"+room.getNumPlayers()
             +"~"+room.getMaxNumPlayers()+"~"+status);
+      }
     }
             
   }
@@ -331,8 +333,10 @@ public class SetServerProtocol extends Protocol {
             }
             
           } else {
-            if (currentRm.isInactive())
+            if (currentRm.isInactive()) {
+              currentRm.setRemoved();
               sendMessage(-1, "U~R~"+disconnected.currentGameRoom);
+            }
             gameRooms.remove(disconnected.currentGameRoom);
           }
           
@@ -450,6 +454,7 @@ public class SetServerProtocol extends Protocol {
         room.setPlaying();
         messageGameRoom(room, "T~All users are ready. Game start!");
         messageGameRoom(room, room.InitializeGame());
+        room.setRemoved();
         sendMessage(-1, "U~R~" + starter.currentGameRoom);
         //sendMessage(-1, "U~P~" + starter.currentGameRoom);
       }
@@ -503,11 +508,10 @@ public class SetServerProtocol extends Protocol {
       room.removePlayer(clientID);
       if (room.isRoomEmpty()) {
         if (room.isInactive()) {
+          room.setRemoved();
           sendMessage(-1, "U~R~"+currentRoom);
         }
         gameRooms.remove(currentRoom);
-        // already handled in pStartGame
-        //sendMessage(-1, "U~R~"+currentRoom);
       } else {
         messageGameRoom(room, "T~" + user.username + " left the game");
         messageGameRoom(room, room.encodeNamesToString());

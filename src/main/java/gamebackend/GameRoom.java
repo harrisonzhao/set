@@ -16,6 +16,7 @@ import java.util.List;
 public class GameRoom {
   
   final List<Player> players;
+  boolean isRemoved;
   int numReady;
   Board board;
   Scoring score;
@@ -29,6 +30,15 @@ public class GameRoom {
     state = 0;
     numReady = 0;
     this.maxNumPlayers = maxNumPlayers;
+    isRemoved = false;
+  }
+
+  public void setRemoved() {
+    isRemoved = true;
+  }
+
+  public boolean isRemoved() {
+    return isRemoved;
   }
   
   public String InitializeGame() {

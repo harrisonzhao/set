@@ -16,8 +16,6 @@
     <resources>
         <resource>
             <directory>src/main/resources</directory>
-            <!-- relative to target/classes
-                 i.e. ${project.build.outputDirectory} -->
         </resource>
     </resources>
     <plugins>
