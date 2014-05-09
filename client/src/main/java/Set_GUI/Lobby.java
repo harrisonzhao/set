@@ -378,7 +378,13 @@ public class Lobby extends JPanel {
           gameNameField.setText("");
           break;
         }
+<<<<<<< HEAD
       } while(redo);     
+=======
+      } while(redo);
+      maxPlayerField.setText("");
+      gameNameField.setText("");      
+>>>>>>> b8ca97b5ccd22ae6c7a3eb95cd436fe013cd2ac7
       if(!exitCreate) {
         callingObj.sendMessageToServer("N~"+gameNameField.getText()+"~"+maxPlayerField.getText()); 
         login_Frame.enterGame();
