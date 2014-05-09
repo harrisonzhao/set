@@ -470,15 +470,16 @@ public class SetServerProtocol extends Protocol {
     }
     User sender = users.get(clientID);
     GameRoom room = gameRooms.get(sender.currentGameRoom);
+    if (room.isBlockSets())
+      return;
     String updateMessage = room.CheckSetAndUpdate(clientID,
             messagePieces[1], messagePieces[2], messagePieces[3]);
     if(updateMessage != null)
       messageGameRoom(room, updateMessage);
     
     //check if game's over
-    if (room.isCompleted() && !room.isBlockSets()) {
+    if (room.isCompleted()) {
       //sendMessage(-1, "U~I~"+sender.currentGameRoom);
-      room.blockSets();
       handleGameOver(room);
     }
   }
@@ -623,7 +624,8 @@ public class SetServerProtocol extends Protocol {
         System.err.println("Error: user not in database");
       }
     }
-    System.out.println("handling GameOver: complete");  
+    System.out.println("handling GameOver: complete");
+    room.blockSets();  
   }
 
 }
