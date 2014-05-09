@@ -585,9 +585,14 @@ public class Lobby extends JPanel {
   
   public void decreasePlayers(int roomNum) {
     GameRoomData gameRoom = gameRoomList.get(roomNum);
-    gameRoom.removePlayer();
-    gameRoom.testFull();
-    gameRoom.updateGameListing(roomNum);
+    try {
+      gameRoom.removePlayer();
+      gameRoom.testFull();
+      gameRoom.updateGameListing(roomNum);
+    }
+    catch (NullPointerException exc) {
+      System.err.println("Decrease Players bug: Null Pointer Exception");
+    }
   }
   
   /**
