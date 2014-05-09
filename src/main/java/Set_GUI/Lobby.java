@@ -390,10 +390,15 @@ public class Lobby extends JPanel {
 
   private class JoinListener extends MouseAdapter {
     public void mouseClicked(MouseEvent evt) {
-      String joined = gameList.getSelectedValue();
-      if(!joined.equals(emptyGameList)) {
-        // set up the code for what to do
-        joinMenu.show((Component) gameList,0,0);
+      try{
+        String joined = gameList.getSelectedValue();
+        if(!joined.equals(emptyGameList)) {
+          // set up the code for what to do
+          joinMenu.show((Component) gameList,0,0);
+        }
+      }
+      catch (NullPointerException exc) {
+        System.err.println("Tried to select game when none in list");
       }
     }
   }

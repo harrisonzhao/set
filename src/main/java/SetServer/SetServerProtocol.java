@@ -249,6 +249,12 @@ public class SetServerProtocol extends Protocol {
           "Probably contains '~'<br></center></p></html>");
       return;
     }
+
+    if (messagePieces[1].contains(" ") || messagePieces[1].contains("_")) {
+        sendMessage(clientID, "X~<html><p><center>Invalid Name!<br>" +
+          "Probably contains ' ' or '_'<br></center></p></html>");    
+        return;
+    }
     
     if (!sql.addUser(messagePieces[1], messagePieces[2])) {
       sendMessage(clientID, "X~Username already exists!");
