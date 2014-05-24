@@ -1,7 +1,5 @@
 .DS_Store
 *~
-<<<<<<< HEAD
-target
-=======
+target/
 *class
->>>>>>> 7ae358a23be0985e88cb39be112b136ed211f56e
+.project

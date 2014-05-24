@@ -1,7 +1,0 @@
-Game continues if one of the players leaves while game in progress. (might not be a problem)
-
-Clicking "Ready to Play!" changes text on button to "Submit set" even if the game hasn't started yet (because not all the players have pressed the button yet)
-
-When you join a game room it displays your name twice
-
-Chat window doesn't clear upon entering a new game.
